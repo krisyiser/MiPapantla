@@ -1,6 +1,6 @@
 import Header from '@/components/Header'
 import BottomNavigation from '@/components/BottomNavigation'
-import { Music, Cocktail, Users, Clock, MapPin, Calendar, Volume2, PartyPopper } from 'lucide-react'
+import { Music, Martini, Users, Clock, MapPin, Calendar, Volume2, PartyPopper } from 'lucide-react'
 
 const venues = [
   {
@@ -86,46 +86,18 @@ const venues = [
 const nightActivities = [
   { name: "Música en Vivo", icon: Music, venues: 12, description: "Jazz, rock, mariachi" },
   { name: "Discotecas", icon: PartyPopper, venues: 8, description: "Música electrónica y pop" },
-  { name: "Bares de Cocteles", icon: Cocktail, venues: 15, description: "Mixología artesanal" },
+  { name: "Bares de Cocteles", icon: Martini, venues: 15, description: "Mixología artesanal" },
   { name: "Entretenimiento", icon: Volume2, venues: 6, description: "Shows y espectáculos" }
 ]
 
 const events = [
-  {
-    day: "Lunes",
-    event: "Ladies Night",
-    description: "Descuentos especiales para damas en múltiples venues"
-  },
-  {
-    day: "Martes",
-    event: "Karaoke Night",
-    description: "Noches de karaoke en Señor Frog's y otros bares"
-  },
-  {
-    day: "Miércoles",
-    event: "Jazz Night",
-    description: "Música jazz en vivo en Joe Allen's y La Tertulia"
-  },
-  {
-    day: "Jueves",
-    event: "Salsa Night",
-    description: "Clases de salsa gratis y baile en varios venues"
-  },
-  {
-    day: "Viernes",
-    event: "Party Night",
-    description: "La noche más movida con DJs en todas las discotecas"
-  },
-  {
-    day: "Sábado",
-    event: "Live Music",
-    description: "Bandas en vivo y espectáculos especiales"
-  },
-  {
-    day: "Domingo",
-    event: "Sunset Party",
-    description: "Fiestas de atardecer en bares de playa"
-  }
+  { day: "Lunes", event: "Ladies Night", description: "Descuentos especiales para damas en múltiples venues" },
+  { day: "Martes", event: "Karaoke Night", description: "Noches de karaoke en Señor Frog's y otros bares" },
+  { day: "Miércoles", event: "Jazz Night", description: "Música jazz en vivo en Joe Allen's y La Tertulia" },
+  { day: "Jueves", event: "Salsa Night", description: "Clases de salsa gratis y baile en varios venues" },
+  { day: "Viernes", event: "Party Night", description: "La noche más movida con DJs en todas las discotecas" },
+  { day: "Sábado", event: "Live Music", description: "Bandas en vivo y espectáculos especiales" },
+  { day: "Domingo", event: "Sunset Party", description: "Fiestas de atardecer en bares de playa" }
 ]
 
 export default function VidaNocturna() {
@@ -133,7 +105,7 @@ export default function VidaNocturna() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <main className="container mx-auto px-4 py-6 pb-20">
-        {/* Hero Section */}
+        {/* Hero */}
         <div className="relative h-72 rounded-lg overflow-hidden mb-8">
           <img
             src="https://ugc.same-assets.com/ou35V0qlzH_a76BybIwvUbbiyTAT4z5Y.jpeg"
@@ -162,7 +134,7 @@ export default function VidaNocturna() {
           </div>
         </div>
 
-        {/* Night Activities */}
+        {/* Actividades */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {nightActivities.map((activity, index) => {
             const Icon = activity.icon
@@ -181,7 +153,7 @@ export default function VidaNocturna() {
           })}
         </div>
 
-        {/* Venues Grid */}
+        {/* Lugares */}
         <div className="mb-12">
           <h2 className="text-3xl font-bold text-[#2c363b] mb-6">Lugares Destacados</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -214,7 +186,7 @@ export default function VidaNocturna() {
                       <span>{venue.hours}</span>
                     </div>
                     <div className="flex items-center text-gray-600 text-sm">
-                      <Cocktail size={16} className="mr-2" />
+                      <Martini size={16} className="mr-2" />
                       <span>{venue.specialty}</span>
                     </div>
                   </div>
@@ -244,7 +216,7 @@ export default function VidaNocturna() {
           </div>
         </div>
 
-        {/* Weekly Events */}
+        {/* Eventos */}
         <div className="bg-white rounded-lg shadow-md p-8 mb-8">
           <h2 className="text-3xl font-bold text-[#2c363b] mb-6">Eventos de la Semana</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -256,48 +228,6 @@ export default function VidaNocturna() {
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Night Tips */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-          <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg shadow-md p-8 text-white">
-            <h2 className="text-2xl font-bold mb-4">Consejos para la Noche</h2>
-            <ul className="space-y-2">
-              <li>• Toma suficiente agua entre bebidas</li>
-              <li>• Usa transporte seguro (Uber/Taxi)</li>
-              <li>• Mantén tus pertenencias seguras</li>
-              <li>• Conoce tus límites</li>
-              <li>• Disfruta responsablemente</li>
-              <li>• Guarda números de emergencia</li>
-            </ul>
-          </div>
-
-          <div className="bg-gradient-to-r from-[#bb904d] to-[#814739] rounded-lg shadow-md p-8 text-white">
-            <h2 className="text-2xl font-bold mb-4">Zonas de Vida Nocturna</h2>
-            <div className="space-y-3">
-              <div>
-                <h3 className="font-bold">Zona Dorada</h3>
-                <p className="text-sm">El corazón de la vida nocturna con la mayor concentración de bares y discotecas.</p>
-              </div>
-              <div>
-                <h3 className="font-bold">Centro Histórico</h3>
-                <p className="text-sm">Ambiente bohemio con cafés culturales y bares tradicionales.</p>
-              </div>
-              <div>
-                <h3 className="font-bold">Playa Norte</h3>
-                <p className="text-sm">Bares de playa con ambiente relajado y vistas al mar.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Transportation Info */}
-        <div className="bg-yellow-100 border-l-4 border-yellow-500 p-6 rounded">
-          <h3 className="font-bold text-yellow-800 mb-2">🚗 Transporte Nocturno</h3>
-          <p className="text-yellow-700">
-            El transporte público termina a las 23:00. Recomendamos usar Uber, taxis oficiales o servicios de hotel.
-            La Zona Dorada es muy caminable, pero siempre viaja en grupo y mantente en áreas bien iluminadas.
-          </p>
         </div>
       </main>
       <BottomNavigation />
