@@ -1,103 +1,102 @@
+// src/app/vida-nocturna/page.tsx
+
 import Header from '@/components/Header'
 import BottomNavigation from '@/components/BottomNavigation'
-import { Music, Martini, Users, Clock, MapPin, Calendar, Volume2, PartyPopper } from 'lucide-react'
+import { Music, Martini, Users, Clock, MapPin, Calendar, Volume2, PartyPopper, Phone } from 'lucide-react'
+import Image from 'next/image'
 
 const venues = [
   {
     id: 1,
-    name: "Joe Allen's Bar",
-    type: "Bar Clásico",
-    image: "https://ugc.same-assets.com/ou35V0qlzH_a76BybIwvUbbiyTAT4z5Y.jpeg",
-    location: "Zona Dorada",
-    hours: "18:00 - 02:00",
-    specialty: "Cocteles Artesanales",
-    atmosphere: "Elegante y Sofisticado",
-    features: ["Live Jazz", "Terraza", "Happy Hour"],
-    priceRange: "$$ - $$$",
-    description: "Icónico bar con más de 40 años, famoso por sus cocteles únicos y ambiente elegante con música jazz en vivo."
+    name: "La Palapa Bar",
+    type: "Bar Tradicional",
+    image: "/pictures/vida nocturna.jpg",
+    location: "Centro de Papantla",
+    hours: "18:00 - 01:00",
+    specialty: "Micheladas y cocteles",
+    atmosphere: "Ambiente local y relajado",
+    features: ["Música viva", "Botanas", "Promociones nocturnas"],
+    priceRange: "$ - $$",
+    description: "Uno de los bares más populares entre locales, ideal para comenzar la noche con amigos."
   },
   {
     id: 2,
-    name: "Señor Frog's",
-    type: "Bar de Fiesta",
-    image: "https://ugc.same-assets.com/_5tfvZ9UDdjS7JuN74WOxl2DSpLw0kef.jpeg",
-    location: "Zona Dorada",
-    hours: "12:00 - 04:00",
-    specialty: "Margaritas y Shots",
-    atmosphere: "Fiesta y Diversión",
-    features: ["DJ", "Shows", "Karaoke"],
+    name: "El Callejón",
+    type: "Antro joven",
+    image: "/pictures/vida nocturna.jpg",
+    location: "Zona Centro",
+    hours: "21:00 - 03:00",
+    specialty: "Shots y mixes tropicales",
+    atmosphere: "Joven y energético",
+    features: ["DJ local", "Pista de baile", "Promos universitarias"],
     priceRange: "$ - $$",
-    description: "El lugar perfecto para fiestas legendarias con shows en vivo, karaoke y la mejor música para bailar."
+    description: "Antro con ambiente juvenil, luces y sonido para los que buscan fiesta intensa."
   },
   {
     id: 3,
-    name: "Valentino's Disco",
-    type: "Discoteca",
-    image: "https://ugc.same-assets.com/qmEXg8cs9Z5CQyZEpQ0SWEYyiUO1dcjJ.jpeg",
-    location: "Punta Camarón",
-    hours: "22:00 - 06:00",
-    specialty: "Música Electrónica",
-    atmosphere: "Club Nocturno",
-    features: ["DJ Internacional", "Luces LED", "VIP Area"],
-    priceRange: "$$$ - $$$$",
-    description: "La discoteca más exclusiva con DJs internacionales, sistema de sonido de última generación y vista al mar."
+    name: "La Cueva",
+    type: "Cantina cultural",
+    image: "/pictures/vida nocturna.jpg",
+    location: "Barrio del Naranjal",
+    hours: "17:00 - 00:00",
+    specialty: "Mezcal y cerveza artesanal",
+    atmosphere: "Bohemio y alternativo",
+    features: ["Poesía", "Música trova", "Arte local"],
+    priceRange: "$ - $$",
+    description: "Espacio alternativo para disfrutar de música tranquila y eventos culturales."
   },
   {
     id: 4,
-    name: "La Tertulia",
-    type: "Café Cultural",
-    image: "https://ugc.same-assets.com/NsCIzvkcnp-AihFNBKA5Gqx_ubTqwKdk.jpeg",
-    location: "Centro Histórico",
-    hours: "19:00 - 01:00",
-    specialty: "Café y Cultura",
-    atmosphere: "Bohemio y Artístico",
-    features: ["Música en Vivo", "Poesía", "Arte"],
-    priceRange: "$ - $$",
-    description: "Espacio cultural bohemio con noches de poesía, música acústica y exposiciones de arte local."
+    name: "El Mirador",
+    type: "Bar con vista",
+    image: "/pictures/vida nocturna.jpg",
+    location: "Cerro del Campanario",
+    hours: "18:00 - 02:00",
+    specialty: "Cocteles con fruta regional",
+    atmosphere: "Panorámico y romántico",
+    features: ["Vista nocturna", "Luz tenue", "Ambiente tranquilo"],
+    priceRange: "$$ - $$$",
+    description: "Lugar ideal para una cita o para disfrutar de la vista de Papantla bajo las estrellas."
   },
   {
     id: 5,
-    name: "Onilikan",
-    type: "Bar de Playa",
-    image: "https://ugc.same-assets.com/ehB8HSnyN5OAmaAEt4lnsKVxpeDS6O4a.jpeg",
-    location: "Playa Norte",
-    hours: "16:00 - 02:00",
-    specialty: "Cocteles Tropicales",
-    atmosphere: "Relajado y Playero",
-    features: ["Vista al Mar", "Fogatas", "Música Chill"],
-    priceRange: "$$ - $$$",
-    description: "Bar de playa con los mejores atardeceres, fogatas nocturnas y ambiente relajado frente al mar."
+    name: "Club Noche Mística",
+    type: "Discoteca",
+    image: "/pictures/vida nocturna.jpg",
+    location: "Zona Periférica",
+    hours: "22:00 - 04:00",
+    specialty: "Reggaetón y electrónica",
+    atmosphere: "Ruidoso y festivo",
+    features: ["DJ en vivo", "Shows", "Área VIP"],
+    priceRange: "$$$",
+    description: "La discoteca más grande de la zona, con múltiples salas y fiestas temáticas."
   },
   {
     id: 6,
-    name: "Mazatlán Comedy Club",
-    type: "Club de Comedia",
-    image: "https://ugc.same-assets.com/_5tfvZ9UDdjS7JuN74WOxl2DSpLw0kef.jpeg",
-    location: "Zona Dorada",
-    hours: "20:00 - 23:00",
-    specialty: "Stand-up Comedy",
-    atmosphere: "Divertido y Familiar",
-    features: ["Comediantes", "Shows", "Cena"],
-    priceRange: "$$ - $$$",
-    description: "Shows de comedia en vivo con comediantes locales e internacionales, perfecto para una noche diferente."
+    name: "Noches del Totonacapan",
+    type: "Bar Cultural",
+    image: "/pictures/vida nocturna.jpg",
+    location: "Centro Histórico",
+    hours: "19:00 - 01:00",
+    specialty: "Vinos locales y tradición",
+    atmosphere: "Cultural y relajado",
+    features: ["Son jarocho", "Narración oral", "Gastronomía regional"],
+    priceRange: "$$",
+    description: "Bar con identidad cultural donde se fusionan tradición y modernidad."
   }
 ]
 
 const nightActivities = [
-  { name: "Música en Vivo", icon: Music, venues: 12, description: "Jazz, rock, mariachi" },
-  { name: "Discotecas", icon: PartyPopper, venues: 8, description: "Música electrónica y pop" },
-  { name: "Bares de Cocteles", icon: Martini, venues: 15, description: "Mixología artesanal" },
-  { name: "Entretenimiento", icon: Volume2, venues: 6, description: "Shows y espectáculos" }
+  { name: "Música en Vivo", icon: Music, venues: 8, description: "Jazz, rock, mariachi" },
+  { name: "Discotecas", icon: PartyPopper, venues: 3, description: "Electrónica, reggaetón" },
+  { name: "Bares de Cocteles", icon: Martini, venues: 5, description: "Mixología con frutas locales" },
+  { name: "Cultura y Show", icon: Volume2, venues: 4, description: "Poesía, narración, trova" }
 ]
 
 const events = [
-  { day: "Lunes", event: "Ladies Night", description: "Descuentos especiales para damas en múltiples venues" },
-  { day: "Martes", event: "Karaoke Night", description: "Noches de karaoke en Señor Frog's y otros bares" },
-  { day: "Miércoles", event: "Jazz Night", description: "Música jazz en vivo en Joe Allen's y La Tertulia" },
-  { day: "Jueves", event: "Salsa Night", description: "Clases de salsa gratis y baile en varios venues" },
-  { day: "Viernes", event: "Party Night", description: "La noche más movida con DJs en todas las discotecas" },
-  { day: "Sábado", event: "Live Music", description: "Bandas en vivo y espectáculos especiales" },
-  { day: "Domingo", event: "Sunset Party", description: "Fiestas de atardecer en bares de playa" }
+  { day: "Viernes", event: "Ronda Jarocha", description: "Música tradicional en bares del centro histórico" },
+  { day: "Sábado", event: "Noche Bohemia", description: "Cantos, poesía y trova en La Cueva" },
+  { day: "Domingo", event: "Cierre Cultural", description: "Narraciones y conciertos acústicos en Noches del Totonacapan" }
 ]
 
 export default function VidaNocturna() {
@@ -105,29 +104,29 @@ export default function VidaNocturna() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <main className="container mx-auto px-4 py-6 pb-20">
-        {/* Hero */}
         <div className="relative h-72 rounded-lg overflow-hidden mb-8">
-          <img
-            src="https://ugc.same-assets.com/ou35V0qlzH_a76BybIwvUbbiyTAT4z5Y.jpeg"
-            alt="Vida Nocturna en Mazatlán"
-            className="w-full h-full object-cover"
+          <Image
+            src="/pictures/vida nocturna.jpg"
+            alt="Vida Nocturna en Papantla"
+            fill
+            className="object-cover"
           />
           <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="text-center text-white">
-              <h1 className="text-4xl font-bold mb-2">Vida Nocturna de Mazatlán</h1>
-              <p className="text-xl mb-4">Donde la diversión nunca termina</p>
+              <h1 className="text-4xl font-bold mb-2">Vida Nocturna en Papantla</h1>
+              <p className="text-xl mb-4">Tradición, música y diversión local</p>
               <div className="flex justify-center items-center space-x-6 text-sm">
                 <div className="flex items-center">
                   <Music className="mr-2" size={20} />
-                  <span>15+ Venues</span>
+                  <span>6 lugares</span>
                 </div>
                 <div className="flex items-center">
                   <Clock className="mr-2" size={20} />
-                  <span>Hasta las 6 AM</span>
+                  <span>Hasta las 4 AM</span>
                 </div>
                 <div className="flex items-center">
                   <Users className="mr-2" size={20} />
-                  <span>Ambiente Internacional</span>
+                  <span>Ambiente local</span>
                 </div>
               </div>
             </div>
@@ -160,10 +159,11 @@ export default function VidaNocturna() {
             {venues.map((venue) => (
               <div key={venue.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="relative h-48">
-                  <img
+                  <Image
                     src={venue.image}
                     alt={venue.name}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                   />
                   <div className="absolute top-4 right-4 bg-purple-600 text-white px-2 py-1 rounded text-sm font-medium">
                     {venue.type}
@@ -172,10 +172,8 @@ export default function VidaNocturna() {
                     {venue.priceRange}
                   </div>
                 </div>
-
                 <div className="p-6">
                   <h3 className="text-xl font-bold text-[#2c363b] mb-2">{venue.name}</h3>
-
                   <div className="space-y-2 mb-4">
                     <div className="flex items-center text-gray-600 text-sm">
                       <MapPin size={16} className="mr-2" />
@@ -190,15 +188,12 @@ export default function VidaNocturna() {
                       <span>{venue.specialty}</span>
                     </div>
                   </div>
-
                   <p className="text-gray-700 text-sm mb-4">{venue.description}</p>
-
                   <div className="mb-4">
                     <span className="inline-block bg-[#f6f7f5] text-[#814739] px-3 py-1 rounded-full text-sm font-medium">
                       {venue.atmosphere}
                     </span>
                   </div>
-
                   <div className="flex flex-wrap gap-2 mb-4">
                     {venue.features.map((feature, index) => (
                       <span key={index} className="bg-purple-600 text-white px-2 py-1 rounded text-xs">
@@ -206,9 +201,8 @@ export default function VidaNocturna() {
                       </span>
                     ))}
                   </div>
-
-                  <button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-md transition-colors">
-                    Ver Más Info
+                  <button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-md transition-colors flex items-center justify-center">
+                    <Phone size={16} className="mr-2" /> Contactar
                   </button>
                 </div>
               </div>

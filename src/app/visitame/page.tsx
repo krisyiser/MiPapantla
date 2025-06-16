@@ -1,336 +1,215 @@
 import Header from '@/components/Header'
 import BottomNavigation from '@/components/BottomNavigation'
-import { Camera, Clock, MapPin, Star, Ticket, Users, Lighthouse, Building, Fish, TreePine } from 'lucide-react'
+import { Camera, Clock, MapPin, Star, Ticket, Users, Building, Landmark, Palette } from 'lucide-react'
+import Image from 'next/image'
 
 const attractions = [
   {
     id: 1,
-    name: "El Faro de Mazatlán",
-    type: "Monumento Histórico",
-    image: "https://ugc.same-assets.com/B6-OZ8sHQ0WZFVHya0Jw6FoEUrDWzz_w.jpeg",
-    location: "Cerro del Crestón",
-    hours: "09:00 - 17:00",
-    price: "Entrada Moderada",
+    name: 'Zona Arqueológica de El Tajín',
+    type: 'Sitio Arqueológico',
+    image: '/pictures/visitame.jpeg',
+    location: 'Col. Tajín, Papantla, Veracruz',
+    hours: '09:00 - 17:00',
+    price: '$100 MXN (gratuito para menores, estudiantes y adultos mayores)',
     rating: 5,
-    duration: "2-3 horas",
-    difficulty: "Moderada",
-    highlights: ["Vista Panorámica", "Faro más Alto del Mundo", "Atardecer Espectacular"],
-    description: "El segundo faro más alto del mundo con 157 metros sobre el nivel del mar. Ofrece vistas panorámicas incomparables de la ciudad y el océano.",
-    activities: ["Senderismo", "Fotografía", "Observación"],
-    tips: "Lleva agua y protector solar. Los mejores atardeceres son entre noviembre y abril."
+    duration: '2-3 horas',
+    difficulty: 'Moderada',
+    highlights: ['Templo de los Nichos', 'Museo de sitio', '17 Juegos de pelota'],
+    description: 'Centro ceremonial totonaca que floreció entre 600–1200 d.C., famoso por su arquitectura singular y valor histórico.',
+    activities: ['Visita guiada', 'Explorar estructuras', 'Museo'],
+    tips: 'Lleva agua, sombrero y calzado cómodo. Evita las horas de sol intenso.',
+    mapUrl: 'https://maps.app.goo.gl/nMZ9uNcVDWSTVJbX9'
   },
   {
     id: 2,
-    name: "Centro Histórico",
-    type: "Patrimonio Cultural",
-    image: "https://ugc.same-assets.com/TQ_s1GC7achOWmNUJIzijy0xkZ9c89Tt.jpeg",
-    location: "Centro de Mazatlán",
-    hours: "24 horas",
-    price: "Gratis",
+    name: 'Monumento al Volador',
+    type: 'Monumento Cultural',
+    image: '/pictures/visitame.jpeg',
+    location: 'Cerro del Campanario, Papantla',
+    hours: '24 horas',
+    price: 'Gratis',
     rating: 5,
-    duration: "3-4 horas",
-    difficulty: "Fácil",
-    highlights: ["Catedral", "Plaza Principal", "Arquitectura Colonial"],
-    description: "Corazón histórico de Mazatlán con arquitectura colonial del siglo XIX, la majestuosa Catedral y el vibrante mercado municipal.",
-    activities: ["Caminata", "Compras", "Gastronomía"],
-    tips: "Visita por la mañana para evitar el calor. No te pierdas el mercado Pino Suárez."
+    duration: '30-45 min',
+    difficulty: 'Fácil',
+    highlights: ['Vista Panorámica', 'Diseño de Teodoro Cano', 'Tradición Totonaca'],
+    description: 'Monumento de 18m de altura dedicado al ritual de los Voladores de Papantla, ubicado en lo alto del cerro.',
+    activities: ['Fotografía', 'Observación cultural'],
+    tips: 'Sube temprano para evitar el calor y disfrutar la vista despejada.',
+    mapUrl: 'https://maps.app.goo.gl/zZ9PMtBNFgEps9vZ9'
   },
   {
     id: 3,
-    name: "Gran Acuario Mazatlán",
-    type: "Acuario",
-    image: "https://ugc.same-assets.com/qcy8x-sF-VewrxttGU60J1vMpYOxdMp5.jpeg",
-    location: "Av. de los Deportes",
-    hours: "10:00 - 18:00",
-    price: "$180 - $250",
+    name: 'Museo Teodoro Cano',
+    type: 'Museo',
+    image: '/pictures/visitame.jpeg',
+    location: 'Rodolfo Curti 101, Papantla',
+    hours: '09:00 - 18:00 (Martes a Domingo)',
+    price: 'Entrada gratuita',
     rating: 5,
-    duration: "2-3 horas",
-    difficulty: "Fácil",
-    highlights: ["Túnel de Tiburones", "Show de Lobos Marinos", "Especies del Pacífico"],
-    description: "Uno de los acuarios más grandes de México con más de 200 especies marinas del Pacífico mexicano, incluyendo tiburones, mantarrayas y lobos marinos.",
-    activities: ["Shows", "Alimentación", "Exhibiciones"],
-    tips: "Compra boletos en línea para descuentos. Los shows son cada 2 horas."
+    duration: '1-2 horas',
+    difficulty: 'Fácil',
+    highlights: ['Obra pictórica', 'Escultura', 'Casita Totonaca'],
+    description: 'Exhibe la obra del pintor y muralista Teodoro Cano, incluyendo óleo, barro, escultura y tradiciones.',
+    activities: ['Talleres', 'Exposiciones', 'Visitas guiadas'],
+    tips: 'Ideal para conocer la identidad visual de Papantla.',
+    mapUrl: 'https://maps.app.goo.gl/9KD7LihCEaZ9kVvk8'
   },
   {
     id: 4,
-    name: "Observatorio Mazatlán 1873",
-    type: "Observatorio Astronómico",
-    image: "https://ugc.same-assets.com/BToXS_U8FiCIfCI-s3nx8KeE48JpkASD.jpeg",
-    location: "Cerro del Vigía",
-    hours: "19:00 - 23:00",
-    price: "$120 - $180",
-    rating: 4,
-    duration: "2 horas",
-    difficulty: "Fácil",
-    highlights: ["Observación Estelar", "Telescopios", "Vista Nocturna"],
-    description: "Observatorio astronómico histórico con telescopios modernos para observar estrellas, planetas y la luna. Experiencia única bajo el cielo de Mazatlán.",
-    activities: ["Astronomía", "Fotografía", "Educación"],
-    tips: "Reserva con anticipación. Las noches despejadas son ideales entre diciembre y mayo."
+    name: 'Centro de las Artes Indígenas',
+    type: 'Centro Cultural',
+    image: '/pictures/visitame.jpeg',
+    location: 'Parque Takilhsukut, Papantla',
+    hours: '09:00 - 17:00',
+    price: 'Entrada libre',
+    rating: 5,
+    duration: '1-3 horas',
+    difficulty: 'Fácil',
+    highlights: ['Casas-Escuela', 'Patrimonio UNESCO', 'Arte Indígena'],
+    description: 'Complejo de formación artística totonaca con 16 casas dedicadas a danza, música, cocina, medicina, etc.',
+    activities: ['Talleres', 'Demostraciones', 'Festivales'],
+    tips: 'Ideal para visitar durante Cumbre Tajín.',
+    mapUrl: 'https://maps.app.goo.gl/fPSji9AgNmQEvGeZA'
   },
   {
     id: 5,
-    name: "Teatro Ángela Peralta",
-    type: "Teatro Histórico",
-    image: "https://ugc.same-assets.com/j7diHsQvARYH9ftLlvfXu6BqI5vQMqc9.jpeg",
-    location: "Centro Histórico",
-    hours: "Según programación",
-    price: "$200 - $800",
-    rating: 5,
-    duration: "2-3 horas",
-    difficulty: "Fácil",
-    highlights: ["Arquitectura Neoclásica", "Espectáculos", "Historia Cultural"],
-    description: "Joya arquitectónica neoclásica de 1874, considerado uno de los teatros más bellos de México. Sede de eventos culturales y artísticos.",
-    activities: ["Espectáculos", "Tours", "Cultura"],
-    tips: "Revisa la cartelera en línea. Los tours guiados son los martes y jueves."
+    name: 'Zona Arqueológica Cuyuxquihui',
+    type: 'Sitio Arqueológico',
+    image: '/pictures/visitame.jpeg',
+    location: 'Paso del Correo, Papantla',
+    hours: '09:00 - 17:00',
+    price: 'Entrada libre',
+    rating: 4,
+    duration: '1-2 horas',
+    difficulty: 'Moderada',
+    highlights: ['Ciudad-Fortaleza', 'Juego de Pelota', 'Panorámica'],
+    description: 'Ruinas fortificadas del siglo XIII con edificios ceremoniales y militares.',
+    activities: ['Senderismo', 'Exploración', 'Fotografía'],
+    tips: 'Requiere transporte. Lleva calzado de campo.',
+    mapUrl: 'https://maps.app.goo.gl/GKWrTivDCcGTrvMj6'
   },
   {
     id: 6,
-    name: "Malecón de Mazatlán",
-    type: "Paseo Costero",
-    image: "https://ugc.same-assets.com/1qQ1ZwpOYDqJx2RF9TvpigjsAQEB-_Kr.jpeg",
-    location: "Costa de Mazatlán",
-    hours: "24 horas",
-    price: "Gratis",
+    name: 'Mural Escultórico a la Cultura Totonaca',
+    type: 'Arte Monumental',
+    image: '/pictures/visitame.jpeg',
+    location: 'Zócalo de Papantla',
+    hours: '24 horas',
+    price: 'Gratis',
     rating: 5,
-    duration: "1-4 horas",
-    difficulty: "Fácil",
-    highlights: ["Vista al Mar", "Esculturas", "Atardeceres"],
-    description: "Uno de los malecones más largos del mundo con 8.5 km de extensión. Perfecto para caminar, correr o simplemente disfrutar del océano.",
-    activities: ["Caminata", "Ciclismo", "Fotografía"],
-    tips: "Ideal para el atardecer. Hay bicicletas de alquiler disponibles."
-  },
-  {
-    id: 7,
-    name: "Isla de la Piedra",
-    type: "Isla Natural",
-    image: "https://ugc.same-assets.com/lEwVR2NqlZC_56eq5S-1K87hDRXCdnD3.jpeg",
-    location: "Bahía de Mazatlán",
-    hours: "09:00 - 17:00",
-    price: "$50 - $150",
-    rating: 4,
-    duration: "4-6 horas",
-    difficulty: "Fácil",
-    highlights: ["Playas Vírgenes", "Paseos a Caballo", "Mariscos Frescos"],
-    description: "Paraíso natural a 15 minutos en lancha, famosa por sus playas vírgenes, paseos a caballo en la arena y auténticos restaurantes de mariscos.",
-    activities: ["Playa", "Equitación", "Gastronomía"],
-    tips: "Las lanchas salen cada 30 minutos desde el embarcadero. Lleva efectivo."
-  },
-  {
-    id: 8,
-    name: "Mercado Pino Suárez",
-    type: "Mercado Tradicional",
-    image: "https://ugc.same-assets.com/HRawxe4t6hOX6_ZEbVS6DDChTit8-IqX.jpeg",
-    location: "Centro Histórico",
-    hours: "07:00 - 18:00",
-    price: "Gratis entrada",
-    rating: 4,
-    duration: "1-2 horas",
-    difficulty: "Fácil",
-    highlights: ["Artesanías", "Comida Local", "Cultura Popular"],
-    description: "Mercado tradicional con más de 100 años de historia, donde encontrarás artesanías locales, comida típica y el auténtico ambiente mazatleco.",
-    activities: ["Compras", "Gastronomía", "Cultura"],
-    tips: "Regatear es parte de la experiencia. Prueba las tostadas de marlín."
+    duration: '30 min - 1 hora',
+    difficulty: 'Fácil',
+    highlights: ['Relieves Históricos', 'Teodoro Cano', 'Quetzalcóatl'],
+    description: 'Mural de 84m que narra el origen, historia y cosmovisión totonaca, realizado por Cano y colaboradores.',
+    activities: ['Observación', 'Arte público'],
+    tips: 'Ideal para comenzar el recorrido por el centro.',
+    mapUrl: 'https://maps.app.goo.gl/UmVXm8Jkk9dhs38M6'
   }
 ]
 
-const attractionTypes = [
-  { name: "Históricos", icon: Building, count: 4, description: "Patrimonio cultural" },
-  { name: "Naturales", icon: TreePine, count: 3, description: "Belleza natural" },
-  { name: "Acuáticos", icon: Fish, count: 2, description: "Vida marina" },
-  { name: "Monumentos", icon: Lighthouse, count: 3, description: "Iconos de la ciudad" }
-]
-
-export default function Visitame() {
+export default function VisitamePapantla() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
       <main className="container mx-auto px-4 py-6 pb-20">
-        {/* Hero Section */}
         <div className="relative h-72 rounded-lg overflow-hidden mb-8">
-          <img
-            src="https://ugc.same-assets.com/B6-OZ8sHQ0WZFVHya0Jw6FoEUrDWzz_w.jpeg"
-            alt="Atractivos de Mazatlán"
-            className="w-full h-full object-cover"
+          <Image
+            src="/pictures/visitame.jpeg"
+            alt="Visítame Papantla"
+            fill
+            className="object-cover w-full h-full"
           />
-          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="text-center text-white">
-              <h1 className="text-4xl font-bold mb-2">¡Visítame Mazatlán!</h1>
-              <p className="text-xl mb-4">Descubre los tesoros de la Perla del Pacífico</p>
-              <div className="flex justify-center items-center space-x-6 text-sm">
-                <div className="flex items-center">
-                  <Camera className="mr-2" size={20} />
-                  <span>15+ Atractivos</span>
-                </div>
-                <div className="flex items-center">
-                  <Users className="mr-2" size={20} />
-                  <span>Para toda la familia</span>
-                </div>
-                <div className="flex items-center">
-                  <Ticket className="mr-2" size={20} />
-                  <span>Desde gratis</span>
-                </div>
-              </div>
+              <h1 className="text-4xl font-bold mb-2">Visítame Papantla</h1>
+              <p className="text-xl">Recorre los tesoros culturales y naturales del Totonacapan</p>
             </div>
           </div>
         </div>
 
-        {/* Attraction Types */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          {attractionTypes.map((type, index) => {
-            const Icon = type.icon
-            return (
-              <div key={index} className="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow cursor-pointer">
-                <div className="w-12 h-12 bg-[#bb904d] rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Icon size={24} className="text-white" />
+        <h2 className="text-3xl font-bold text-[#2c363b] mb-6">Lugares Destacados</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          {attractions.map((place) => (
+            <div key={place.id} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden">
+              <div className="relative h-44">
+                <Image src={place.image} alt={place.name} fill className="object-cover w-full h-full" />
+                <div className="absolute top-2 left-2 bg-[#bb904d] text-white px-2 py-1 rounded text-xs font-semibold">
+                  {place.type}
                 </div>
-                <h3 className="font-bold text-[#2c363b] mb-1">{type.name}</h3>
-                <p className="text-sm text-gray-600 mb-2">{type.description}</p>
-                <span className="bg-[#f6f7f5] text-[#814739] px-2 py-1 rounded text-xs">
-                  {type.count} lugares
-                </span>
-              </div>
-            )
-          })}
-        </div>
-
-        {/* Attractions Grid */}
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold text-[#2c363b] mb-6">Atractivos Imperdibles</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {attractions.map((attraction) => (
-              <div key={attraction.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="relative h-48">
-                  <img
-                    src={attraction.image}
-                    alt={attraction.name}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-4 right-4 bg-[#bb904d] text-white px-2 py-1 rounded text-sm font-medium">
-                    {attraction.type}
-                  </div>
-                  <div className="absolute bottom-4 left-4">
-                    <div className="flex items-center bg-black bg-opacity-60 text-white px-2 py-1 rounded">
-                      {[...Array(attraction.rating)].map((_, i) => (
-                        <Star key={i} size={14} className="text-yellow-400 fill-current" />
-                      ))}
-                    </div>
-                  </div>
-                  <div className="absolute bottom-4 right-4 bg-green-600 text-white px-2 py-1 rounded text-sm">
-                    {attraction.price}
-                  </div>
-                </div>
-
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-[#2c363b] mb-2">{attraction.name}</h3>
-
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center text-gray-600 text-sm">
-                      <MapPin size={16} className="mr-2" />
-                      <span>{attraction.location}</span>
-                    </div>
-                    <div className="flex items-center text-gray-600 text-sm">
-                      <Clock size={16} className="mr-2" />
-                      <span>{attraction.hours}</span>
-                      <span className="ml-auto font-medium text-[#814739]">{attraction.duration}</span>
-                    </div>
-                  </div>
-
-                  <p className="text-gray-700 text-sm mb-4">{attraction.description}</p>
-
-                  <div className="mb-4">
-                    <h4 className="font-semibold text-[#814739] mb-2">Destacados:</h4>
-                    <div className="flex flex-wrap gap-1">
-                      {attraction.highlights.map((highlight, index) => (
-                        <span key={index} className="bg-[#f6f7f5] text-[#814739] px-2 py-1 rounded text-xs">
-                          {highlight}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="mb-4">
-                    <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-                      attraction.difficulty === 'Fácil' ? 'bg-green-100 text-green-700' :
-                      attraction.difficulty === 'Moderada' ? 'bg-yellow-100 text-yellow-700' :
-                      'bg-red-100 text-red-700'
-                    }`}>
-                      Dificultad: {attraction.difficulty}
-                    </span>
-                  </div>
-
-                  <div className="bg-blue-50 p-3 rounded mb-4">
-                    <p className="text-sm text-blue-800"><strong>Consejo:</strong> {attraction.tips}</p>
-                  </div>
-
-                  <button className="w-full bg-[#bb904d] hover:bg-[#814739] text-white py-2 px-4 rounded-md transition-colors">
-                    Ver Detalles
-                  </button>
+                <div className="absolute bottom-2 right-2 flex space-x-1">
+                  {[...Array(place.rating)].map((_, i) => (
+                    <Star key={i} size={14} className="text-yellow-400 fill-current" />
+                  ))}
                 </div>
               </div>
-            ))}
-          </div>
+              <div className="p-4">
+                <h3 className="text-lg font-bold text-[#2c363b] mb-1">{place.name}</h3>
+                <div className="flex items-center text-sm text-gray-600 mb-2">
+                  <MapPin size={16} className="mr-2" />
+                  {place.location}
+                </div>
+                <p className="text-sm text-gray-700 mb-2">{place.description}</p>
+                <div className="text-sm text-gray-600 mb-2 flex items-center">
+                  <Clock size={16} className="mr-2" />
+                  <span>{place.hours}</span>
+                  <span className="ml-auto text-[#814739] font-medium">{place.duration}</span>
+                </div>
+                <p className="text-sm text-gray-600 mb-1"><strong>Precio:</strong> {place.price}</p>
+                <div className="mb-2">
+                  <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
+                    place.difficulty === 'Fácil' ? 'bg-green-100 text-green-700' :
+                    place.difficulty === 'Moderada' ? 'bg-yellow-100 text-yellow-700' :
+                    'bg-red-100 text-red-700'
+                  }`}>
+                    Dificultad: {place.difficulty}
+                  </span>
+                </div>
+                <p className="text-sm text-blue-800 bg-blue-50 rounded p-2 mb-3"><strong>Consejo:</strong> {place.tips}</p>
+                <a
+                  href={place.mapUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full text-center bg-[#bb904d] hover:bg-[#814739] text-white py-2 px-4 rounded-md"
+                >
+                  Ver en Mapa
+                </a>
+              </div>
+            </div>
+          ))}
         </div>
 
-        {/* Planning Tips */}
+        {/* Planifica tu visita */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           <div className="bg-white rounded-lg shadow-md p-8">
             <h2 className="text-2xl font-bold text-[#2c363b] mb-4">Planifica tu Visita</h2>
-            <div className="space-y-4">
-              <div>
-                <h3 className="font-bold text-[#814739]">Mejor época para visitar</h3>
-                <p className="text-gray-600 text-sm">Noviembre a abril: clima perfecto, menor humedad</p>
-              </div>
-              <div>
-                <h3 className="font-bold text-[#814739]">Duración recomendada</h3>
-                <p className="text-gray-600 text-sm">3-5 días para visitar los principales atractivos</p>
-              </div>
-              <div>
-                <h3 className="font-bold text-[#814739]">Presupuesto promedio</h3>
-                <p className="text-gray-600 text-sm">$500-1500 MXN por día (sin hospedaje)</p>
-              </div>
-              <div>
-                <h3 className="font-bold text-[#814739]">Recomendación</h3>
-                <p className="text-gray-600 text-sm">Combina atractivos históricos con naturales</p>
-              </div>
-            </div>
+            <ul className="space-y-3 text-sm text-gray-700">
+              <li><strong>Mejor época:</strong> Noviembre a marzo, clima templado y seco</li>
+              <li><strong>Duración ideal:</strong> 3-4 días para conocer atractivos y alrededores</li>
+              <li><strong>Presupuesto medio:</strong> $500 - $1200 MXN diarios (sin hospedaje)</li>
+              <li><strong>Vestimenta:</strong> Ropa ligera, sombrero, bloqueador, zapatos para caminata</li>
+              <li><strong>Recomendación:</strong> Combina atractivos naturales y culturales</li>
+            </ul>
           </div>
 
+          {/* Rutas Sugeridas */}
           <div className="bg-gradient-to-r from-[#1dace0] to-[#bb904d] rounded-lg shadow-md p-8 text-white">
             <h2 className="text-2xl font-bold mb-4">Rutas Sugeridas</h2>
-            <div className="space-y-4">
-              <div>
-                <h3 className="font-bold">Ruta Histórica (1 día)</h3>
-                <p className="text-sm">Centro Histórico → Teatro Ángela Peralta → Mercado Pino Suárez</p>
-              </div>
-              <div>
-                <h3 className="font-bold">Ruta Natural (1 día)</h3>
-                <p className="text-sm">El Faro → Malecón → Isla de la Piedra</p>
-              </div>
-              <div>
-                <h3 className="font-bold">Ruta Familiar (1 día)</h3>
-                <p className="text-sm">Gran Acuario → Playa Norte → Observatorio (noche)</p>
-              </div>
-              <div>
-                <h3 className="font-bold">Ruta Completa (3 días)</h3>
-                <p className="text-sm">Combina todas las rutas anteriores con tiempo libre</p>
-              </div>
-            </div>
+            <ul className="space-y-3 text-sm">
+              <li><strong>Ruta Cultural:</strong> Museo Teodoro Cano → Mural Totonaca → Centro de las Artes</li>
+              <li><strong>Ruta Arqueológica:</strong> El Tajín → Cuyuxquihui</li>
+              <li><strong>Ruta Panorámica:</strong> Monumento al Volador → Centro Histórico</li>
+              <li><strong>Ruta Completa:</strong> 2 días combinando todas las anteriores</li>
+            </ul>
           </div>
         </div>
 
-        {/* Transportation Info */}
-        <div className="bg-yellow-100 border-l-4 border-yellow-500 p-6 rounded">
-          <h3 className="font-bold text-yellow-800 mb-2">🚌 Transporte y Acceso</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-yellow-700">
-            <div>
-              <p><strong>Transporte público:</strong> Autobuses urbanos conectan todos los atractivos principales ($12 MXN)</p>
-              <p><strong>Taxi/Uber:</strong> Disponible 24/7, ideal para distancias cortas</p>
-            </div>
-            <div>
-              <p><strong>Tours organizados:</strong> Varias agencias ofrecen paquetes completos</p>
-              <p><strong>Bicicletas:</strong> Disponibles para alquiler en el malecón y centro histórico</p>
-            </div>
-          </div>
+        {/* Transporte */}
+        <div className="bg-yellow-100 border-l-4 border-yellow-600 p-6 rounded">
+          <h3 className="text-xl font-bold text-yellow-800 mb-2">🚌 Transporte y Acceso</h3>
+          <p className="text-sm text-yellow-800 mb-1"><strong>Desde el centro:</strong> La mayoría de los atractivos están a 5-15 min en auto</p>
+          <p className="text-sm text-yellow-800 mb-1"><strong>Opciones:</strong> Taxis locales, RadioTaxi Naku (7848425872), transporte público a El Tajín y Takilhsukut</p>
+          <p className="text-sm text-yellow-800"><strong>Recomendación:</strong> Consulta horarios anticipadamente en fines de semana y feriados</p>
         </div>
       </main>
       <BottomNavigation />

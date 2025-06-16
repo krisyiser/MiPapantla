@@ -1,79 +1,85 @@
 import Header from '@/components/Header'
 import BottomNavigation from '@/components/BottomNavigation'
-import { Star, MapPin, Wifi, Car, Waves, Coffee, Users } from 'lucide-react'
+import { Star, MapPin, Wifi, Car, Coffee, Users } from 'lucide-react'
 
 const hotels = [
   {
     id: 1,
-    name: "Pueblo Bonito Mazatlán",
-    category: "Resort de Lujo",
-    rating: 5,
-    image: "https://ugc.same-assets.com/5Bw8hxZxcAXTHCyjTX6PezI4WSoGvPRg.jpeg",
-    location: "Zona Dorada",
-    price: "$180 - $350",
-    features: ["Todo Incluido", "Frente al Mar", "Spa", "3 Restaurantes"],
-    amenities: [Wifi, Car, Waves, Coffee],
-    description: "Resort de lujo frente al mar con servicios de clase mundial y vistas espectaculares al Pacífico."
+    name: "Hotel Tajín",
+    category: "Hotel Clásico",
+    rating: 4,
+    image: "/pictures/hotel.png",
+    location: "Centro, Papantla",
+    price: "$600 - $900",
+    features: ["Centro Histórico", "WiFi Gratis", "Atención personalizada"],
+    amenities: [Wifi, Coffee],
+    phone: "7848420121",
+    description: "Ubicado en el corazón de Papantla, ideal para explorar el centro y sus alrededores."
   },
   {
     id: 2,
-    name: "Costa de Oro Beach Hotel",
-    category: "Hotel Boutique",
+    name: "Hotel Totonacapan",
+    category: "Hotel Tradicional",
     rating: 4,
-    image: "https://ugc.same-assets.com/qcy8x-sF-VewrxttGU60J1vMpYOxdMp5.jpeg",
-    location: "Zona Dorada",
-    price: "$90 - $180",
-    features: ["Vista al Mar", "Piscina", "Restaurante", "Bar"],
-    amenities: [Wifi, Waves, Coffee],
-    description: "Hotel boutique con excelente ubicación y servicios personalizados en el corazón de la Zona Dorada."
+    image: "/pictures/hotel.png",
+    location: "Centro, Papantla",
+    price: "$650 - $1000",
+    features: ["Estilo tradicional", "Ubicación céntrica", "Restaurante local"],
+    amenities: [Wifi, Coffee],
+    phone: "7848421224",
+    description: "Una opción acogedora con detalles totonacas y ambiente familiar."
   },
   {
     id: 3,
-    name: "Oceano Palace Beach Hotel",
-    category: "Hotel Familiar",
-    rating: 4,
-    image: "https://ugc.same-assets.com/lEwVR2NqlZC_56eq5S-1K87hDRXCdnD3.jpeg",
-    location: "Zona Dorada",
-    price: "$70 - $140",
-    features: ["Familiar", "Playa Privada", "Actividades", "Piscina"],
-    amenities: [Wifi, Car, Waves, Users],
-    description: "Hotel ideal para familias con amplias habitaciones y actividades para toda la familia."
+    name: "Centro Ecoturístico La Esperanza",
+    category: "Ecoturismo",
+    rating: 3,
+    image: "/pictures/hotel.png",
+    location: "La Concha",
+    price: "$500 - $750",
+    features: ["Naturaleza", "Tranquilidad", "Tours guiados"],
+    amenities: [Car, Users],
+    phone: "7821237692",
+    description: "Refugio natural perfecto para quienes buscan desconectarse."
   },
   {
     id: 4,
-    name: "Hotel Riu Emerald Bay",
-    category: "Resort Todo Incluido",
-    rating: 4,
-    image: "https://ugc.same-assets.com/BToXS_U8FiCIfCI-s3nx8KeE48JpkASD.jpeg",
-    location: "Zona Hotelera",
-    price: "$120 - $220",
-    features: ["Todo Incluido", "Entretenimiento", "5 Restaurantes", "Spa"],
-    amenities: [Wifi, Car, Waves, Coffee, Users],
-    description: "Resort todo incluido con entretenimiento en vivo y múltiples opciones gastronómicas."
+    name: "Xanath Inn",
+    category: "Moderno y Acogedor",
+    rating: 5,
+    image: "/pictures/hotel.png",
+    location: "Zona Urbana, Papantla",
+    price: "$700 - $1100",
+    features: ["Moderno", "Desayuno incluido", "Estacionamiento gratuito"],
+    amenities: [Wifi, Car, Coffee],
+    phone: "7841353574",
+    description: "Comodidad y estilo contemporáneo en una ubicación privilegiada."
   },
   {
     id: 5,
-    name: "Quality Inn Mazatlán",
-    category: "Hotel Económico",
-    rating: 3,
-    image: "https://ugc.same-assets.com/B6-OZ8sHQ0WZFVHya0Jw6FoEUrDWzz_w.jpeg",
-    location: "Centro Histórico",
-    price: "$45 - $85",
-    features: ["Céntrico", "Desayuno", "WiFi Gratis", "Parking"],
-    amenities: [Wifi, Car, Coffee],
-    description: "Hotel económico con excelente ubicación para explorar el centro histórico de Mazatlán."
+    name: "Hotel Familiar Carlota",
+    category: "Familiar",
+    rating: 4,
+    image: "/pictures/hotel.png",
+    location: "Centro, Papantla",
+    price: "$500 - $800",
+    features: ["Ambiente familiar", "WiFi", "Cerca del zócalo"],
+    amenities: [Wifi, Users],
+    phone: "7848424353",
+    description: "Perfecto para familias que desean comodidad y cercanía."
   },
   {
     id: 6,
-    name: "Pacific Palace Beach Tower",
-    category: "Hotel de Negocios",
-    rating: 4,
-    image: "https://ugc.same-assets.com/j7diHsQvARYH9ftLlvfXu6BqI5vQMqc9.jpeg",
-    location: "Zona Comercial",
-    price: "$95 - $160",
-    features: ["Centro de Negocios", "Gimnasio", "Restaurante", "WiFi"],
-    amenities: [Wifi, Car, Coffee],
-    description: "Hotel moderno ideal para viajeros de negocios con todas las comodidades necesarias."
+    name: "Rancho Ecoturístico Santa Fe",
+    category: "Ecoturismo",
+    rating: 3,
+    image: "/pictures/hotel.png",
+    location: "Salida al Chote",
+    price: "$450 - $700",
+    features: ["Caballos", "Cabañas", "Contacto con la naturaleza"],
+    amenities: [Car],
+    phone: "7841070537",
+    description: "Vive una experiencia rural con actividades al aire libre."
   }
 ]
 
@@ -82,69 +88,20 @@ export default function Hoteles() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <main className="container mx-auto px-4 py-6 pb-20">
-        {/* Hero Section */}
         <div className="relative h-64 rounded-lg overflow-hidden mb-8">
           <img
-            src="https://ugc.same-assets.com/1qQ1ZwpOYDqJx2RF9TvpigjsAQEB-_Kr.jpeg"
-            alt="Hoteles en Mazatlán"
+            src="/pictures/hotel.png"
+            alt="Hoteles en Papantla"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
             <div className="text-center text-white">
-              <h1 className="text-4xl font-bold mb-2">Hospedaje en Mazatlán</h1>
-              <p className="text-xl">Encuentra el hotel perfecto para tu estancia</p>
+              <h1 className="text-4xl font-bold mb-2">Hospedaje en Papantla</h1>
+              <p className="text-xl">Encuentra el lugar perfecto para descansar</p>
             </div>
           </div>
         </div>
 
-        {/* Filter Section */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-2xl font-bold text-[#2c363b] mb-4">Encuentra tu Hotel Ideal</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Zona</label>
-              <select className="w-full p-2 border border-gray-300 rounded-md">
-                <option>Todas las zonas</option>
-                <option>Zona Dorada</option>
-                <option>Centro Histórico</option>
-                <option>Zona Hotelera</option>
-                <option>Zona Comercial</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Categoría</label>
-              <select className="w-full p-2 border border-gray-300 rounded-md">
-                <option>Todas las categorías</option>
-                <option>Resort de Lujo</option>
-                <option>Hotel Boutique</option>
-                <option>Hotel Familiar</option>
-                <option>Hotel Económico</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Precio</label>
-              <select className="w-full p-2 border border-gray-300 rounded-md">
-                <option>Todos los precios</option>
-                <option>$40 - $80</option>
-                <option>$80 - $150</option>
-                <option>$150 - $250</option>
-                <option>$250+</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Servicios</label>
-              <select className="w-full p-2 border border-gray-300 rounded-md">
-                <option>Todos los servicios</option>
-                <option>Todo Incluido</option>
-                <option>Frente al Mar</option>
-                <option>Spa</option>
-                <option>Familiar</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Hotels Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {hotels.map((hotel) => (
             <div key={hotel.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
@@ -197,40 +154,15 @@ export default function Hoteles() {
                   </div>
                 </div>
 
-                <button className="w-full bg-[#bb904d] hover:bg-[#814739] text-white py-2 px-4 rounded-md transition-colors">
-                  Ver Disponibilidad
-                </button>
+                <a
+                  href={`tel:${hotel.phone}`}
+                  className="block text-center w-full bg-[#bb904d] hover:bg-[#814739] text-white py-2 px-4 rounded-md transition-colors"
+                >
+                  Reservar
+                </a>
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Info Section */}
-        <div className="mt-12 bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-3xl font-bold text-[#2c363b] mb-6">¿Por qué elegir Mazatlán?</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-[#bb904d] rounded-full flex items-center justify-center mx-auto mb-4">
-                <Waves size={32} className="text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-[#814739] mb-2">Playas Doradas</h3>
-              <p className="text-gray-600">21 km de playas con arena dorada y aguas cristalinas del Pacífico.</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-[#bb904d] rounded-full flex items-center justify-center mx-auto mb-4">
-                <Coffee size={32} className="text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-[#814739] mb-2">Gastronomía Única</h3>
-              <p className="text-gray-600">Sabores del mar y tradiciones culinarias que deleitan todos los paladares.</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-[#bb904d] rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users size={32} className="text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-[#814739] mb-2">Hospitalidad</h3>
-              <p className="text-gray-600">La calidez de nuestra gente hace de cada visita una experiencia única.</p>
-            </div>
-          </div>
         </div>
       </main>
       <BottomNavigation />

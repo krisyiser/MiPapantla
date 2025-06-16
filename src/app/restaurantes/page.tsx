@@ -1,99 +1,70 @@
 import Header from '@/components/Header'
 import BottomNavigation from '@/components/BottomNavigation'
-import { Star, MapPin, Clock, Phone, ChefHat, Fish, Coffee, Utensils } from 'lucide-react'
+import { Star, MapPin, Clock, Phone, ChefHat, Coffee, Pizza } from 'lucide-react'
+
+const cuisineTypes = [
+  { name: "Cocina Totonaca", icon: ChefHat, count: 6, description: "Tradición ancestral" },
+  { name: "Pizzerías", icon: Pizza, count: 6, description: "Favoritas locales" },
+  { name: "Cafeterías", icon: Coffee, count: 4, description: "Café y descanso" }
+]
 
 const restaurants = [
   {
     id: 1,
-    name: "El Shrimp Bucket",
-    cuisine: "Mariscos",
-    rating: 5,
-    image: "https://ugc.same-assets.com/gTk2W2RsUQF39naWUgkxh-yxnIQRQ3U-.jpeg",
-    location: "Centro Histórico",
-    priceRange: "$$ - $$$",
-    hours: "12:00 - 23:00",
-    phone: "+52 669 981 6350",
-    specialties: ["Camarones al Coco", "Pescado Zarandeado", "Aguachile Verde"],
-    features: ["Terraza", "Vista al Mar", "Música en Vivo"],
-    description: "Icónico restaurante de mariscos con más de 50 años de tradición, famoso por sus camarones al coco."
+    name: "Pizzería El Uli",
+    cuisine: "Pizzerías",
+    rating: 4,
+    image: "/pictures/ic_food.png",
+    location: "Calle J.J. Núñez #109, Centro",
+    priceRange: "$ - $$",
+    hours: "13:00 - 22:00",
+    phone: "tel:7848420064",
+    specialties: ["Pizza artesanal", "Salsas caseras"],
+    features: ["Ambiente familiar", "Para llevar"],
+    description: "Deliciosas pizzas con receta casera en el corazón de Papantla."
   },
   {
     id: 2,
-    name: "Pancho's Restaurant",
-    cuisine: "Mexicana Contemporánea",
+    name: "Restaurante Nakú",
+    cuisine: "Cocina Totonaca",
     rating: 5,
-    image: "https://ugc.same-assets.com/IvjqOtKAZj1Uq_xgG8tZ4gBUWGG8KO8L.jpeg",
-    location: "Zona Dorada",
-    priceRange: "$$ - $$$",
-    hours: "18:00 - 00:00",
-    phone: "+52 669 914 3977",
-    specialties: ["Cochinita Pibil", "Mole Poblano", "Chiles en Nogada"],
-    features: ["Ambiente Elegante", "Cava de Vinos", "Chef Ejecutivo"],
-    description: "Refinada cocina mexicana contemporánea con ingredientes locales y presentación de vanguardia."
+    image: "/pictures/ic_food.png",
+    location: "Heroico Colegio Militar S/N, Barrio del Naranjo",
+    priceRange: "$$",
+    hours: "12:00 - 22:00",
+    phone: "tel:7848423112",
+    specialties: ["Tamal totonaca", "Chanchamito", "Mole regional"],
+    features: ["Tradición", "Ingredientes locales"],
+    description: "Cocina ancestral totonaca con platillos tradicionales únicos."
   },
   {
     id: 3,
-    name: "Mariscos El Güero",
-    cuisine: "Mariscos Tradicionales",
+    name: "Café Sereno",
+    cuisine: "Cafeterías",
     rating: 4,
-    image: "https://ugc.same-assets.com/HRawxe4t6hOX6_ZEbVS6DDChTit8-IqX.jpeg",
-    location: "Mercado Pino Suárez",
-    priceRange: "$ - $$",
-    hours: "09:00 - 18:00",
-    phone: "+52 669 982 7682",
-    specialties: ["Ceviche de Camarón", "Tostadas de Marlin", "Sopa de Siete Mares"],
-    features: ["Auténtico", "Ambiente Local", "Precios Accesibles"],
-    description: "Auténtico restaurante de mariscos frecuentado por locales, con los mejores ceviches de la ciudad."
+    image: "/pictures/ic_food.png",
+    location: "Reforma #110, Centro",
+    priceRange: "$",
+    hours: "08:00 - 21:00",
+    phone: "tel:7841353775",
+    specialties: ["Café de olla", "Pan artesanal"],
+    features: ["WiFi gratuito", "Ambiente relajado"],
+    description: "Cafetería local ideal para descansar o reunirse con amigos."
   },
   {
     id: 4,
-    name: "Casa Loma",
-    cuisine: "Internacional",
+    name: "Restaurante El Zaguán",
+    cuisine: "Cocina Totonaca",
     rating: 5,
-    image: "https://ugc.same-assets.com/PSzr6RnHibhfn14HDqf8EuIbSyHkOEzx.jpeg",
-    location: "Zona Dorada",
-    priceRange: "$$$ - $$$$",
-    hours: "18:00 - 23:00",
-    phone: "+52 669 913 5398",
-    specialties: ["Filete Wellington", "Risotto de Mariscos", "Crème Brûlée"],
-    features: ["Fine Dining", "Sommelier", "Reservaciones Requeridas"],
-    description: "Elegante restaurante de alta cocina internacional con carta de vinos selecta y ambiente sofisticado."
-  },
-  {
-    id: 5,
-    name: "Los Arcos",
-    cuisine: "Fusión Asia-Mexicana",
-    rating: 4,
-    image: "https://ugc.same-assets.com/lXxeRD25e18nJyP4NwW7PwT6OeSjuP5I.jpeg",
-    location: "Zona Dorada",
+    image: "/pictures/ic_food.png",
+    location: "Pino Suárez #206, Centro",
     priceRange: "$$ - $$$",
-    hours: "17:00 - 23:00",
-    phone: "+52 669 913 5767",
-    specialties: ["Sushi de Atún Rojo", "Tacos de Pato", "Ramen de Mariscos"],
-    features: ["Fusión Innovadora", "Bar de Sushi", "Ambiente Moderno"],
-    description: "Innovadora fusión de sabores asiáticos con ingredientes mexicanos en un ambiente contemporáneo."
-  },
-  {
-    id: 6,
-    name: "Angelina's Café",
-    cuisine: "Cafetería Gourmet",
-    rating: 4,
-    image: "https://ugc.same-assets.com/OUlVvgabOEvfqZ_ZdCaYKoHABcIE4zcs.jpeg",
-    location: "Centro Histórico",
-    priceRange: "$ - $$",
-    hours: "07:00 - 22:00",
-    phone: "+52 669 982 5613",
-    specialties: ["Café de Olla", "Pasteles Artesanales", "Breakfast Americano"],
-    features: ["Terraza", "WiFi Gratis", "Ambiente Relajado"],
-    description: "Acogedora cafetería con los mejores cafés de especialidad y repostería artesanal de la región."
+    hours: "13:00 - 23:00",
+    phone: "tel:8426416",
+    specialties: ["Carnes asadas", "Moles regionales"],
+    features: ["Música en vivo", "Terraza"],
+    description: "Espacio tradicional con cocina local e ideal para eventos."
   }
-]
-
-const cuisineTypes = [
-  { name: "Mariscos", icon: Fish, count: 15, description: "Frescos del Pacífico" },
-  { name: "Mexicana", icon: ChefHat, count: 12, description: "Tradición culinaria" },
-  { name: "Internacional", icon: Utensils, count: 8, description: "Sabores del mundo" },
-  { name: "Cafeterías", icon: Coffee, count: 6, description: "Café de especialidad" }
 ]
 
 export default function Restaurantes() {
@@ -104,20 +75,20 @@ export default function Restaurantes() {
         {/* Hero Section */}
         <div className="relative h-64 rounded-lg overflow-hidden mb-8">
           <img
-            src="https://ugc.same-assets.com/gTk2W2RsUQF39naWUgkxh-yxnIQRQ3U-.jpeg"
-            alt="Restaurantes en Mazatlán"
+            src="/pictures/restaurantes.jpeg"
+            alt="Restaurantes en Papantla"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
             <div className="text-center text-white">
-              <h1 className="text-4xl font-bold mb-2">Gastronomía de Mazatlán</h1>
-              <p className="text-xl">Sabores del mar que conquistarán tu paladar</p>
+              <h1 className="text-4xl font-bold mb-2">Gastronomía de Papantla</h1>
+              <p className="text-xl">Sabores tradicionales, café aromático y sazón local</p>
             </div>
           </div>
         </div>
 
         {/* Cuisine Types */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
           {cuisineTypes.map((cuisine, index) => {
             const Icon = cuisine.icon
             return (
@@ -172,10 +143,6 @@ export default function Restaurantes() {
                       <Clock size={16} className="mr-2" />
                       <span>{restaurant.hours}</span>
                     </div>
-                    <div className="flex items-center text-gray-600 text-sm">
-                      <Phone size={16} className="mr-2" />
-                      <span>{restaurant.phone}</span>
-                    </div>
                   </div>
 
                   <p className="text-gray-700 text-sm mb-4">{restaurant.description}</p>
@@ -199,63 +166,15 @@ export default function Restaurantes() {
                     ))}
                   </div>
 
-                  <button className="w-full bg-[#bb904d] hover:bg-[#814739] text-white py-2 px-4 rounded-md transition-colors">
-                    Ver Menú
-                  </button>
+                  <a
+                    href={restaurant.phone}
+                    className="block text-center w-full bg-[#bb904d] hover:bg-[#814739] text-white py-2 px-4 rounded-md transition-colors"
+                  >
+                    Reservar
+                  </a>
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* Local Specialties */}
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-3xl font-bold text-[#2c363b] mb-6">Especialidades de Mazatlán</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="text-center">
-              <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4">
-                <img
-                  src="https://ugc.same-assets.com/HRawxe4t6hOX6_ZEbVS6DDChTit8-IqX.jpeg"
-                  alt="Aguachile"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <h3 className="font-bold text-[#814739] mb-2">Aguachile</h3>
-              <p className="text-sm text-gray-600">Camarones marinados en lima con chile y cebolla</p>
-            </div>
-            <div className="text-center">
-              <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4">
-                <img
-                  src="https://ugc.same-assets.com/gTk2W2RsUQF39naWUgkxh-yxnIQRQ3U-.jpeg"
-                  alt="Pescado Zarandeado"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <h3 className="font-bold text-[#814739] mb-2">Pescado Zarandeado</h3>
-              <p className="text-sm text-gray-600">Pescado entero asado con especias y chiles</p>
-            </div>
-            <div className="text-center">
-              <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4">
-                <img
-                  src="https://ugc.same-assets.com/PSzr6RnHibhfn14HDqf8EuIbSyHkOEzx.jpeg"
-                  alt="Camarones al Coco"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <h3 className="font-bold text-[#814739] mb-2">Camarones al Coco</h3>
-              <p className="text-sm text-gray-600">Camarones empanizados en coco con salsa dulce</p>
-            </div>
-            <div className="text-center">
-              <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4">
-                <img
-                  src="https://ugc.same-assets.com/lXxeRD25e18nJyP4NwW7PwT6OeSjuP5I.jpeg"
-                  alt="Marlín Ahumado"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <h3 className="font-bold text-[#814739] mb-2">Marlín Ahumado</h3>
-              <p className="text-sm text-gray-600">Tradicional técnica de ahumado local</p>
-            </div>
           </div>
         </div>
       </main>

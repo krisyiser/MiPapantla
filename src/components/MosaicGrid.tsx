@@ -10,20 +10,19 @@ interface MosaicBlock {
 }
 
 const mosaicData: MosaicBlock[] = [
-  // First Row
   {
     id: 'hospedaje',
     title: 'HOSPEDAJE',
     href: '/hoteles',
-    image: 'https://ugc.same-assets.com/5Bw8hxZxcAXTHCyjTX6PezI4WSoGvPRg.jpeg',
+    image: '/pictures/hospedaje.jpg',
     size: 's3',
     labelPosition: 'br'
   },
   {
-    id: 'promociones',
-    title: 'PROMOCIONES',
+    id: 'experiencias',
+    title: 'EXPERIENCIAS',
     href: '/promociones',
-    image: 'https://ugc.same-assets.com/lEwVR2NqlZC_56eq5S-1K87hDRXCdnD3.jpeg',
+    image: '/pictures/experiencias.jpg',
     size: 's2',
     labelPosition: 'tl'
   },
@@ -31,7 +30,7 @@ const mosaicData: MosaicBlock[] = [
     id: 'restaurantes',
     title: 'RESTAURANTES',
     href: '/restaurantes',
-    image: 'https://ugc.same-assets.com/gTk2W2RsUQF39naWUgkxh-yxnIQRQ3U-.jpeg',
+    image: '/pictures/restaurantes.jpeg',
     size: 's2',
     labelPosition: 'tl'
   },
@@ -39,27 +38,23 @@ const mosaicData: MosaicBlock[] = [
     id: 'playas',
     title: 'PLAYAS',
     href: '/playas',
-    image: 'https://ugc.same-assets.com/1qQ1ZwpOYDqJx2RF9TvpigjsAQEB-_Kr.jpeg',
+    image: '/pictures/playa.jpg',
     size: 's3',
     labelPosition: 'br'
   },
-
-  // Vida Nocturna - Full Width
   {
     id: 'vida-nocturna',
     title: 'VIDA NOCTURNA',
     href: '/vida-nocturna',
-    image: 'https://ugc.same-assets.com/ou35V0qlzH_a76BybIwvUbbiyTAT4z5Y.jpeg',
+    image: '/pictures/vida nocturna.jpg',
     size: 's2',
     labelPosition: 'bl'
   },
-
-  // Next Row
   {
     id: 'visitame',
     title: '¡VISÍTAME!',
     href: '/visitame',
-    image: 'https://ugc.same-assets.com/TQ_s1GC7achOWmNUJIzijy0xkZ9c89Tt.jpeg',
+    image: '/pictures/visitame.jpeg',
     size: 's3',
     labelPosition: 'tl'
   },
@@ -67,7 +62,7 @@ const mosaicData: MosaicBlock[] = [
     id: 'turismo-aventura',
     title: 'AGENCIAS DE TURISMO',
     href: '/turismo-aventura',
-    image: 'https://ugc.same-assets.com/Pq5hTeY6bHjnaAIYoQDDIwdrX2o_FNop.jpeg',
+    image: '/pictures/turismo rural.jpg',
     size: 'fill',
     labelPosition: 'tl'
   },
@@ -75,15 +70,15 @@ const mosaicData: MosaicBlock[] = [
     id: 'eventos',
     title: 'EVENTOS',
     href: '/eventos',
-    image: 'https://ugc.same-assets.com/-qTSj2wMaY-4Wgwe_KG-e-4mBpt-9EOX.jpeg',
+    image: '/pictures/eventos.jpg',
     size: 's2',
     labelPosition: 'bl'
   },
   {
     id: 'mercados',
-    title: 'MERCADOS Y CENTROS COMERCIALES',
+    title: 'MERCADOS',
     href: '/mercados',
-    image: 'https://ugc.same-assets.com/HRawxe4t6hOX6_ZEbVS6DDChTit8-IqX.jpeg',
+    image: '/pictures/mercado.jpg',
     size: 's2',
     labelPosition: 'tr'
   }
@@ -91,34 +86,34 @@ const mosaicData: MosaicBlock[] = [
 
 const attractions = [
   {
-    id: 'acuario',
-    title: 'Gran Acuario Mazatlán',
-    href: '/acuario',
-    image: 'https://ugc.same-assets.com/qcy8x-sF-VewrxttGU60J1vMpYOxdMp5.jpeg',
+    id: 'centro-artes',
+    title: 'Centro de las Artes Indígenas',
+    href: '/centro-artes',
+    image: '/pictures/centro de las artes indigenas.jpg',
     size: 's3' as const,
     labelPosition: 'br' as const
   },
   {
-    id: 'observatorio',
-    title: 'Observatorio Mazatlán 1873',
-    href: '/observatorio',
-    image: 'https://ugc.same-assets.com/BToXS_U8FiCIfCI-s3nx8KeE48JpkASD.jpeg',
+    id: 'mural-totonaca',
+    title: 'Mural Homenaje a la Cultura Totonaca',
+    href: '/mural-totonaca',
+    image: '/pictures/mural homenaje a la cultura totonaca.jpg',
     size: 's2' as const,
     labelPosition: 'tl' as const
   },
   {
-    id: 'cultural',
-    title: 'Centro de Innovación Cultural Mazatlán',
-    href: '/centro-cultural',
-    image: 'https://ugc.same-assets.com/j7diHsQvARYH9ftLlvfXu6BqI5vQMqc9.jpeg',
+    id: 'casa-cultura',
+    title: 'Casa de Cultura Lázara Meldiú',
+    href: '/casa-cultura',
+    image: '/pictures/casa de cultura.png',
     size: 's2' as const,
     labelPosition: 'tl' as const
   },
   {
-    id: 'faro',
-    title: 'Faro Mazatlán',
-    href: '/faro',
-    image: 'https://ugc.same-assets.com/B6-OZ8sHQ0WZFVHya0Jw6FoEUrDWzz_w.jpeg',
+    id: 'monumento-volador',
+    title: 'Monumento al Volador',
+    href: '/monumento-volador',
+    image: '/pictures/monumento al volador.jpg',
     size: 's3' as const,
     labelPosition: 'br' as const
   }
@@ -127,24 +122,17 @@ const attractions = [
 const specialSections = [
   {
     id: 'turismo-rural',
-    title: 'TURISMO RURAL Y CIRCUITOS TURISTICOS',
+    title: 'TURISMO RURAL',
     href: '/turismo-rural',
-    image: 'https://ugc.same-assets.com/NsCIzvkcnp-AihFNBKA5Gqx_ubTqwKdk.jpeg',
+    image: '/pictures/turismo rural.jpg',
     labelPosition: 'bl' as const
   },
   {
-    id: 'tres-islas',
-    title: 'Las 3 Islas',
-    href: '/tres-islas',
-    image: 'https://ugc.same-assets.com/qmEXg8cs9Z5CQyZEpQ0SWEYyiUO1dcjJ.jpeg',
+    id: 'vainilla',
+    title: 'VAINILLA',
+    href: '/vainilla',
+    image: '/pictures/vainilla.jpg',
     labelPosition: 'bl' as const
-  },
-  {
-    id: 'sur-sinaloa',
-    title: 'SUR DE SINALOA',
-    href: '/sur-sinaloa',
-    image: 'https://ugc.same-assets.com/ehB8HSnyN5OAmaAEt4lnsKVxpeDS6O4a.jpeg',
-    labelPosition: 'br' as const
   }
 ]
 
@@ -197,57 +185,39 @@ function MosaicBlock({ block }: { block: MosaicBlock }) {
 export default function MosaicGrid() {
   return (
     <div className="space-y-4">
-      {/* First Section - Main Tourism Categories */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        {/* Left Column - 40% */}
         <div className="md:col-span-2 space-y-4">
           <MosaicBlock block={mosaicData[0]} />
           <MosaicBlock block={mosaicData[1]} />
         </div>
-
-        {/* Right Column - 60% */}
         <div className="md:col-span-3 space-y-4">
           <MosaicBlock block={mosaicData[2]} />
           <MosaicBlock block={mosaicData[3]} />
         </div>
       </div>
-
-      {/* Full Width - Vida Nocturna */}
       <div className="w-full">
         <MosaicBlock block={mosaicData[4]} />
       </div>
-
-      {/* Second Section */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        {/* Left Column - 47% */}
         <div className="md:col-span-2 space-y-4">
           <MosaicBlock block={mosaicData[5]} />
           <MosaicBlock block={mosaicData[6]} />
         </div>
-
-        {/* Right Column - 53% */}
         <div className="md:col-span-3 space-y-4">
           <MosaicBlock block={mosaicData[7]} />
           <MosaicBlock block={mosaicData[8]} />
         </div>
       </div>
-
-      {/* Attractions Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Left Column */}
         <div className="space-y-4">
           <MosaicBlock block={attractions[0]} />
           <MosaicBlock block={attractions[1]} />
         </div>
-
-        {/* Right Column */}
         <div className="space-y-4">
           <MosaicBlock block={attractions[2]} />
           <MosaicBlock block={attractions[3]} />
         </div>
       </div>
-
-      {/* Special Sections - Full Width */}
       <div className="space-y-4">
         {specialSections.map((section) => (
           <Link key={section.id} href={section.href} className="block group">
