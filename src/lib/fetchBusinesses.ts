@@ -21,7 +21,7 @@ export interface Business {
   accesible: boolean
   extras: string[]
   certificaciones: string
-  photo: string              // URL directa para <img>
+  photo: string
 }
 
 // === CONFIGURA AQUÍ TU HOJA ===
@@ -29,6 +29,9 @@ const SHEET_ID = '11Ra2_gzewBqAhs-5lo1cPBXI_RAy-YUMLmrJNu_Ufc8'
 const TAB_NAME = 'Respuestas de formulario 1'
 
 const url = `https://opensheet.vercel.app/${SHEET_ID}/${encodeURIComponent(TAB_NAME)}`
+
+// Fila cruda que devuelve opensheet (todas las celdas como string o vacío)
+type SheetRow = Record<string, string | null | undefined>
 
 // Normaliza encabezados
 function normKey(s: string) {
@@ -79,13 +82,15 @@ function extractHyperlinkFromFormula(v: string) {
 }
 
 export async function fetchBusinesses(): Promise<Business[]> {
+  // Puedes usar ISR si quieres cachear: next.revalidate
   const res = await fetch(url, { next: { revalidate: 600 } })
   if (!res.ok) throw new Error('No se pudieron obtener los datos de la hoja')
 
-  const rows: Record<string, any>[] = await res.json()
-  if (!rows?.length) return []
+  const rows = (await res.json()) as SheetRow[]
+  if (!Array.isArray(rows) || rows.length === 0) return []
 
   return rows.map((row, idx) => {
+    // normalizamos claves
     const nrow: Record<string, string> = {}
     Object.entries(row).forEach(([k, v]) => {
       nrow[normKey(k)] = (v ?? '').toString().trim()
