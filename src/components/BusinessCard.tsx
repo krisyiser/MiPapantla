@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useCallback } from 'react'
 import {
   MapPin, Clock, Phone, Navigation, ExternalLink, Star,
   ChevronLeft, ChevronRight, X, Maximize2
@@ -86,7 +86,7 @@ export default function BusinessCard({
     // Si cambia el tamaño de la galería, re-sincronizamos
     setSlide(0)
     setCandIdx(galleryCandidates.map(() => 0))
-  }, [galleryCandidates.length]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [galleryCandidates.length])
 
   const activeCandidates = galleryCandidates[slide] || [image]
   const activeIdx = candIdx[slide] ?? 0
@@ -105,20 +105,30 @@ export default function BusinessCard({
   // === Lightbox ===
   const [open, setOpen] = useState(false)
   const [lightIdx, setLightIdx] = useState(0)
+
   const openLightbox = () => { setLightIdx(slide); setOpen(true) }
-  const closeLightbox = () => setOpen(false)
-  const lightNext = () => setLightIdx(i => (i + 1) % gallery.length)
-  const lightPrev = () => setLightIdx(i => (i - 1 + gallery.length) % gallery.length)
+  const closeLightbox = useCallback(() => setOpen(false), [])
+
+  const lightNext = useCallback(
+    () => setLightIdx(i => (i + 1) % gallery.length),
+    [gallery.length]
+  )
+  const lightPrev = useCallback(
+    () => setLightIdx(i => (i - 1 + gallery.length) % gallery.length),
+    [gallery.length]
+  )
 
   const lbCandidates = galleryCandidates[lightIdx] || [image]
   const [lbCandIdx, setLbCandIdx] = useState<number[]>(() => galleryCandidates.map(() => 0))
+
   useEffect(() => {
     // sincroniza tamaño si cambia la galería
     setLbCandIdx(galleryCandidates.map(() => 0))
-  }, [galleryCandidates.length]) // eslint-disable-line
+  }, [galleryCandidates.length])
 
   const lbSrc = lbCandidates[lbCandIdx[lightIdx] ?? 0] || image
 
+  // Teclado: Esc / ← / →
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
@@ -128,7 +138,7 @@ export default function BusinessCard({
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [open, gallery.length])
+  }, [open, lightNext, lightPrev, closeLightbox])
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow">

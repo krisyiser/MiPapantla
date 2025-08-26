@@ -25,12 +25,14 @@ export interface Business {
   photos?: string[]           // NUEVO: galería (incluye principal + AE-AH)
 }
 
+// === CONFIG HOJA ===
 const SHEET_ID = '11Ra2_gzewBqAhs-5lo1cPBXI_RAy-YUMLmrJNu_Ufc8'
 const TAB_NAME = 'Respuestas de formulario 1'
 const url = `https://opensheet.vercel.app/${SHEET_ID}/${encodeURIComponent(TAB_NAME)}`
 
 type SheetRow = Record<string, string | null | undefined>
 
+// Normaliza encabezados
 function normKey(s: string) {
   return s
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -55,7 +57,7 @@ function ensureHttp(u: string) {
   return `https://${u}`
 }
 
-// Drive -> URL directo
+// Drive -> URL directo (vista)
 function normalizeDriveUrl(u: string) {
   if (!u) return ''
   const id =
@@ -118,11 +120,11 @@ export async function fetchBusinesses(): Promise<Business[]> {
     const certific    = nrow['cuenta con algun tipo de certificacion turistica sanitaria o ambiental'] || ''
 
     // FOTO principal (columna original)
-    let photoRaw = nrow['foto'] || nrow['columna 29'] || ''
+    const photoRaw = nrow['foto'] || nrow['columna 29'] || ''
     const photo = cleanPhotoCell(photoRaw)
 
-    // NUEVO: Galería adicional (columnas AE–AH ≈ 31–34)
-    // Intentamos por nombres comunes y por "columna 31..34" (por si no hay encabezado)
+    // Galería adicional (columnas AE–AH ≈ 31–34)
+    // Soporta nombres comunes o 'columna 31..34'
     const galleryKeys = [
       'foto 2', 'foto2', 'segunda foto',
       'foto 3', 'foto3', 'tercera foto',
