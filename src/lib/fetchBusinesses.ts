@@ -21,19 +21,16 @@ export interface Business {
   accesible: boolean
   extras: string[]
   certificaciones: string
-  photo: string
+  photo: string               // principal (se mantiene)
+  photos?: string[]           // NUEVO: galería (incluye principal + AE-AH)
 }
 
-// === CONFIGURA AQUÍ TU HOJA ===
 const SHEET_ID = '11Ra2_gzewBqAhs-5lo1cPBXI_RAy-YUMLmrJNu_Ufc8'
 const TAB_NAME = 'Respuestas de formulario 1'
-
 const url = `https://opensheet.vercel.app/${SHEET_ID}/${encodeURIComponent(TAB_NAME)}`
 
-// Fila cruda que devuelve opensheet (todas las celdas como string o vacío)
 type SheetRow = Record<string, string | null | undefined>
 
-// Normaliza encabezados
 function normKey(s: string) {
   return s
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -81,8 +78,13 @@ function extractHyperlinkFromFormula(v: string) {
   return m?.[1] || v
 }
 
+function cleanPhotoCell(v: string) {
+  const step1 = extractImageFromFormula(v)
+  const step2 = extractHyperlinkFromFormula(step1)
+  return ensureHttp(normalizeDriveUrl(step2.trim()))
+}
+
 export async function fetchBusinesses(): Promise<Business[]> {
-  // Puedes usar ISR si quieres cachear: next.revalidate
   const res = await fetch(url, { next: { revalidate: 600 } })
   if (!res.ok) throw new Error('No se pudieron obtener los datos de la hoja')
 
@@ -90,7 +92,6 @@ export async function fetchBusinesses(): Promise<Business[]> {
   if (!Array.isArray(rows) || rows.length === 0) return []
 
   return rows.map((row, idx) => {
-    // normalizamos claves
     const nrow: Record<string, string> = {}
     Object.entries(row).forEach(([k, v]) => {
       nrow[normKey(k)] = (v ?? '').toString().trim()
@@ -116,11 +117,27 @@ export async function fetchBusinesses(): Promise<Business[]> {
     const extras      = splitCsv(nrow['servicios adicionales disponibles'] || '')
     const certific    = nrow['cuenta con algun tipo de certificacion turistica sanitaria o ambiental'] || ''
 
-    // FOTO: acepta "Foto" o "Columna 29"
+    // FOTO principal (columna original)
     let photoRaw = nrow['foto'] || nrow['columna 29'] || ''
-    photoRaw = extractImageFromFormula(photoRaw)
-    photoRaw = extractHyperlinkFromFormula(photoRaw)
-    const photo = ensureHttp(normalizeDriveUrl(photoRaw))
+    const photo = cleanPhotoCell(photoRaw)
+
+    // NUEVO: Galería adicional (columnas AE–AH ≈ 31–34)
+    // Intentamos por nombres comunes y por "columna 31..34" (por si no hay encabezado)
+    const galleryKeys = [
+      'foto 2', 'foto2', 'segunda foto',
+      'foto 3', 'foto3', 'tercera foto',
+      'foto 4', 'foto4', 'cuarta foto',
+      'foto 5', 'foto5', 'quinta foto',
+      'columna 31', 'columna 32', 'columna 33', 'columna 34'
+    ]
+    const extraPhotos = galleryKeys
+      .map(k => nrow[k])
+      .filter(Boolean)
+      .map(cleanPhotoCell)
+      .filter(Boolean)
+
+    // fotos únicas (incluye principal al inicio si existe)
+    const photos = Array.from(new Set([photo, ...extraPhotos].filter(Boolean)))
 
     const giros = splitCsv(giroRaw).map(g => g.toLowerCase())
 
@@ -147,6 +164,7 @@ export async function fetchBusinesses(): Promise<Business[]> {
       extras,
       certificaciones: certific,
       photo,
+      photos, // << NUEVO
     }
   })
 }
