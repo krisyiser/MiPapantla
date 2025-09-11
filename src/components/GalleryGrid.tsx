@@ -35,6 +35,7 @@ function buildImageCandidates(photo?: string): string[] {
     ]
   }
 
+  // No-Drive -> agrega proxy de último recurso
   try {
     const u = new URL(photo)
     const proxied = `https://images.weserv.nl/?url=${encodeURIComponent(`${u.host}${u.pathname}${u.search}`)}`
