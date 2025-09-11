@@ -35,7 +35,6 @@ function buildImageCandidates(photo?: string): string[] {
     ]
   }
 
-  // No-Drive -> agrega proxy de último recurso
   try {
     const u = new URL(photo)
     const proxied = `https://images.weserv.nl/?url=${encodeURIComponent(`${u.host}${u.pathname}${u.search}`)}`
@@ -59,7 +58,7 @@ export default function GalleryGrid({ photos, open, onClose }: GalleryGridProps)
   const [lbOpen, setLbOpen] = useState(false)
   const [idx, setIdx] = useState(0)
 
-  // ⛑️ No cierres el grid por “outside click” mientras el LB esté abierto
+  // No cierres el grid por “outside click” mientras el LB esté abierto
   useOutsideClick(modalRef, () => {
     if (lbOpen) return
     onClose()
@@ -71,7 +70,7 @@ export default function GalleryGrid({ photos, open, onClose }: GalleryGridProps)
   const [candIdx, setCandIdx] = useState<number[]>(() => candidates.map(() => 0))
   useEffect(() => {
     setCandIdx(candidates.map(() => 0))
-  }, [candidates]) // <-- dependemos del arreglo completo
+  }, [candidates])
 
   const openLbAt = useCallback((i: number) => {
     setIdx(i)
@@ -118,7 +117,7 @@ export default function GalleryGrid({ photos, open, onClose }: GalleryGridProps)
     }
     preload((idx + 1) % photos.length)
     preload((idx - 1 + photos.length) % photos.length)
-  }, [idx, lbOpen, photos.length, candidates]) // <-- incluye candidates
+  }, [idx, lbOpen, photos.length, candidates])
 
   // Fuente activa LB
   const activeCandList = candidates[idx] || ['/pictures/ic_food.png']
@@ -135,7 +134,9 @@ export default function GalleryGrid({ photos, open, onClose }: GalleryGridProps)
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => !lbOpen && onClose()}
+            onClick={() => {
+              if (!lbOpen) onClose()
+            }}
           />
 
           {/* Contenedor GRID */}
