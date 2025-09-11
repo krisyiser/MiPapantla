@@ -4,10 +4,10 @@ import * as React from 'react'
 
 type AnyEl = HTMLElement
 type RefOne<T extends AnyEl> = React.RefObject<T>
-type RefMany<T extends AnyEl> = Array<React.RefObject<T>>
+type RefMany<T extends AnyEl> = Array<RefOne<T>>
 type RefInput<T extends AnyEl> = RefOne<T> | RefMany<T>
 
-function toArray<T extends AnyEl>(refOrRefs: RefInput<T>): Array<RefOne<T>> {
+function toArray<T extends AnyEl>(refOrRefs: RefInput<T>): RefMany<T> {
   return Array.isArray(refOrRefs) ? refOrRefs : [refOrRefs]
 }
 
@@ -25,12 +25,13 @@ export function useOutsideClick<T extends AnyEl>(
     const handler = (event: PointerEvent) => {
       const target = event.target as Node | null
       if (!target) return
-      // Si cualquiera de los refs contiene el target, NO disparamos
-      const clickedInside = refs.some(r => {
+
+      const clickedInside = refs.some((r) => {
         const el = r.current
         return el ? el.contains(target) : false
       })
       if (clickedInside) return
+
       callback(event)
     }
 
@@ -38,8 +39,7 @@ export function useOutsideClick<T extends AnyEl>(
     document.addEventListener('pointerdown', handler, { passive: true })
 
     return () => {
-      document.removeEventListener('pointerdown', handler as EventListener)
+      document.removeEventListener('pointerdown', handler)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refOrRefs, callback])
 }

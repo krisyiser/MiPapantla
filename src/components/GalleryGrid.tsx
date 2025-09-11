@@ -35,7 +35,6 @@ function buildImageCandidates(photo?: string): string[] {
     ]
   }
 
-  // No-Drive -> agrega proxy de último recurso
   try {
     const u = new URL(photo)
     const proxied = `https://images.weserv.nl/?url=${encodeURIComponent(`${u.host}${u.pathname}${u.search}`)}`
@@ -59,7 +58,7 @@ export default function GalleryGrid({ photos, open, onClose }: GalleryGridProps)
   const [lbOpen, setLbOpen] = useState(false)
   const [idx, setIdx] = useState(0)
 
-  // ⛑️ Importante: no cierres el grid por “outside click” mientras el LB esté abierto
+  // ⛑️ No cierres el grid por “outside click” mientras el LB esté abierto
   useOutsideClick(modalRef, () => {
     if (lbOpen) return
     onClose()
@@ -67,8 +66,11 @@ export default function GalleryGrid({ photos, open, onClose }: GalleryGridProps)
 
   // Candidatos por foto (fallbacks)
   const candidates = useMemo(() => photos.map(p => buildImageCandidates(p)), [photos])
+
   const [candIdx, setCandIdx] = useState<number[]>(() => candidates.map(() => 0))
-  useEffect(() => setCandIdx(candidates.map(() => 0)), [candidates.length])
+  useEffect(() => {
+    setCandIdx(candidates.map(() => 0))
+  }, [candidates]) // <-- dependemos del arreglo completo
 
   const openLbAt = useCallback((i: number) => {
     setIdx(i)
@@ -115,7 +117,7 @@ export default function GalleryGrid({ photos, open, onClose }: GalleryGridProps)
     }
     preload((idx + 1) % photos.length)
     preload((idx - 1 + photos.length) % photos.length)
-  }, [idx, lbOpen, photos.length, candidates])
+  }, [idx, lbOpen, photos.length, candidates]) // <-- incluye candidates
 
   // Fuente activa LB
   const activeCandList = candidates[idx] || ['/pictures/ic_food.png']
@@ -179,9 +181,11 @@ export default function GalleryGrid({ photos, open, onClose }: GalleryGridProps)
                         onError={(e) => {
                           setCandIdx(prev => {
                             const copy = [...prev]
-                            copy[i] = (copy[i] ?? 0) + 1
-                            const nextSrc = candidates[i][copy[i]] || '/pictures/ic_food.png'
-                            ;(e.target as HTMLImageElement).src = nextSrc
+                            const nextIdx = (copy[i] ?? 0) + 1
+                            copy[i] = nextIdx
+                            const nextSrc = candidates[i][nextIdx] || '/pictures/ic_food.png'
+                            const imgEl = e.currentTarget as HTMLImageElement
+                            imgEl.src = nextSrc
                             return copy
                           })
                         }}
