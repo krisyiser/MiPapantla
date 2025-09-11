@@ -98,9 +98,17 @@ export default function GalleryGrid({ photos, open, onClose }: GalleryGridProps)
   useEffect(() => {
     if (!open && !lbOpen) return
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') lbOpen ? closeLb() : onClose()
-      else if (lbOpen && e.key === 'ArrowRight') next()
-      else if (lbOpen && e.key === 'ArrowLeft') prev()
+      if (e.key === 'Escape') {
+        if (lbOpen) {
+          closeLb()
+        } else {
+          onClose()
+        }
+      } else if (lbOpen && e.key === 'ArrowRight') {
+        next()
+      } else if (lbOpen && e.key === 'ArrowLeft') {
+        prev()
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -135,7 +143,9 @@ export default function GalleryGrid({ photos, open, onClose }: GalleryGridProps)
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => {
-              if (!lbOpen) onClose()
+              if (!lbOpen) {
+                onClose()
+              }
             }}
           />
 
