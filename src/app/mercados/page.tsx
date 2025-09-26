@@ -14,7 +14,7 @@ export default async function Mercados() {
   // Si en tu mapeo usaste "locales" para mercados, esto lo cubre.
   // (De todas formas, añadimos un fallback por substring “mercado”.)
   const mercados = all
-    .filter(b => businessInSection(b, 'locales') || b.giros.some(g => g.includes('mercado')))
+    .filter(b => businessInSection(b, 'mercados') || b.giros.some(g => g.includes('mercado')))
     .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }))
 
   // Tarjetitas informativas (solo UI, no filtran)
