@@ -277,34 +277,6 @@ export default function Eventos() {
           </div>
         </section>
 
-        {/* NAV RÁPIDA POR MES */}
-        <nav className="sticky top-14 z-10 bg-gray-50/70 backdrop-blur rounded-xl border border-gray-200 p-3 mb-6">
-          <div className="flex flex-wrap gap-2">
-            <a href="#proximos" className="px-3 py-1.5 rounded-full text-xs bg-emerald-50 text-emerald-700 border border-emerald-200">
-              Próximos
-            </a>
-            {MONTHS_ES.map((m, i) => (
-              <a
-                key={m}
-                href={`#mes-${i + 1}`}
-                className="px-3 py-1.5 rounded-full text-xs bg-white text-[#2c363b] border border-gray-200 hover:bg-gray-50"
-              >
-                {m}
-              </a>
-            ))}
-            {tbcList.length > 0 && (
-              <a href="#tbc" className="px-3 py-1.5 rounded-full text-xs bg-amber-50 text-amber-800 border border-amber-200">
-                Fechas por confirmar
-              </a>
-            )}
-            {allYearList.length > 0 && (
-              <a href="#todo-el-ano" className="px-3 py-1.5 rounded-full text-xs bg-indigo-50 text-indigo-800 border border-indigo-200">
-                Todo el año
-              </a>
-            )}
-          </div>
-        </nav>
-
         {/* PRÓXIMOS */}
         <section id="proximos" className="mb-10">
           <div className="flex items-center gap-2 mb-3">
