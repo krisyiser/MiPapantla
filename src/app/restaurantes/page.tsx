@@ -4,6 +4,7 @@ import BottomNavigation from '@/components/BottomNavigation'
 import { ChefHat, Coffee, Pizza } from 'lucide-react'
 import { fetchBusinesses } from '@/lib/fetchBusinesses'
 import BusinessCard from '@/components/BusinessCard'
+import { businessInSection } from '@/lib/giros'
 
 const cuisineTypes = [
   { name: 'Cocina Totonaca', icon: ChefHat, description: 'Tradición ancestral' },
@@ -15,9 +16,9 @@ const cuisineTypes = [
 export default async function Restaurantes() {
   const all = await fetchBusinesses()
 
-  // Filtro por giro = "restaurante" (soporta celdas con múltiples giros)
+  // Filtra por sección usando el helper (soporta múltiples giros por negocio)
   const restaurantes = all
-    .filter(b => b.giros.some(g => g.includes('restaurante')))
+    .filter(b => businessInSection(b, 'restaurantes'))
     .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }))
 
   return (
@@ -44,7 +45,10 @@ export default async function Restaurantes() {
           {cuisineTypes.map((c, i) => {
             const Icon = c.icon
             return (
-              <div key={i} className="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow cursor-pointer">
+              <div
+                key={i}
+                className="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow cursor-pointer"
+              >
                 <div className="w-12 h-12 bg-[#bb904d] rounded-full flex items-center justify-center mx-auto mb-3">
                   <Icon size={24} className="text-white" />
                 </div>
@@ -71,8 +75,6 @@ export default async function Restaurantes() {
                 <BusinessCard
                   key={r.id}
                   tituloTag="Restaurante"
-                  // usa la foto del sheet cuando exista; si no, usa el placeholder
-                  image={r.photo || '/pictures/ic_food.png'}
                   rating={4}
                   negocio={r}
                 />

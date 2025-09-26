@@ -4,7 +4,7 @@ export interface Business {
   nombre: string
   giros: string[]
   descripcion: string          // breve (o derivada)
-  descripcionLarga?: string    // NUEVO: larga
+  descripcionLarga?: string    // larga
   direccion: string
   referencia: string
   telefono: string
@@ -22,8 +22,13 @@ export interface Business {
   accesible: boolean
   extras: string[]
   certificaciones: string
-  photo: string               // principal
-  photos?: string[]           // galería
+  photo: string                // principal si hay
+  photos?: string[]            // galería si hay
+
+  // ===== NUEVO: Menú =====
+  menuPhotos?: string[]        // si la carpeta tiene imágenes
+  menuPdfUrl?: string | null   // si encontramos un PDF
+  menuFolderUrl?: string | null// siempre: url cruda de la carpeta (fallback)
 }
 
 // === CONFIG HOJA ===
@@ -33,7 +38,7 @@ const url = `https://opensheet.vercel.app/${SHEET_ID}/${encodeURIComponent(TAB_N
 
 type SheetRow = Record<string, string | null | undefined>
 
-// Normaliza encabezados a claves seguras
+// ------------------------- Utilidades generales -------------------------
 function normKey(s: string) {
   return s
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -58,89 +63,11 @@ function ensureHttp(u: string) {
   return `https://${u}`
 }
 
-// Drive -> URL directo (vista)
-function normalizeDriveUrl(u: string) {
-  if (!u) return ''
-  const id =
-    u.match(/\/d\/([a-zA-Z0-9_-]+)/)?.[1] ||
-    u.match(/[?&]id=([a-zA-Z0-9_-]+)/)?.[1]
-  return id ? `https://drive.google.com/uc?export=view&id=${id}` : u
-}
-
-// =IMAGE("...") -> url
-function extractImageFromFormula(v: string) {
-  if (!v) return ''
-  const m = v.match(/^\s*=?\s*image\s*\(\s*"(.*?)"/i)
-  return m?.[1] || v
-}
-
-// =HYPERLINK("url","texto") -> url
+// =HYPERLINK("url","texto") -> url (acepta coma o punto y coma)
 function extractHyperlinkFromFormula(v: string) {
   if (!v) return ''
   const m = v.match(/^\s*=?\s*hyperlink\s*\(\s*"(.*?)"/i)
   return m?.[1] || v
-}
-
-function cleanPhotoCell(v: string) {
-  const step1 = extractImageFromFormula(v)
-  const step2 = extractHyperlinkFromFormula(step1)
-  return ensureHttp(normalizeDriveUrl(step2.trim()))
-}
-
-// Heurística: ¿esta clave suena a columna de foto?
-function isPhotoKey(k: string) {
-  return (
-    /\b(foto|imagen|photo|portada)\b/.test(k) ||
-    /^columna (29|3[0-5])$/.test(k) // 29 y 31..35 (AE..AI)
-  )
-}
-
-// Ordena “portada|principal|foto” primero, luego foto 1..N, luego “columna N”
-function photoKeyScore(k: string) {
-  // “columna N” -> N como prioridad natural
-  const col = k.match(/^columna (\d+)$/)?.[1]
-  if (col) return parseInt(col, 10)
-
-  // “foto 2/3/4/5”, “imagen 2…”, “foto2”
-  const num = k.match(/\b(foto|imagen|photo)\s*(\d+)/)?.[2]
-  if (num) return 100 + parseInt(num, 10)
-
-  // “portada”, “principal”, “foto/imagen/photo” sin número
-  if (/\b(portada|principal)\b/.test(k)) return 90
-  if (/\b(foto|imagen|photo)\b/.test(k)) return 95
-
-  return 9999
-}
-
-function collectPhotoUrls(nrow: Record<string, string>) {
-  // Toma todas las claves candidatas a foto
-  const keys = Object.keys(nrow)
-    .filter(isPhotoKey)
-    .sort((a, b) => photoKeyScore(a) - photoKeyScore(b))
-
-  const vals = keys
-    .map(k => nrow[k])
-    .filter(Boolean)
-    .map(cleanPhotoCell)
-    .filter(Boolean)
-
-  // Compatibilidad con nombres antiguos
-  const legacy = [
-    nrow['foto'],
-    nrow['columna 29'],
-    nrow['foto 1'], nrow['foto1'], nrow['primera foto'],
-    nrow['foto 2'], nrow['foto2'], nrow['segunda foto'],
-    nrow['foto 3'], nrow['foto3'], nrow['tercera foto'],
-    nrow['foto 4'], nrow['foto4'], nrow['cuarta foto'],
-    nrow['foto 5'], nrow['foto5'], nrow['quinta foto'],
-    nrow['columna 31'], nrow['columna 32'], nrow['columna 33'], nrow['columna 34'], nrow['columna 35'],
-  ]
-    .filter(Boolean)
-    .map(v => cleanPhotoCell(v as string))
-  const all = [...vals, ...legacy].filter(Boolean)
-
-  // Únicos y en orden
-  return Array.from(new Set(all))
 }
 
 // Crea un resumen a partir de un texto más largo
@@ -151,6 +78,74 @@ function summarize(s: string, max = 180) {
   return txt.slice(0, max).replace(/\s+\S*$/, '') + '…'
 }
 
+// ------------------------- Google Drive helpers -------------------------
+const DRIVE_API = 'https://www.googleapis.com/drive/v3/files'
+const DRIVE_KEY = process.env.GOOGLE_DRIVE_API_KEY || ''
+
+/** Extrae el ID de carpeta de un URL de Drive (formatos comunes) */
+function getDriveFolderId(u?: string): string | null {
+  if (!u) return null
+  // .../folders/<ID>
+  const a = u.match(/\/folders\/([a-zA-Z0-9_-]+)/)?.[1]
+  if (a) return a
+  // ...?id=<ID>
+  const b = u.match(/[?&]id=([a-zA-Z0-9_-]+)/)?.[1]
+  return b || null
+}
+
+/** URL de imagen pública servida por lh3 (rápida y estable para img tags) */
+function driveImageUrl(id: string) {
+  return `https://lh3.googleusercontent.com/d/${id}=s1600`
+}
+
+type DriveFile = {
+  id: string
+  name: string
+  mimeType: string
+  modifiedTime: string
+  webViewLink?: string
+  exportLinks?: Record<string, string>
+}
+
+/** Lista archivos (imágenes y PDFs) de una carpeta pública. */
+async function listDriveFolderFiles(folderUrl: string): Promise<DriveFile[]> {
+  const folderId = getDriveFolderId(folderUrl)
+  if (!folderId || !DRIVE_KEY) return []
+
+  const q = encodeURIComponent(`'${folderId}' in parents and trashed=false`)
+  const fields = encodeURIComponent(
+    'files(id,name,mimeType,modifiedTime,webViewLink,exportLinks)'
+  )
+  const apiUrl = `${DRIVE_API}?q=${q}&fields=${fields}&pageSize=200&key=${DRIVE_KEY}`
+
+  const res = await fetch(apiUrl, { next: { revalidate: 300 } })
+  if (!res.ok) return []
+
+  const json = await res.json() as { files?: DriveFile[] }
+  return json.files || []
+}
+
+/** Devuelve imágenes priorizando nombre que contenga “portada”, luego recientes. */
+function pickImages(files: DriveFile[]): string[] {
+  const imgs = files.filter(f => f.mimeType.startsWith('image/'))
+  imgs.sort((a, b) => {
+    const pa = a.name?.toLowerCase().includes('portada') ? -1 : 0
+    const pb = b.name?.toLowerCase().includes('portada') ? -1 : 0
+    if (pa !== pb) return pa - pb
+    return new Date(b.modifiedTime).getTime() - new Date(a.modifiedTime).getTime()
+  })
+  return imgs.map(f => driveImageUrl(f.id))
+}
+
+/** Intenta encontrar un PDF. Devuelve su webViewLink si está. */
+function pickPdf(files: DriveFile[]): string | null {
+  const pdf = files.find(f => f.mimeType === 'application/pdf')
+  if (!pdf) return null
+  // Preferimos webViewLink; si existiera exportLinks['application/pdf'] también sirve
+  return pdf.webViewLink || pdf.exportLinks?.['application/pdf'] || null
+}
+
+// ------------------------- Fetch principal -------------------------
 export async function fetchBusinesses(): Promise<Business[]> {
   const res = await fetch(url, { next: { revalidate: 600 } })
   if (!res.ok) throw new Error('No se pudieron obtener los datos de la hoja')
@@ -158,7 +153,8 @@ export async function fetchBusinesses(): Promise<Business[]> {
   const rows = (await res.json()) as SheetRow[]
   if (!Array.isArray(rows) || rows.length === 0) return []
 
-  return rows.map((row, idx) => {
+  // Mapeo asíncrono por las llamadas a Drive
+  const items = await Promise.all(rows.map(async (row, idx) => {
     const nrow: Record<string, string> = {}
     Object.entries(row).forEach(([k, v]) => {
       nrow[normKey(k)] = (v ?? '').toString().trim()
@@ -170,12 +166,9 @@ export async function fetchBusinesses(): Promise<Business[]> {
     // Descripciones
     const descripcionCorta = nrow['breve descripcion del negocio'] || ''
     const descripcionLarga =
-      nrow['descripcion larga'] || // ← "Descripción larga"
+      nrow['descripcion larga'] ||
       nrow['descripcion larga del negocio'] ||
-      nrow['descripcion extendida'] ||
-      ''
-
-    // Si no hay “breve”, la generamos a partir de la larga
+      nrow['descripcion extendida'] || ''
     const descripcion = descripcionCorta || summarize(descripcionLarga)
 
     const direccion    = nrow['direccion completa'] || ''
@@ -195,19 +188,55 @@ export async function fetchBusinesses(): Promise<Business[]> {
     const extras       = splitCsv(nrow['servicios adicionales disponibles'] || '')
     const certific     = nrow['cuenta con algun tipo de certificacion turistica sanitaria o ambiental'] || ''
 
-    // Fotos (robusto a cambios de encabezado, soporta “Foto 1..5” AE..AI)
-    const photoList = collectPhotoUrls(nrow)
-    const photo = photoList[0] || ''
-    const photos = photoList.length ? photoList : undefined
+    // ===== FOTOS (columna "Fotos" -> carpeta) =====
+    const fotosCellRaw = nrow['fotos'] || ''
+    const fotosFolderUrl = ensureHttp(extractHyperlinkFromFormula(fotosCellRaw))
+    let photo = ''
+    let photos: string[] | undefined
+
+    if (fotosFolderUrl) {
+      try {
+        const files = await listDriveFolderFiles(fotosFolderUrl)
+        const imgs = pickImages(files)
+        if (imgs.length) {
+          photo = imgs[0]
+          photos = imgs
+        }
+      } catch {
+        // silencioso: mantenemos sin fotos
+      }
+    }
+
+    // ===== MENÚ (columna "menu" -> carpeta) =====
+    const menuCellRaw = nrow['menu'] || ''
+    const menuFolderUrl = ensureHttp(extractHyperlinkFromFormula(menuCellRaw)) || ''
+    let menuPhotos: string[] | undefined
+    let menuPdfUrl: string | null = null
+    const menuFolderOut = menuFolderUrl || null
+
+    if (menuFolderUrl) {
+      try {
+        const files = await listDriveFolderFiles(menuFolderUrl)
+        // ¿hay PDF?
+        menuPdfUrl = pickPdf(files)
+        // Si NO hay PDF, probamos imágenes
+        if (!menuPdfUrl) {
+          const mImgs = pickImages(files)
+          if (mImgs.length) menuPhotos = mImgs
+        }
+      } catch {
+        // si falla, solo dejamos el folder como fallback
+      }
+    }
 
     const giros = splitCsv(giroRaw).map(g => g.toLowerCase())
 
-    return {
+    const item: Business = {
       id: idx + 1,
       nombre,
       giros,
-      descripcion,            // breve (o derivada)
-      descripcionLarga,       // NUEVO
+      descripcion,
+      descripcionLarga,
       direccion,
       referencia,
       telefono,
@@ -227,6 +256,14 @@ export async function fetchBusinesses(): Promise<Business[]> {
       certificaciones: certific,
       photo,
       photos,
+      // menú
+      menuPhotos,
+      menuPdfUrl,
+      menuFolderUrl: menuFolderOut,
     }
-  })
+
+    return item
+  }))
+
+  return items
 }

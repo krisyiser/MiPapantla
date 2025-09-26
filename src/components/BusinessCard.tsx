@@ -3,15 +3,18 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import {
-  MapPin, Clock, Phone, Navigation, ExternalLink, Star, X
+  MapPin, Clock, Phone, Navigation, ExternalLink, Star, X, UtensilsCrossed, FileText
 } from 'lucide-react'
 import { useOutsideClick } from '@/hooks/use-outside-click'
 import GalleryGrid from '@/components/GalleryGrid'
 
+/* =========================
+   Tipos esperados del fetch
+   ========================= */
 interface NegocioData {
   nombre: string
-  descripcion: string              // breve
-  descripcionLarga?: string        // NUEVO: larga
+  descripcion: string            // breve
+  descripcionLarga?: string      // larga (opcional)
   direccion: string
   precios: string
   horario: string
@@ -23,85 +26,101 @@ interface NegocioData {
   googleMaps: string
   redes: string
   accesible: boolean
-  servicios?: string               // se muestra en expandida
-  photo?: string
+  servicios?: string
+  // Imágenes de negocio (ordenadas por fetch, portada primero si existe)
   photos?: string[]
+
+  // Menú:
+  menuPhotos?: string[]          // si el menú es una carpeta de imágenes
+  menuPdfUrl?: string | null     // si el menú es un PDF
 }
 
 interface Props {
   tituloTag?: string
-  image?: string
   rating?: number
   negocio: NegocioData
 }
 
-/** Extrae el FILE_ID de un URL de Google Drive en varios formatos */
+/* =========================
+   Helpers para Drive (fallbacks)
+   ========================= */
 function getDriveId(url?: string): string | null {
   if (!url) return null
   return (
     url.match(/\/d\/([a-zA-Z0-9_-]+)/)?.[1] ||
     url.match(/[?&]id=([a-zA-Z0-9_-]+)/)?.[1] ||
+    url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)?.[1] ||
     null
   )
 }
+function uniq<T>(arr: T[]) { return Array.from(new Set(arr)) }
 
-/** Candidatos robustos para una imagen (Drive o no) */
-function buildImageCandidates(photo?: string, fallback = '/pictures/ic_food.png'): string[] {
-  if (!photo) return [fallback]
-  const id = getDriveId(photo)
+/** Dada una URL de imagen, arma variantes confiables (lh3 / uc / proxy) */
+function buildImageCandidates(u?: string): string[] {
+  if (!u) return []
+  const out: string[] = [u]
+  const id = getDriveId(u)
   if (id) {
-    return [
+    out.push(
       `https://lh3.googleusercontent.com/d/${id}=s1600`,
       `https://drive.google.com/uc?export=download&id=${id}`,
       `https://drive.google.com/thumbnail?id=${id}&sz=w1600`,
-      `https://drive.google.com/uc?export=view&id=${id}`,
-      photo,
-      fallback,
-    ]
+      `https://drive.google.com/uc?export=view&id=${id}`
+    )
   }
-  return [photo, fallback]
+  // Proxy de último recurso
+  try {
+    const url = new URL(u)
+    const raw = `${url.host}${url.pathname}${url.search}`
+    out.push(`https://images.weserv.nl/?url=${encodeURIComponent(raw)}`)
+  } catch { /* ignore */ }
+  return uniq(out).filter(Boolean)
 }
 
+/* =========================
+   Componente principal
+   ========================= */
 export default function BusinessCard({
   tituloTag = 'Negocio',
-  image = '/pictures/ic_food.png',
   rating = 4,
   negocio
 }: Props) {
   const uid = useId()
 
-  // Fotos del negocio
+  // --------- FOTOS DEL NEGOCIO ----------
   const photos = useMemo<string[]>(
-    () => (negocio.photos && negocio.photos.length > 0)
-      ? negocio.photos
-      : (negocio.photo ? [negocio.photo] : [image]),
-    [negocio.photos, negocio.photo, image]
+    () => Array.isArray(negocio.photos) ? negocio.photos.filter(Boolean) : [],
+    [negocio.photos]
   )
 
-  // Portada con fallbacks
+  // Candidatos para la portada (solo si hay fotos)
   const coverCandidates = useMemo(
-    () => buildImageCandidates(photos[0], image),
-    [photos, image]
+    () => buildImageCandidates(photos[0]),
+    [photos]
   )
   const [coverIdx, setCoverIdx] = useState(0)
-  useEffect(() => setCoverIdx(0), [coverCandidates.length])
+  useEffect(() => setCoverIdx(0), [coverCandidates])
 
-  // Expandible (detalle)
+  // Mostrar/ocultar imagen de portada si todas fallan
+  const [showCover, setShowCover] = useState(true)
+  useEffect(() => setShowCover(true), [photos])
+
+  // --------- EXPANDIBLE (DETALLE) ----------
   const [expanded, setExpanded] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
   useOutsideClick(modalRef, () => setExpanded(false))
   const closeExpanded = useCallback(() => setExpanded(false), [])
   useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') closeExpanded() }
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closeExpanded() }
     if (expanded) {
       document.body.style.overflow = 'hidden'
-      window.addEventListener('keydown', onKeyDown)
+      window.addEventListener('keydown', onKey)
     } else {
       document.body.style.overflow = 'auto'
     }
     return () => {
       document.body.style.overflow = 'auto'
-      window.removeEventListener('keydown', onKeyDown)
+      window.removeEventListener('keydown', onKey)
     }
   }, [expanded, closeExpanded])
 
@@ -112,41 +131,57 @@ export default function BusinessCard({
     setExpanded(true)
   }
 
-  // Grid de galería (tipo Pinterest)
+  // --------- GALERÍAS ----------
   const [gridOpen, setGridOpen] = useState(false)
   const openGrid = useCallback(() => setGridOpen(true), [])
   const closeGrid = useCallback(() => setGridOpen(false), [])
 
-  // Descripciones según modo
-  const descShort = negocio.descripcion || '' // ya viene breve desde fetch
+  // Menú (imágenes o PDF)
+  const hasMenuPhotos = (negocio.menuPhotos?.length || 0) > 0
+  const hasMenuPdf = !!negocio.menuPdfUrl
+  const [menuOpen, setMenuOpen] = useState(false)
+  const openMenuGrid = useCallback(() => setMenuOpen(true), [])
+  const closeMenuGrid = useCallback(() => setMenuOpen(false), [])
+
+  // Descripciones
+  const descShort = negocio.descripcion || ''
   const fullDesc = negocio.descripcionLarga || negocio.descripcion || ''
 
-  // ---------- VISTA COLAPSADA (resumen mínimo) ----------
+  // ---------- VISTA COLAPSADA ----------
   const Collapsed = (
     <motion.div
       layoutId={`card-${negocio.nombre}-${uid}`}
       className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
       onClick={onCardClick}
     >
-      {/* Portada */}
+      {/* Portada (si existe) */}
       <div className="relative h-48">
-        <motion.img
-          layoutId={`image-${negocio.nombre}-${uid}`}
-          src={coverCandidates[coverIdx] || image}
-          alt={`${negocio.nombre} - portada`}
-          className="w-full h-full object-cover cursor-zoom-in"
-          loading="lazy"
-          referrerPolicy="no-referrer"
-          crossOrigin="anonymous"
-          onClick={(e) => { e.stopPropagation(); openGrid() }}
-          onError={(e) => {
-            const next = coverIdx + 1
-            if (next < coverCandidates.length) {
-              setCoverIdx(next)
-              ;(e.target as HTMLImageElement).src = coverCandidates[next]
-            }
-          }}
-        />
+        {showCover && coverCandidates.length > 0 ? (
+          <motion.img
+            layoutId={`image-${negocio.nombre}-${uid}`}
+            src={coverCandidates[coverIdx]}
+            alt={`${negocio.nombre} - portada`}
+            className="w-full h-full object-cover cursor-zoom-in"
+            loading="lazy"
+            referrerPolicy="no-referrer"
+            crossOrigin="anonymous"
+            onClick={(e) => { e.stopPropagation(); openGrid() }}
+            onError={(e) => {
+              const next = coverIdx + 1
+              if (next < coverCandidates.length) {
+                setCoverIdx(next)
+                ;(e.currentTarget as HTMLImageElement).src = coverCandidates[next]
+              } else {
+                setShowCover(false)
+              }
+            }}
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-100 grid place-items-center">
+            <span className="text-xs text-gray-500">Sin foto</span>
+          </div>
+        )}
+
         <div className="absolute top-4 right-4 bg-[#bb904d] text-white px-2 py-1 rounded text-xs font-medium">
           {tituloTag}
         </div>
@@ -182,11 +217,11 @@ export default function BusinessCard({
           )}
         </div>
 
-        {/* CTA único */}
-        <div className="mt-4">
+        {/* CTA principal */}
+        <div className="mt-4 grid grid-cols-2 gap-2">
           <button
             onClick={(e) => { e.stopPropagation(); setExpanded(true) }}
-            className="w-full border border-gray-200 hover:border-[#bb904d] hover:bg-[#bb904d]/5 text-[#2c363b] py-2 rounded-md transition-colors"
+            className="col-span-2 border border-gray-200 hover:border-[#bb904d] hover:bg-[#bb904d]/5 text-[#2c363b] py-2 rounded-md transition-colors"
             aria-label="Ver detalles"
           >
             Ver detalles
@@ -196,7 +231,7 @@ export default function BusinessCard({
     </motion.div>
   )
 
-  // ---------- VISTA EXPANDIDA (detalle completo) ----------
+  // ---------- VISTA EXPANDIDA ----------
   const Expanded = (
     <div className="fixed inset-0 grid place-items-center z-[60]">
       <motion.div
@@ -220,24 +255,32 @@ export default function BusinessCard({
         </button>
 
         {/* Portada (abre galería) */}
-        <div className="relative">
-          <motion.img
-            layoutId={`image-${negocio.nombre}-${uid}`}
-            src={coverCandidates[coverIdx] || image}
-            alt={`${negocio.nombre} - portada`}
-            className="w-full h-80 object-cover cursor-zoom-in"
-            onClick={(e) => { e.stopPropagation(); openGrid() }}
-            referrerPolicy="no-referrer"
-            crossOrigin="anonymous"
-            onError={(e) => {
-              const next = coverIdx + 1
-              if (next < coverCandidates.length) {
-                setCoverIdx(next)
-                ;(e.target as HTMLImageElement).src = coverCandidates[next]
-              }
-            }}
-          />
-        </div>
+        {showCover && coverCandidates.length > 0 ? (
+          <div className="relative">
+            <motion.img
+              layoutId={`image-${negocio.nombre}-${uid}`}
+              src={coverCandidates[coverIdx]}
+              alt={`${negocio.nombre} - portada`}
+              className="w-full h-80 object-cover cursor-zoom-in"
+              onClick={(e) => { e.stopPropagation(); openGrid() }}
+              referrerPolicy="no-referrer"
+              crossOrigin="anonymous"
+              onError={(e) => {
+                const next = coverIdx + 1
+                if (next < coverCandidates.length) {
+                  setCoverIdx(next)
+                  ;(e.currentTarget as HTMLImageElement).src = coverCandidates[next]
+                } else {
+                  setShowCover(false)
+                }
+              }}
+            />
+          </div>
+        ) : (
+          <div className="w-full h-80 bg-gray-100 grid place-items-center">
+            <span className="text-xs text-gray-500">Sin foto</span>
+          </div>
+        )}
 
         {/* Contenido detallado */}
         <div className="p-5 overflow-y-auto max-h-[calc(92vh-20rem)]">
@@ -281,7 +324,7 @@ export default function BusinessCard({
             </div>
           )}
 
-          {/* Chips completos */}
+          {/* Chips */}
           {(negocio.pagos?.length || negocio.extras?.length || negocio.idiomas || negocio.accesible) && (
             <div className="mt-4 flex flex-wrap gap-2">
               {negocio.accesible && (
@@ -305,27 +348,72 @@ export default function BusinessCard({
             </div>
           )}
 
-          {/* Acciones completas */}
+          {/* Acciones */}
           <div className="mt-6 grid grid-cols-2 gap-2">
+            {/* Llamar */}
             {negocio.phoneDigits && (
-              <a href={`tel:${negocio.phoneDigits}`} className="flex items-center justify-center gap-2 bg-[#bb904d] hover:bg-[#814739] text-white py-2 rounded-md transition-colors">
+              <a
+                href={`tel:${negocio.phoneDigits}`}
+                className="flex items-center justify-center gap-2 bg-[#bb904d] hover:bg-[#814739] text-white py-2 rounded-md transition-colors"
+              >
                 <Phone size={16} /> Llamar
               </a>
             )}
+
+            {/* Cómo llegar */}
             {negocio.googleMaps && (
-              <a href={negocio.googleMaps} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 bg-[#f6f7f5] hover:bg-[#e7e7e7] text-[#2c363b] py-2 rounded-md transition-colors">
+              <a
+                href={negocio.googleMaps}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 bg-[#f6f7f5] hover:bg-[#e7e7e7] text-[#2c363b] py-2 rounded-md transition-colors"
+              >
                 <Navigation size={16} /> Cómo llegar
               </a>
             )}
+
+            {/* WhatsApp */}
             {negocio.phoneDigits && (
-              <a href={`https://wa.me/${negocio.phoneDigits}`} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 bg-[#f6f7f5] hover:bg-[#e7e7e7] text-[#2c363b] py-2 rounded-md transition-colors">
+              <a
+                href={`https://wa.me/${negocio.phoneDigits}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 bg-[#f6f7f5] hover:bg-[#e7e7e7] text-[#2c363b] py-2 rounded-md transition-colors"
+              >
                 <ExternalLink size={16} /> WhatsApp
               </a>
             )}
+
+            {/* Redes / Sitio */}
             {negocio.redes && (
-              <a href={negocio.redes} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 bg-[#f6f7f5] hover:bg-[#e7e7e7] text-[#2c363b] py-2 rounded-md transition-colors">
+              <a
+                href={negocio.redes}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 bg-[#f6f7f5] hover:bg-[#e7e7e7] text-[#2c363b] py-2 rounded-md transition-colors"
+              >
                 <ExternalLink size={16} /> Redes / Sitio
               </a>
+            )}
+
+            {/* Menú (PDF o galería) */}
+            {hasMenuPdf && (
+              <a
+                href={negocio.menuPdfUrl!}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="col-span-2 flex items-center justify-center gap-2 bg-[#f6f7f5] hover:bg-[#e7e7e7] text-[#2c363b] py-2 rounded-md transition-colors"
+              >
+                <FileText size={16} /> Menú (PDF)
+              </a>
+            )}
+            {!hasMenuPdf && hasMenuPhotos && (
+              <button
+                onClick={openMenuGrid}
+                className="col-span-2 flex items-center justify-center gap-2 bg-[#f6f7f5] hover:bg-[#e7e7e7] text-[#2c363b] py-2 rounded-md transition-colors"
+              >
+                <UtensilsCrossed size={16} /> Ver Menú
+              </button>
             )}
           </div>
         </div>
@@ -343,13 +431,26 @@ export default function BusinessCard({
         {expanded && Expanded}
       </AnimatePresence>
 
-      {/* Galería tipo Pinterest */}
+      {/* Galería negocio */}
       <AnimatePresence>
         {gridOpen && (
           <GalleryGrid
             photos={photos}
             open={gridOpen}
             onClose={closeGrid}
+            title="Galería"
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Galería menú */}
+      <AnimatePresence>
+        {menuOpen && (
+          <GalleryGrid
+            photos={negocio.menuPhotos || []}
+            open={menuOpen}
+            onClose={closeMenuGrid}
+            title="Menú"
           />
         )}
       </AnimatePresence>

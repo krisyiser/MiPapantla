@@ -5,118 +5,122 @@ import { AnimatePresence, motion } from 'motion/react'
 import { ChevronLeft, ChevronRight, X, Maximize2, Download } from 'lucide-react'
 import { useOutsideClick } from '@/hooks/use-outside-click'
 
-/** Extrae FILE_ID si es Drive */
+type Props = {
+  photos: string[]          // URLs ya resueltas desde fetch (lh3 de Drive, etc.)
+  open: boolean
+  onClose: () => void
+  title?: string
+}
+
+/* =========================================================
+   Helpers: Drive fallbacks y proxys
+   ========================================================= */
+
 function getDriveId(url?: string): string | null {
   if (!url) return null
   return (
-    url.match(/\/d\/([a-zA-Z0-9_-]+)/)?.[1] ||
-    url.match(/[?&]id=([a-zA-Z0-9_-]+)/)?.[1] ||
+    url.match(/\/d\/([a-zA-Z0-9_-]+)/)?.[1] || // lh3.googleusercontent.com/d/<ID>
+    url.match(/[?&]id=([a-zA-Z0-9_-]+)/)?.[1] || // ...id=<ID>
+    url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)?.[1] || // drive/file/d/<ID>...
     null
   )
 }
 
-/** Candidatos robustos (Drive + proxy opcional) */
-function buildImageCandidates(photo?: string): string[] {
-  const fallback = '/pictures/ic_food.png'
-  if (!photo) return [fallback]
+function uniq<T>(arr: T[]) {
+  return Array.from(new Set(arr))
+}
 
-  const id = getDriveId(photo)
+/** Para cada foto arma una lista de alternativas razonables */
+function buildCandidates(u?: string): string[] {
+  if (!u) return []
+
+  const list: string[] = [u]
+
+  // Si tenemos ID de drive, añadimos variantes útiles
+  const id = getDriveId(u)
   if (id) {
-    const raw = `lh3.googleusercontent.com/d/${id}=s1600`
-    const proxied = `https://images.weserv.nl/?url=${encodeURIComponent(raw)}`
-    return [
-      `https://${raw}`,
+    list.push(
+      `https://lh3.googleusercontent.com/d/${id}=s1600`,
       `https://drive.google.com/uc?export=download&id=${id}`,
       `https://drive.google.com/thumbnail?id=${id}&sz=w1600`,
       `https://drive.google.com/uc?export=view&id=${id}`,
-      proxied,
-      photo,
-      fallback,
-    ]
+    )
   }
 
+  // Proxy de último recurso (evita bloqueos de hotlink/Referer)
   try {
-    const u = new URL(photo)
-    const proxied = `https://images.weserv.nl/?url=${encodeURIComponent(`${u.host}${u.pathname}${u.search}`)}`
-    return [photo, proxied, fallback]
+    const url = new URL(u)
+    const raw = `${url.host}${url.pathname}${url.search}`
+    list.push(`https://images.weserv.nl/?url=${encodeURIComponent(raw)}`)
   } catch {
-    return [photo, fallback]
+    // ignorar si no es URL válida
   }
+
+  return uniq(list).filter(Boolean)
 }
 
-interface GalleryGridProps {
-  photos: string[]
-  open: boolean
-  onClose: () => void
-}
+/* =========================================================
+   Componente
+   ========================================================= */
 
-/** Grid tipo Pinterest + Lightbox */
-export default function GalleryGrid({ photos, open, onClose }: GalleryGridProps) {
+export default function GalleryGrid({ photos, open, onClose, title = 'Galería' }: Props) {
   const modalRef = useRef<HTMLDivElement>(null)
+  useOutsideClick(modalRef, () => onClose())
 
-  // --- Estado lightbox ---
-  const [lbOpen, setLbOpen] = useState(false)
-  const [idx, setIdx] = useState(0)
+  // Candidatos por imagen
+  const candidates = useMemo(() => photos.map((p) => buildCandidates(p)), [photos])
 
-  // No cierres el grid por “outside click” mientras el LB esté abierto
-  useOutsideClick(modalRef, () => {
-    if (lbOpen) return
-    onClose()
-  })
-
-  // Candidatos por foto (fallbacks)
-  const candidates = useMemo(() => photos.map(p => buildImageCandidates(p)), [photos])
-
+  // Estado de fallback por cada foto
   const [candIdx, setCandIdx] = useState<number[]>(() => candidates.map(() => 0))
   useEffect(() => {
     setCandIdx(candidates.map(() => 0))
   }, [candidates])
 
+  // Lightbox
+  const [lbOpen, setLbOpen] = useState(false)
+  const [idx, setIdx] = useState(0)
+
   const openLbAt = useCallback((i: number) => {
     setIdx(i)
     setLbOpen(true)
   }, [])
+
   const closeLb = useCallback(() => setLbOpen(false), [])
 
-  const next = useCallback(
-    () => setIdx(i => (i + 1) % photos.length),
-    [photos.length]
-  )
-  const prev = useCallback(
-    () => setIdx(i => (i - 1 + photos.length) % photos.length),
-    [photos.length]
-  )
+  const next = useCallback(() => {
+    setIdx((i) => (i + 1) % photos.length)
+  }, [photos.length])
 
-  // Bloquea scroll cuando hay modal/lightbox
+  const prev = useCallback(() => {
+    setIdx((i) => (i - 1 + photos.length) % photos.length)
+  }, [photos.length])
+
+  // Bloquear scroll de body mientras el modal o lightbox están abiertos
   useEffect(() => {
-    const shouldLock = open || lbOpen
-    document.body.style.overflow = shouldLock ? 'hidden' : 'auto'
-    return () => { document.body.style.overflow = 'auto' }
+    const lock = open || lbOpen
+    document.body.style.overflow = lock ? 'hidden' : 'auto'
+    return () => {
+      document.body.style.overflow = 'auto'
+    }
   }, [open, lbOpen])
 
-  // Teclas: ESC cierra LB (o grid); ←/→ navegan en LB
+  // Teclas: ESC cierra, flechas navegan
   useEffect(() => {
-    if (!open && !lbOpen) return
+    if (!open) return
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        if (lbOpen) {
-          closeLb()
-        } else {
-          onClose()
-        }
-      } else if (lbOpen && e.key === 'ArrowRight') {
-        next()
-      } else if (lbOpen && e.key === 'ArrowLeft') {
-        prev()
-      }
+        if (lbOpen) closeLb()
+        else onClose()
+      } else if (lbOpen && e.key === 'ArrowRight') next()
+      else if (lbOpen && e.key === 'ArrowLeft') prev()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [open, lbOpen, next, prev, closeLb, onClose])
+  }, [open, lbOpen, closeLb, onClose, next, prev])
 
-  // Preload siguiente/anterior en LB
+  // Preload siguiente/anterior en lightbox (suave)
   useEffect(() => {
-    if (!lbOpen) return
+    if (!lbOpen || photos.length < 2) return
     const preload = (i: number) => {
       const src = candidates[i]?.[0]
       if (!src) return
@@ -127,41 +131,71 @@ export default function GalleryGrid({ photos, open, onClose }: GalleryGridProps)
     preload((idx - 1 + photos.length) % photos.length)
   }, [idx, lbOpen, photos.length, candidates])
 
-  // Fuente activa LB
-  const activeCandList = candidates[idx] || ['/pictures/ic_food.png']
+  // Activo lightbox
+  const activeCandList = candidates[idx] || []
   const activeCandIdx = candIdx[idx] ?? 0
-  const activeSrc = activeCandList[activeCandIdx] || '/pictures/ic_food.png'
+  const activeSrc = activeCandList[activeCandIdx]
 
-  return (
-    <AnimatePresence>
-      {open && (
-        <div className="fixed inset-0 z-[70]" aria-modal="true" role="dialog">
-          {/* Backdrop del GRID */}
+  // Si no hay fotos, render vacío amable
+  if (open && photos.length === 0) {
+    return (
+      <AnimatePresence>
+        <div className="fixed inset-0 z-[70]">
           <motion.div
             className="absolute inset-0 bg-black/40"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => {
-              if (!lbOpen) {
-                onClose()
-              }
-            }}
+            onClick={onClose}
+          />
+          <motion.div
+            ref={modalRef}
+            className="relative z-[71] mx-auto w-full max-w-3xl h-[60vh] mt-[10vh] bg-white rounded-3xl overflow-hidden shadow-2xl flex flex-col items-center justify-center p-8 text-center"
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+          >
+            <div className="text-lg font-semibold mb-2">{title}</div>
+            <p className="text-gray-600">Este negocio aún no tiene fotos disponibles.</p>
+            <button
+              onClick={onClose}
+              className="mt-6 inline-flex items-center gap-2 rounded-lg px-4 py-2 bg-black/5 hover:bg-black/10"
+            >
+              <X size={16} /> Cerrar
+            </button>
+          </motion.div>
+        </div>
+      </AnimatePresence>
+    )
+  }
+
+  return (
+    <AnimatePresence>
+      {open && (
+        <div className="fixed inset-0 z-[70]" aria-modal="true" role="dialog">
+          {/* Backdrop */}
+          <motion.div
+            className="absolute inset-0 bg-black/40"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
           />
 
-          {/* Contenedor GRID */}
+          {/* Contenedor */}
           <motion.div
             ref={modalRef}
             className="relative z-[71] mx-auto w-full max-w-6xl h-[92vh] mt-[4vh] bg-white rounded-3xl overflow-hidden shadow-2xl flex flex-col"
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.98 }}
+            onClick={(e) => e.stopPropagation()}
           >
             {/* Header sticky */}
             <div className="sticky top-0 z-10 backdrop-blur bg-white/70 border-b">
               <div className="flex items-center justify-between px-4 py-3">
                 <div className="font-semibold">
-                  Galería <span className="text-gray-500">({photos.length})</span>
+                  {title} <span className="text-gray-500">({photos.length})</span>
                 </div>
                 <button
                   onClick={onClose}
@@ -176,8 +210,8 @@ export default function GalleryGrid({ photos, open, onClose }: GalleryGridProps)
             {/* Grid tipo Pinterest */}
             <div className="flex-1 overflow-y-auto p-4 md:p-6">
               <div className="columns-1 sm:columns-2 md:columns-3 gap-4 [column-fill:_balance]">
-                {photos.map((p, i) => {
-                  const primary = candidates[i][0] || p
+                {photos.map((_, i) => {
+                  const primary = candidates[i][0]
                   return (
                     <div key={i} className="relative mb-4 break-inside-avoid group">
                       <img
@@ -191,18 +225,27 @@ export default function GalleryGrid({ photos, open, onClose }: GalleryGridProps)
                         className="w-full h-auto rounded-lg object-cover shadow-sm transition-transform duration-200 group-hover:scale-[1.01] cursor-zoom-in"
                         onClick={() => openLbAt(i)}
                         onError={(e) => {
-                          setCandIdx(prev => {
-                            const copy = [...prev]
-                            const nextIdx = (copy[i] ?? 0) + 1
-                            copy[i] = nextIdx
-                            const nextSrc = candidates[i][nextIdx] || '/pictures/ic_food.png'
-                            const imgEl = e.currentTarget as HTMLImageElement
-                            imgEl.src = nextSrc
-                            return copy
+                          setCandIdx((prev) => {
+                            const next = [...prev]
+                            const nextIndex = (next[i] ?? 0) + 1
+                            next[i] = nextIndex
+                            const altSrc = candidates[i][nextIndex]
+                            if (altSrc) {
+                              e.currentTarget.src = altSrc
+                            } else {
+                              // si ya no hay alternativas, ocultamos la tarjeta rota
+                              e.currentTarget.style.display = 'none'
+                            }
+                            return next
                           })
                         }}
                       />
-                      <div className="pointer-events-none absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-black/20" />
+
+                      {/* Overlay hover con icono */}
+                      <div
+                        className="pointer-events-none absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-black/20"
+                        aria-hidden="true"
+                      />
                       <div className="pointer-events-none absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <div className="bg-black/60 text-white rounded-full p-2">
                           <Maximize2 size={16} />
@@ -217,7 +260,7 @@ export default function GalleryGrid({ photos, open, onClose }: GalleryGridProps)
 
           {/* Lightbox */}
           <AnimatePresence>
-            {lbOpen && (
+            {lbOpen && activeSrc && (
               <div
                 className="fixed inset-0 z-[80] bg-black/80 flex items-center justify-center p-4"
                 onClick={closeLb}
@@ -226,17 +269,21 @@ export default function GalleryGrid({ photos, open, onClose }: GalleryGridProps)
                   className="relative max-w-6xl w-full max-h-[90vh] flex items-center justify-center"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  {/* Zonas clicables para navegar */}
-                  <button
-                    onClick={(e) => { e.stopPropagation(); prev() }}
-                    className="absolute left-0 top-0 h-full w-1/3 cursor-w-resize bg-transparent"
-                    aria-label="Anterior"
-                  />
-                  <button
-                    onClick={(e) => { e.stopPropagation(); next() }}
-                    className="absolute right-0 top-0 h-full w-1/3 cursor-e-resize bg-transparent"
-                    aria-label="Siguiente"
-                  />
+                  {/* Zonas invisibles para navegar por clic lateral */}
+                  {photos.length > 1 && (
+                    <>
+                      <button
+                        onClick={prev}
+                        className="absolute left-0 top-0 h-full w-1/3 cursor-w-resize bg-transparent"
+                        aria-label="Anterior"
+                      />
+                      <button
+                        onClick={next}
+                        className="absolute right-0 top-0 h-full w-1/3 cursor-e-resize bg-transparent"
+                        aria-label="Siguiente"
+                      />
+                    </>
+                  )}
 
                   <img
                     src={activeSrc}
@@ -246,10 +293,10 @@ export default function GalleryGrid({ photos, open, onClose }: GalleryGridProps)
                     referrerPolicy="no-referrer"
                     crossOrigin="anonymous"
                     onError={() => {
-                      setCandIdx(prev => {
-                        const copy = [...prev]
-                        copy[idx] = (copy[idx] ?? 0) + 1
-                        return copy
+                      setCandIdx((prev) => {
+                        const next = [...prev]
+                        next[idx] = (next[idx] ?? 0) + 1
+                        return next
                       })
                     }}
                   />
@@ -259,6 +306,7 @@ export default function GalleryGrid({ photos, open, onClose }: GalleryGridProps)
                     {idx + 1} / {photos.length}
                   </div>
                   <div className="absolute top-2 right-2 flex items-center gap-2">
+                    {/* Descarga/abrir original (la primera url declarada por fila) */}
                     <a
                       href={photos[idx]}
                       target="_blank"
@@ -270,7 +318,7 @@ export default function GalleryGrid({ photos, open, onClose }: GalleryGridProps)
                       <Download size={16} />
                     </a>
                     <button
-                      onClick={(e) => { e.stopPropagation(); closeLb() }}
+                      onClick={closeLb}
                       className="bg-black/60 hover:bg-black/80 text-white p-2 rounded-full"
                       aria-label="Cerrar"
                     >
@@ -278,18 +326,18 @@ export default function GalleryGrid({ photos, open, onClose }: GalleryGridProps)
                     </button>
                   </div>
 
-                  {/* Botones visibles */}
+                  {/* Flechas visibles */}
                   {photos.length > 1 && (
                     <>
                       <button
-                        onClick={(e) => { e.stopPropagation(); prev() }}
+                        onClick={prev}
                         className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full"
                         aria-label="Anterior"
                       >
                         <ChevronLeft size={20} />
                       </button>
                       <button
-                        onClick={(e) => { e.stopPropagation(); next() }}
+                        onClick={next}
                         className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full"
                         aria-label="Siguiente"
                       >

@@ -45,7 +45,7 @@ const mosaicData: MosaicBlock[] = [
   {
     id: 'experiencias',
     title: 'EXPERIENCIAS',
-    href: '/promociones',
+    href: '/experiencias',
     image: '/pictures/experiencias.jpg',
     size: 's2',
     labelPosition: 'tl'
