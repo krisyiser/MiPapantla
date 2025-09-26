@@ -13,7 +13,7 @@ export default async function Agencias() {
   // Soporta celdas con múltiples giros. Usamos el helper
   // y añadimos un fallback por substring “agencia”.
   const agencias = all
-    .filter(b => businessInSection(b, 'agencia_de_turismo') || b.giros.some(g => g.includes('agencia')))
+    .filter(b => businessInSection(b, 'turismo') || b.giros.some(g => g.includes('agencia')))
     .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }))
 
   const highlights = [
