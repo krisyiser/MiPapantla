@@ -19,6 +19,7 @@ export default function ClientBody({
   const [isInstallable, setIsInstallable] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
+  const [showPrompt, setShowPrompt] = useState(true);
 
   useEffect(() => {
     document.body.className = "antialiased";
@@ -35,7 +36,10 @@ export default function ClientBody({
       }
 
       // iOS standalone detection
-      if ("standalone" in window.navigator && (window.navigator as Navigator & { standalone?: boolean }).standalone) {
+      if (
+        "standalone" in window.navigator &&
+        (window.navigator as Navigator & { standalone?: boolean }).standalone
+      ) {
         setIsInstalled(true);
       }
     };
@@ -67,6 +71,7 @@ export default function ClientBody({
       console.log("PWA installed");
       setDeferredPrompt(null);
       setIsInstallable(false);
+      setShowPrompt(false);
     }
   };
 
@@ -75,26 +80,44 @@ export default function ClientBody({
       {/* LOADER */}
       <AppLoader />
 
-      {/* INSTALL BAR — Android */}
-      {!isInstalled && isInstallable && !isIOS && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-black text-white px-5 py-3 rounded-xl shadow-xl flex items-center gap-4">
-          <span className="text-sm">
-            Instalar la app de <strong>MiPapantla</strong>
-          </span>
-          <button
-            onClick={handleInstall}
-            className="bg-white text-black px-3 py-1 rounded-md text-sm font-medium hover:bg-gray-200 transition"
-          >
-            Instalar
-          </button>
-        </div>
-      )}
+      {/* INSTALL MODAL */}
+      {!isInstalled && showPrompt && (isInstallable || isIOS) && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 backdrop-blur-md px-6">
+          <div className="bg-[#0f172a] text-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center space-y-4 animate-fade-in">
+            <h3 className="text-lg font-bold tracking-wide">
+              Instalar MiPapantla
+            </h3>
 
-      {/* INSTALL BAR — iOS */}
-      {!isInstalled && isIOS && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-black text-white px-5 py-3 rounded-xl shadow-xl text-sm max-w-xs text-center">
-          Para instalar MiPapantla, toca <strong>Compartir</strong> y luego{" "}
-          <strong>“Agregar a pantalla de inicio”</strong>
+            {!isIOS ? (
+              <p className="text-sm text-white/80">
+                Agrega MiPapantla a tu pantalla de inicio para una experiencia
+                rápida, offline y como una app real.
+              </p>
+            ) : (
+              <p className="text-sm text-white/80">
+                En iPhone: toca <strong>Compartir</strong> y luego{" "}
+                <strong>“Agregar a pantalla de inicio”</strong>
+              </p>
+            )}
+
+            <div className="flex gap-3 justify-center pt-2">
+              {!isIOS && (
+                <button
+                  onClick={handleInstall}
+                  className="bg-white text-black px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-200 transition"
+                >
+                  Instalar
+                </button>
+              )}
+
+              <button
+                onClick={() => setShowPrompt(false)}
+                className="bg-white/10 text-white px-4 py-2 rounded-lg text-sm hover:bg-white/20 transition"
+              >
+                Ahora no
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
