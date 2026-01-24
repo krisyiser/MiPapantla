@@ -77,7 +77,7 @@ const attractions: Attraction[] = [
     name: 'Museo Teodoro Cano',
     type: 'Museo',
     // TODO: reemplaza por la ruta correcta
-    image: '/pictures/carrusel4.jpg',
+    image: '/pictures/museo.jpeg',
     location: 'Rodolfo Curti 101, Papantla',
     hours: '09:00 – 18:00 (Martes a Domingo)',
     price: 'Entrada gratuita',
@@ -159,7 +159,7 @@ export default function VisitamePapantla() {
         {/* HERO */}
         <section className="relative h-72 rounded-xl overflow-hidden mb-8">
           <Image
-            src="/pictures/visitame-hero.jpg" // TODO: imagen hero real
+            src="/pictures/visitame-hero.jpeg" // TODO: imagen hero real
             alt="Visítame Papantla"
             fill
             className="object-cover w-full h-full"
