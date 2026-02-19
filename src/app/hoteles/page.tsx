@@ -5,6 +5,7 @@ import { fetchBusinesses } from '@/lib/fetchBusinesses'
 import BusinessCard from '@/components/BusinessCard'
 import { businessInSection } from '@/lib/giros'
 import { BedDouble, Wifi, Car, Coffee } from 'lucide-react'
+import Image from 'next/image'
 
 // Server Component
 export default async function Hoteles() {
@@ -18,9 +19,9 @@ export default async function Hoteles() {
   // “Amenidades” solo son informativas/estéticas (no filtran nada)
   const amenidades = [
     { icon: BedDouble, label: 'Camas cómodas', hint: 'Descanso garantizado' },
-    { icon: Wifi,      label: 'Wi-Fi',         hint: 'Conéctate sin complicaciones' },
-    { icon: Car,       label: 'Estacionamiento', hint: 'Comodidad para llegar' },
-    { icon: Coffee,    label: 'Café/Desayuno', hint: 'Empieza bien tu día' },
+    { icon: Wifi, label: 'Wi-Fi', hint: 'Conéctate sin complicaciones' },
+    { icon: Car, label: 'Estacionamiento', hint: 'Comodidad para llegar' },
+    { icon: Coffee, label: 'Café/Desayuno', hint: 'Empieza bien tu día' },
   ]
 
   return (
@@ -30,10 +31,12 @@ export default async function Hoteles() {
       <main className="container mx-auto px-4 py-6 pb-20">
         {/* Hero */}
         <section className="relative h-64 rounded-lg overflow-hidden mb-8">
-          <img
+          <Image
             src="/pictures/hospedaje.jpeg"
             alt="Hoteles en Papantla"
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            priority
           />
           <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
             <div className="text-center text-white">

@@ -70,33 +70,40 @@ const nextConfig = {
   reactStrictMode: true,
 
   images: {
-    unoptimized: true,
-    domains: [
-      "source.unsplash.com",
-      "images.unsplash.com",
-      "ext.same-assets.com",
-      "ugc.same-assets.com",
-    ],
     remotePatterns: [
       {
         protocol: "https",
         hostname: "source.unsplash.com",
-        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "images.unsplash.com",
-        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "ext.same-assets.com",
-        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "ugc.same-assets.com",
-        pathname: "/**",
+      },
+      // Google Drive images (lh3 is fast CDN)
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "drive.google.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images.weserv.nl",
+      },
+      // Local development sometimes hits localhost
+      {
+        protocol: "http",
+        hostname: "localhost",
       },
     ],
   },

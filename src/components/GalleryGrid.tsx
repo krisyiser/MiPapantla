@@ -211,7 +211,8 @@ export default function GalleryGrid({ photos, open, onClose, title = 'Galería' 
             <div className="flex-1 overflow-y-auto p-4 md:p-6">
               <div className="columns-1 sm:columns-2 md:columns-3 gap-4 [column-fill:_balance]">
                 {photos.map((_, i) => {
-                  const primary = candidates[i][0]
+                  const currentIdx = candIdx[i] ?? 0
+                  const primary = candidates[i][currentIdx] || candidates[i][0]
                   return (
                     <div key={i} className="relative mb-4 break-inside-avoid group">
                       <img

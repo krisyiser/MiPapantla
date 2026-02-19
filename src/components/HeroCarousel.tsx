@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 type Image = {
@@ -38,14 +39,16 @@ export default function HeroCarousel() {
       {images.map((img, index) => (
         <div
           key={img.id}
-          className={`absolute inset-0 transition-opacity duration-1000 ${
-            index === currentSlide ? 'opacity-100' : 'opacity-0'
-          }`}
+          className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'
+            }`}
         >
-          <img
+          <Image
             src={img.url}
             alt={img.alt}
-            className="w-full h-full object-cover"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 100vw"
+            className="object-cover"
+            priority={index === 0}
           />
           <div className="absolute inset-0 bg-black/20" />
         </div>
@@ -74,9 +77,8 @@ export default function HeroCarousel() {
           <button
             key={i}
             onClick={() => setCurrentSlide(i)}
-            className={`w-3 h-3 rounded-full ${
-              i === currentSlide ? 'bg-white' : 'bg-white/50'
-            }`}
+            className={`w-3 h-3 rounded-full ${i === currentSlide ? 'bg-white' : 'bg-white/50'
+              }`}
           />
         ))}
       </div>

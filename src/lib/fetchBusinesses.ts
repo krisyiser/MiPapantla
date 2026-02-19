@@ -32,7 +32,7 @@ export interface Business {
 }
 
 // === CONFIG HOJA ===
-const SHEET_ID = '11Ra2_gzewBqAhs-5lo1cPBXI_RAy-YUMLmrJNu_Ufc8'
+const SHEET_ID = process.env.GOOGLE_SHEET_ID || '11Ra2_gzewBqAhs-5lo1cPBXI_RAy-YUMLmrJNu_Ufc8'
 const TAB_NAME = 'Respuestas de formulario 1'
 const url = `https://opensheet.vercel.app/${SHEET_ID}/${encodeURIComponent(TAB_NAME)}`
 
@@ -160,8 +160,8 @@ export async function fetchBusinesses(): Promise<Business[]> {
       nrow[normKey(k)] = (v ?? '').toString().trim()
     })
 
-    const nombre       = nrow['nombre comercial del negocio'] || ''
-    const giroRaw      = nrow['giro del negocio'] || ''
+    const nombre = nrow['nombre comercial del negocio'] || ''
+    const giroRaw = nrow['giro del negocio'] || ''
 
     // Descripciones
     const descripcionCorta = nrow['breve descripcion del negocio'] || ''
@@ -171,22 +171,22 @@ export async function fetchBusinesses(): Promise<Business[]> {
       nrow['descripcion extendida'] || ''
     const descripcion = descripcionCorta || summarize(descripcionLarga)
 
-    const direccion    = nrow['direccion completa'] || ''
-    const referencia   = nrow['punto de referencia cercano'] || ''
-    const telefono     = nrow['telefono celular de empresa whatsapp'] || nrow['telefono fijo de empresa opcional'] || ''
-    const email        = nrow['correo electronico de contacto'] || ''
-    const redes        = nrow['sitio web o redes sociales facebook instagram etc colocar link'] || ''
-    const horario      = nrow['horario de atencion especifique por dia si varia'] || ''
-    const precios      = nrow['rango de precios aproximado'] || ''
-    const pagos        = splitCsv(nrow['formas de pago aceptadas'] || '')
-    const servicios    = nrow['servicios o productos que ofrece'] || ''
-    const especial     = nrow['que lo hace unico o especial frente a otros negocios similares'] || ''
-    const idiomas      = nrow['ofrece atencion en algun idioma adicional al espanol'] || ''
-    const dias         = nrow['dias de operacion'] || ''
-    const googleMaps   = nrow['si respondio si por favor copie el enlace'] || ''
-    const accesible    = /si/i.test(nrow['cuenta con instalaciones accesibles para personas con discapacidad'] || '')
-    const extras       = splitCsv(nrow['servicios adicionales disponibles'] || '')
-    const certific     = nrow['cuenta con algun tipo de certificacion turistica sanitaria o ambiental'] || ''
+    const direccion = nrow['direccion completa'] || ''
+    const referencia = nrow['punto de referencia cercano'] || ''
+    const telefono = nrow['telefono celular de empresa whatsapp'] || nrow['telefono fijo de empresa opcional'] || ''
+    const email = nrow['correo electronico de contacto'] || ''
+    const redes = nrow['sitio web o redes sociales facebook instagram etc colocar link'] || ''
+    const horario = nrow['horario de atencion especifique por dia si varia'] || ''
+    const precios = nrow['rango de precios aproximado'] || ''
+    const pagos = splitCsv(nrow['formas de pago aceptadas'] || '')
+    const servicios = nrow['servicios o productos que ofrece'] || ''
+    const especial = nrow['que lo hace unico o especial frente a otros negocios similares'] || ''
+    const idiomas = nrow['ofrece atencion en algun idioma adicional al espanol'] || ''
+    const dias = nrow['dias de operacion'] || ''
+    const googleMaps = nrow['si respondio si por favor copie el enlace'] || ''
+    const accesible = /si/i.test(nrow['cuenta con instalaciones accesibles para personas con discapacidad'] || '')
+    const extras = splitCsv(nrow['servicios adicionales disponibles'] || '')
+    const certific = nrow['cuenta con algun tipo de certificacion turistica sanitaria o ambiental'] || ''
 
     // ===== FOTOS (columna "Fotos" -> carpeta) =====
     const fotosCellRaw = nrow['fotos'] || ''

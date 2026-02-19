@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 
 type Shape = "square" | "wide" | "tall"
 
@@ -142,26 +143,34 @@ function labelPosCls(pos: MosaicBlock["labelPosition"]) {
 
 function spanByShape(shape: Shape) {
   switch (shape) {
-    case "wide": return "row-span-2"
-    case "tall": return "row-span-3"
-    case "square": return "row-span-2"
+    // En móvil (default) usamos altura definida por clase h-56 o similar. 
+    // Los row-span solo aplican en escritorio (md) donde tenemos el layout masonry real.
+    case "wide": return "md:col-span-2 md:row-span-2"
+    case "tall": return "md:row-span-3"
+    case "square": return "md:row-span-2"
   }
 }
 
 function Card({ b }: { b: MosaicBlock }) {
+  // En móvil: altura fija (h-56) para consistencia tipo "tarjeta de menú".
+  // En escritorio: h-full para llenar el grid area del masonry.
   return (
-    <Link href={b.href} className={`block group ${spanByShape(b.shape)}`}>
-      <div className="relative w-full h-full overflow-hidden rounded-xl shadow hover:shadow-lg transition">
-        <img
+    <Link href={b.href} className={`block group w-full h-56 md:h-full relative ${spanByShape(b.shape)}`}>
+      <div className="relative w-full h-full overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition">
+        <Image
           src={b.image}
           alt={b.title}
-          className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
         />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-        <div className={`absolute ${labelPosCls(b.labelPosition)} text-white font-extrabold tracking-wide drop-shadow text-base md:text-lg lg:text-xl max-w-[85%]`}>
-          {b.title}
+        <div className={`absolute ${labelPosCls(b.labelPosition)} text-white font-extrabold tracking-wide drop-shadow text-lg md:text-xl lg:text-2xl max-w-[90%]`}>
+          <span className="uppercase border-b-2 border-[#bb904d]/0 group-hover:border-[#bb904d] transition-all pb-0.5">
+            {b.title}
+          </span>
         </div>
       </div>
     </Link>
@@ -173,20 +182,69 @@ export default function MosaicHome() {
   const rest = blocks.filter(b => b.group !== "featured")
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
 
-      {/* HERO */}
+      {/* HERO SECTION 
+          Móvil: Stacked, aspect video (16/9) para ambos.
+          Desktop: Grid custom (3 cols + 2 cols).
+      */}
       <section className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <div className="md:col-span-3 aspect-[16/9]">
-          <Card b={featured[0]} />
+
+        {/* Bloque 1: Eventos */}
+        <div className="w-full aspect-[16/9] md:col-span-3 md:aspect-auto md:h-full relative transform transition hover:scale-[1.01] duration-300">
+          {/* Reutilizamos Card pero forzamos h-full para que llene el div padre */}
+          <div className="w-full h-full">
+            <Link href={featured[0].href} className="block group w-full h-full relative">
+              <div className="relative w-full h-full overflow-hidden rounded-xl shadow-md hover:shadow-xl transition">
+                <Image
+                  src={featured[0].image}
+                  alt={featured[0].title}
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, 60vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-80" />
+                <div className={`absolute bottom-6 left-6 text-white font-black tracking-wider drop-shadow-md text-2xl md:text-4xl`}>
+                  {featured[0].title}
+                </div>
+              </div>
+            </Link>
+          </div>
         </div>
-        <div className="md:col-span-2 aspect-[3/4]">
-          <Card b={featured[1]} />
+
+        {/* Bloque 2: Visitame 
+            Móvil: Aspecto 16/9 (más corto que antes 3/4).
+            Desktop: Aspecto 3/4 o relleno de altura.
+        */}
+        <div className="w-full aspect-[16/9] md:col-span-2 md:aspect-auto md:h-full relative">
+          <div className="w-full h-full">
+            <Link href={featured[1].href} className="block group w-full h-full relative">
+              <div className="relative w-full h-full overflow-hidden rounded-xl shadow-md hover:shadow-xl transition">
+                <Image
+                  src={featured[1].image}
+                  alt={featured[1].title}
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, 40vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <div className={`absolute top-6 left-6 text-white font-black tracking-wider drop-shadow-md text-2xl md:text-3xl`}>
+                  {featured[1].title}
+                </div>
+              </div>
+            </Link>
+          </div>
         </div>
+
       </section>
 
-      {/* MASONRY GRID REAL */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-[140px] gap-4">
+      {/* MASONRY GRID RESTO 
+          Móvil: Grid 1 columna. Altura controlada por Card (h-56).
+          Desktop: Grid masonry con row-spans.
+      */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:auto-rows-[140px] gap-4">
         {rest.map(b => (
           <Card key={b.id} b={b} />
         ))}
