@@ -1,9 +1,9 @@
 // src/app/playas/page.tsx
-
 import Header from '@/components/Header'
 import BottomNavigation from '@/components/BottomNavigation'
 import { Waves, Sun, Volleyball, Camera, Umbrella, Activity, MapPin } from 'lucide-react'
 import Image from 'next/image'
+import SectionHero from '@/components/SectionHero'
 
 const activities = [
   { name: 'Pesca', icon: Activity, description: 'Costumbre local y actividad recreativa' },
@@ -98,34 +98,26 @@ export default function Playas() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <main className="container mx-auto px-4 py-6 pb-20">
-        <div className="relative h-72 rounded-lg overflow-hidden mb-8">
-          <Image
-            src="/pictures/playa.jpg"
-            alt="Playas de Papantla"
-            fill
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-            <div className="text-center text-white">
-              <h1 className="text-4xl font-bold mb-2">Playas Cercanas a Papantla</h1>
-              <p className="text-xl mb-4">Descubre los destinos costeros de la región totonaca</p>
-              <div className="flex justify-center items-center space-x-6 text-sm">
-                <div className="flex items-center">
-                  <Sun className="mr-2" size={20} />
-                  <span>Clima cálido todo el año</span>
-                </div>
-                <div className="flex items-center">
-                  <Waves className="mr-2" size={20} />
-                  <span>Mar y río en armonía</span>
-                </div>
-                <div className="flex items-center">
-                  <Umbrella className="mr-2" size={20} />
-                  <span>6 playas destacadas</span>
-                </div>
-              </div>
+        <SectionHero
+          imageSrc="/pictures/playa.jpg"
+          titleKey="hero.playas.title"
+          subtitleKey="hero.playas.subtitle"
+        >
+          <div className="flex justify-center items-center space-x-6 text-sm">
+            <div className="flex items-center">
+              <Sun className="mr-2" size={20} />
+              <span>Clima cálido todo el año</span>
+            </div>
+            <div className="flex items-center">
+              <Waves className="mr-2" size={20} />
+              <span>Mar y río en armonía</span>
+            </div>
+            <div className="flex items-center">
+              <Umbrella className="mr-2" size={20} />
+              <span>6 playas destacadas</span>
             </div>
           </div>
-        </div>
+        </SectionHero>
 
         {/* Actividades */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

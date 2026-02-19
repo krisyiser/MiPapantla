@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ClientBody from "./ClientBody";
@@ -20,8 +20,6 @@ export const metadata: Metadata = {
     "Explora las maravillas culturales, naturales y turísticas de Papantla desde una sola aplicación.",
 
   manifest: "/manifest.json",
-
-  themeColor: "#0f172a",
 
   appleWebApp: {
     capable: true,
@@ -58,6 +56,10 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#0f172a",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -77,8 +79,7 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
 
-        {/* Color barra navegador Android */}
-        <meta name="theme-color" content="#0f172a" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
       </head>
 
       <body suppressHydrationWarning className="antialiased bg-[#0f172a] text-white">

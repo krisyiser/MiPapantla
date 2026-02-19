@@ -36,6 +36,10 @@ export const translations: Translations = {
         // Heros (Page Titles)
         "hero.salud.title": "Salud y Bienestar",
         "hero.salud.subtitle": "Directorio médico y servicios de salud en Papantla",
+        "hero.eventos.title": "Eventos de Papantla",
+        "hero.eventos.subtitle": "Cultura viva, festivales y tradiciones durante todo el año",
+        "hero.visitame.title": "Visítame Papantla",
+        "hero.visitame.subtitle": "Recorre los tesoros culturales y naturales del Totonacapan",
         "hero.hoteles.title": "Hospedaje en Papantla",
         "hero.hoteles.subtitle": "Encuentra el lugar perfecto para descansar",
         "hero.restaurantes.title": "Gastronomía de Papantla",
@@ -102,6 +106,10 @@ export const translations: Translations = {
         // Heros (Page Titles)
         "hero.salud.title": "Health & Wellness",
         "hero.salud.subtitle": "Medical directory and health services in Papantla",
+        "hero.eventos.title": "Papantla Events",
+        "hero.eventos.subtitle": "Living culture, festivals and traditions all year round",
+        "hero.visitame.title": "Visit Me Papantla",
+        "hero.visitame.subtitle": "Explore the cultural and natural treasures of Totonacapan",
         "hero.hoteles.title": "Lodging in Papantla",
         "hero.hoteles.subtitle": "Find the perfect place to rest",
         "hero.restaurantes.title": "Papantla Gastronomy",

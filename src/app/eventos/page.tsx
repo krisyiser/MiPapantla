@@ -2,6 +2,7 @@
 import Header from '@/components/Header'
 import BottomNavigation from '@/components/BottomNavigation'
 import Image from 'next/image'
+import SectionHero from '@/components/SectionHero'
 import {
   CalendarDays,
   MapPin,
@@ -17,7 +18,7 @@ import {
 type EventCore = {
   slug: string
   title: string
-  image: string         // TODO: reemplaza por la ruta correcta de tu imagen optimizada
+  image: string
   location?: string
   venue?: string
   price?: string
@@ -27,11 +28,11 @@ type EventCore = {
 }
 
 type Dated = {
-  dateStart?: string    // ISO (YYYY-MM-DD) si hay fecha
-  dateEnd?: string      // ISO (YYYY-MM-DD) si hay rango
-  monthHint?: number    // 1..12 para “fechas por confirmar”
-  tbc?: boolean         // fechas por confirmar
-  allYear?: boolean     // abierto todo el año
+  dateStart?: string    // ISO (YYYY-MM-DD)
+  dateEnd?: string      // ISO (YYYY-MM-DD)
+  monthHint?: number
+  tbc?: boolean
+  allYear?: boolean
 }
 
 type EventItem = EventCore & Dated
@@ -59,10 +60,8 @@ function formatDateRangeEs(start?: string, end?: string) {
   if (s && e) {
     const sameMonth = s.getMonth() === e.getMonth() && s.getFullYear() === e.getFullYear()
     if (sameMonth) {
-      // 14–22 de junio de 2025
       return `${s.getDate()}–${e.getDate()} de ${MONTHS_ES[s.getMonth()]} de ${e.getFullYear()}`
     }
-    // 31 de oct – 2 de nov de 2025
     const startStr = `${s.getDate()} de ${MONTHS_ES[s.getMonth()]}`
     const endStr = `${e.getDate()} de ${MONTHS_ES[e.getMonth()]} de ${e.getFullYear()}`
     return `${startStr} – ${endStr}`
@@ -83,33 +82,30 @@ function isUpcoming(ev: EventItem, from = new Date(), horizonDays = 90) {
   const end = ev.dateEnd ? toDateISO(ev.dateEnd)! : start
   if (!start && !end) return false
   const horizon = new Date(from.getTime() + horizonDays * 24 * 60 * 60 * 1000)
-  // si el evento ya terminó completamente, no es “próximo”
   if (end && end < from) return false
-  // si empieza o está en curso en los próximos N días
   if (start && start <= horizon) return true
   return false
 }
 
-// -------------------- DATOS (con tus textos) --------------------
+// -------------------- DATOS --------------------
 const EVENTS: EventItem[] = [
   {
     slug: 'cumbre-tajin',
     title: 'Cumbre Tajín',
-    image: '/pictures/cumbre-tajin.jpeg', // TODO: reemplaza por tu imagen
+    image: '/pictures/cumbre-tajin.jpeg',
     location: 'Papantla, Veracruz',
     venue: 'Parque Takilhsukut · Zona Arqueológica El Tajín · Zócalo',
     price: 'Variado según actividades',
     description:
       'Festival cultural que preserva y difunde la riqueza cultural y arqueológica de la Ciudad Sagrada de El Tajín. Ceremonias, talleres, rituales, terapias, juegos autóctonos, conciertos, danzas, circo, conferencias, exposiciones y más.',
     highlights: ['Equinoccio de primavera', 'Talleres y rituales', 'Conciertos y danzas'],
-    // Edición típica alrededor del equinoccio de primavera. Para 2025, referencial:
     dateStart: '2025-03-19',
     dateEnd: '2025-03-24',
   },
   {
     slug: 'rancho-fest',
     title: 'Rancho Fest',
-    image: '/pictures/rancho-fest.jpeg', // TODO: reemplaza por tu imagen
+    image: '/pictures/rancho-fest.jpeg',
     location: 'Papantla, Veracruz',
     venue: 'Rancho Playa',
     price: 'Acceso general',
@@ -122,7 +118,7 @@ const EVENTS: EventItem[] = [
   {
     slug: 'carnaval-papantla',
     title: 'Carnaval de Papantla – Carnaval de la Alegría',
-    image: '/pictures/carnaval.jpeg', // TODO: reemplaza por tu imagen
+    image: '/pictures/carnaval.jpeg',
     location: 'Papantla, Veracruz',
     venue: 'Desfile por la ciudad · Concierto en Campo Deportivo Anáhuac',
     price: 'Gratuito (concierto: acceso según programa)',
@@ -134,7 +130,7 @@ const EVENTS: EventItem[] = [
   {
     slug: 'feria-corpus-christi',
     title: 'Feria de Corpus Christi',
-    image: '/pictures/corpus-christi.jpeg', // TODO: reemplaza por tu imagen
+    image: '/pictures/corpus-christi.jpeg',
     location: 'Papantla, Veracruz',
     venue: 'Terrenos de la feria · Campo Deportivo Anáhuac',
     price: 'Variado según evento',
@@ -147,21 +143,20 @@ const EVENTS: EventItem[] = [
   {
     slug: 'festival-xanath',
     title: 'Festival Xanath',
-    image: '/pictures/festival-xanath.jpeg', // TODO: reemplaza por tu imagen
+    image: '/pictures/festival-xanath.jpeg',
     location: 'Papantla, Veracruz',
     venue: 'Campo Deportivo Anáhuac',
     price: 'Acceso según programa',
     description:
       'Monumental obra de teatro al aire libre que celebra la cosmovisión totonaca, con más de 300 participantes. Parte de la Feria de Corpus Christi.',
     highlights: ['Ofrenda Cósmica', 'Danzas autóctonas', 'Cosmovisión totonaca'],
-    // Dentro de la feria 2025: 19 y 22 de junio (modelo como rango de la feria)
     dateStart: '2025-06-19',
     dateEnd: '2025-06-22',
   },
   {
     slug: 'feria-del-tumin',
     title: 'Feria del Túmin',
-    image: '/pictures/feria-tumin.jpeg', // TODO: reemplaza por tu imagen
+    image: '/pictures/feria-tumin.jpeg',
     location: 'Papantla, Veracruz',
     venue: 'Parque Israel C. Téllez',
     price: 'Acceso libre',
@@ -174,7 +169,7 @@ const EVENTS: EventItem[] = [
   {
     slug: 'ninin-dia-de-muertos',
     title: 'Ninín · Día de Muertos',
-    image: '/pictures/ninin.jpeg', // TODO: reemplaza por tu imagen
+    image: '/pictures/ninin.jpeg',
     location: 'Papantla, Veracruz',
     venue: 'Cementerio · Centro de la ciudad',
     price: 'Libre',
@@ -187,21 +182,20 @@ const EVENTS: EventItem[] = [
   {
     slug: 'feria-de-la-vainilla',
     title: 'Feria de la Vainilla',
-    image: '/pictures/feria-vainilla.jpeg', // TODO: reemplaza por tu imagen
+    image: '/pictures/feria-vainilla.jpeg',
     location: 'Papantla, Veracruz',
     venue: 'Centro histórico',
     price: 'Acceso libre',
     description:
       'Expo-venta de vainilla y derivados, degustaciones, demostraciones culinarias, talleres y concursos. Conmemora el Día Nacional de la Vainilla (16 de diciembre).',
     highlights: ['Expo-venta', 'Degustaciones', 'Talleres y concursos'],
-    // Fechas varían por edición → tbc con mes sugerido
     tbc: true,
     monthHint: 12,
   },
   {
     slug: 'navidad-en-papantla',
     title: 'Navidad en Papantla',
-    image: '/pictures/navidad.jpeg', // TODO: reemplaza por tu imagen
+    image: '/pictures/navidad.jpeg',
     location: 'Papantla, Veracruz',
     venue: 'Centro · Foros artísticos · Villa Navideña',
     price: 'Libre (según actividad)',
@@ -214,7 +208,7 @@ const EVENTS: EventItem[] = [
   {
     slug: 'ruta-chichinit',
     title: 'Ruta Chichinit',
-    image: '/pictures/chichinit.jpeg', // TODO: reemplaza por tu imagen
+    image: '/pictures/chichinit.jpeg',
     location: 'Rancho Playa',
     description:
       'Más de 100 participantes en razers, jeeps, cuatrimotos, motos y buggies; en un recorrido de aventura desde Rancho Playa (Papantla) hasta Playa Boquillas (Cazones).',
@@ -225,7 +219,6 @@ const EVENTS: EventItem[] = [
 
 // -------------------- VISTAS --------------------
 export default function Eventos() {
-  // agrupamos por mes
   const byMonth = new Map<number, EventItem[]>()
   const tbcList: EventItem[] = []
   const allYearList: EventItem[] = []
@@ -242,7 +235,7 @@ export default function Eventos() {
     }
   })
 
-  // próximos (siguientes ~90 días)
+  // próximos
   const now = new Date()
   const upcoming = EVENTS
     .filter((ev) => isUpcoming(ev, now, 120))
@@ -257,25 +250,11 @@ export default function Eventos() {
       <Header />
 
       <main className="container mx-auto px-4 py-6 pb-20">
-        {/* HERO */}
-        <section className="relative h-64 md:h-72 rounded-xl overflow-hidden mb-8">
-          <Image
-            src="/pictures/hero-eventos.jpeg" // TODO: imagen hero real
-            alt="Eventos en Papantla"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-          <div className="absolute inset-0 flex items-end md:items-center justify-start md:justify-center p-6 md:p-0">
-            <div className="text-left md:text-center text-white max-w-3xl">
-              <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">Eventos de Papantla</h1>
-              <p className="mt-2 text-lg md:text-xl opacity-95">
-                Cultura viva, festivales y tradiciones durante todo el año
-              </p>
-            </div>
-          </div>
-        </section>
+        <SectionHero
+          imageSrc="/pictures/hero-eventos.jpeg"
+          titleKey="hero.eventos.title"
+          subtitleKey="hero.eventos.subtitle"
+        />
 
         {/* PRÓXIMOS */}
         <section id="proximos" className="mb-10">
@@ -297,7 +276,7 @@ export default function Eventos() {
           )}
         </section>
 
-        {/* CALENDARIO ANUAL POR MES */}
+        {/* CALENDARIO ANUAL */}
         <section className="space-y-10 mb-12">
           {MONTHS_ES.map((m, idx) => {
             const list = byMonth.get(idx + 1) || []
@@ -326,7 +305,7 @@ export default function Eventos() {
           })}
         </section>
 
-        {/* FECHAS POR CONFIRMAR */}
+        {/* TBC */}
         {tbcList.length > 0 && (
           <section id="tbc" className="mb-12">
             <div className="flex items-center gap-2 mb-3">
@@ -341,9 +320,7 @@ export default function Eventos() {
           </section>
         )}
 
-
-
-        {/* CTA a secciones del sitio */}
+        {/* CTA */}
         <section className="rounded-2xl overflow-hidden shadow-sm border border-gray-100">
           <div className="bg-gradient-to-br from-[#1dace0] via-[#2b9ccf] to-[#bb904d] p-6">
             <h2 className="text-2xl font-bold text-white mb-1">Arma tu viaje con MiPapantla</h2>
@@ -379,13 +356,13 @@ export default function Eventos() {
   )
 }
 
-// -------------------- CARD DE EVENTO --------------------
+// -------------------- CARD --------------------
 function EventCard({ ev }: { ev: EventItem }) {
   const dateStr = ev.tbc && ev.monthHint
     ? `Fechas por confirmar · ${MONTHS_ES[ev.monthHint - 1]}`
     : ev.allYear
-    ? 'Disponible todo el año'
-    : formatDateRangeEs(ev.dateStart, ev.dateEnd)
+      ? 'Disponible todo el año'
+      : formatDateRangeEs(ev.dateStart, ev.dateEnd)
 
   return (
     <article className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow">
@@ -406,7 +383,6 @@ function EventCard({ ev }: { ev: EventItem }) {
       <div className="p-4">
         <h3 className="text-lg font-bold text-[#2c363b]">{ev.title}</h3>
 
-        {/* ubicación / sede */}
         {(ev.location || ev.venue) && (
           <div className="mt-1 text-sm text-gray-700 space-y-1">
             {ev.location && (
@@ -424,7 +400,6 @@ function EventCard({ ev }: { ev: EventItem }) {
           </div>
         )}
 
-        {/* chips */}
         <div className="mt-2 flex flex-wrap gap-2">
           {ev.price && (
             <span className="px-2 py-0.5 rounded text-xs bg-[#f6f7f5] text-[#814739] inline-flex items-center gap-1">
@@ -438,7 +413,6 @@ function EventCard({ ev }: { ev: EventItem }) {
           ))}
         </div>
 
-        {/* detalles nativos */}
         <details className="group mt-3">
           <summary className="cursor-pointer select-none text-sm text-[#2c363b] font-medium flex items-center gap-2">
             <Info size={16} />

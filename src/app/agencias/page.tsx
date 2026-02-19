@@ -1,8 +1,9 @@
-// src/app/agencias/page.tsx
+// src/app/turismo-aventura/page.tsx
 import Header from '@/components/Header'
 import BottomNavigation from '@/components/BottomNavigation'
 import { fetchBusinesses } from '@/lib/fetchBusinesses'
 import BusinessCard from '@/components/BusinessCard'
+import SectionHero from '@/components/SectionHero'
 import { businessInSection } from '@/lib/giros'
 import { Map, Compass, CalendarRange, Users } from 'lucide-react'
 
@@ -10,17 +11,15 @@ import { Map, Compass, CalendarRange, Users } from 'lucide-react'
 export default async function Agencias() {
   const all = await fetchBusinesses()
 
-  // Soporta celdas con múltiples giros. Usamos el helper
-  // y añadimos un fallback por substring “agencia”.
   const agencias = all
     .filter(b => businessInSection(b, 'turismo') || b.giros.some(g => g.includes('agencia')))
     .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }))
 
   const highlights = [
-    { icon: Map,            title: 'Rutas y recorridos',     hint: 'Explora Papantla y alrededores' },
-    { icon: Compass,        title: 'Guías certificados',     hint: 'Acompañamiento profesional' },
-    { icon: CalendarRange,  title: 'Experiencias programadas', hint: 'Agenda flexible' },
-    { icon: Users,          title: 'Grupos y privados',      hint: 'Hecho a tu medida' },
+    { icon: Map, title: 'Rutas y recorridos', hint: 'Explora Papantla y alrededores' },
+    { icon: Compass, title: 'Guías certificados', hint: 'Acompañamiento profesional' },
+    { icon: CalendarRange, title: 'Experiencias programadas', hint: 'Agenda flexible' },
+    { icon: Users, title: 'Grupos y privados', hint: 'Hecho a tu medida' },
   ]
 
   return (
@@ -28,16 +27,12 @@ export default async function Agencias() {
       <Header />
 
       <main className="container mx-auto px-4 py-6 pb-20">
-        {/* Hero sin depender de assets locales */}
-        <section className="relative h-56 rounded-lg overflow-hidden mb-8">
-          <div className="absolute inset-0 bg-gradient-to-r from-emerald-700 via-emerald-600 to-emerald-500" />
-          <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-            <div className="text-center text-white px-4">
-              <h1 className="text-4xl font-bold mb-1">Agencias de Turismo</h1>
-              <p className="text-lg opacity-95">Tours, experiencia y cultura totonaca</p>
-            </div>
-          </div>
-        </section>
+        {/* Hero */}
+        <SectionHero
+          imageSrc="/pictures/turismo rural.jpg"
+          titleKey="hero.agencias.title"
+          subtitleKey="hero.agencias.subtitle"
+        />
 
         {/* Highlights informativos */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

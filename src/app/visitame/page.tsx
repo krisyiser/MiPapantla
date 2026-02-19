@@ -2,6 +2,7 @@
 import Header from '@/components/Header'
 import BottomNavigation from '@/components/BottomNavigation'
 import Image from 'next/image'
+import SectionHero from '@/components/SectionHero'
 import {
   MapPin,
   Clock,
@@ -38,7 +39,6 @@ const attractions: Attraction[] = [
     id: 1,
     name: 'Zona Arqueológica de El Tajín',
     type: 'Sitio Arqueológico',
-    // TODO: reemplaza por la ruta correcta de tu imagen optimizada
     image: '/pictures/el-tajin.jpg',
     location: 'Col. Tajín, Papantla, Veracruz',
     hours: '09:00 – 17:00',
@@ -57,7 +57,6 @@ const attractions: Attraction[] = [
     id: 2,
     name: 'Monumento al Volador',
     type: 'Monumento Cultural',
-    // TODO: reemplaza por la ruta correcta
     image: '/pictures/monumento al volador.jpg',
     location: 'Cerro del Campanario, Papantla',
     hours: '24 horas',
@@ -76,7 +75,6 @@ const attractions: Attraction[] = [
     id: 3,
     name: 'Museo Teodoro Cano',
     type: 'Museo',
-    // TODO: reemplaza por la ruta correcta
     image: '/pictures/museo.jpeg',
     location: 'Rodolfo Curti 101, Papantla',
     hours: '09:00 – 18:00 (Martes a Domingo)',
@@ -95,7 +93,6 @@ const attractions: Attraction[] = [
     id: 4,
     name: 'Centro de las Artes Indígenas',
     type: 'Centro Cultural',
-    // TODO: reemplaza por la ruta correcta
     image: '/pictures/cai-takilhsukut.jpg',
     location: 'Parque Takilhsukut, Papantla',
     hours: '09:00 – 17:00',
@@ -114,7 +111,6 @@ const attractions: Attraction[] = [
     id: 5,
     name: 'Zona Arqueológica Cuyuxquihui',
     type: 'Sitio Arqueológico',
-    // TODO: reemplaza por la ruta correcta
     image: '/pictures/cuyuxquihui.jpeg',
     location: 'Paso del Correo, Papantla',
     hours: '09:00 – 17:00',
@@ -133,7 +129,6 @@ const attractions: Attraction[] = [
     id: 6,
     name: 'Mural Escultórico a la Cultura Totonaca',
     type: 'Arte Monumental',
-    // TODO: reemplaza por la ruta correcta
     image: '/pictures/mural-totonaca.jpg',
     location: 'Zócalo de Papantla',
     hours: '24 horas',
@@ -154,33 +149,14 @@ export default function VisitamePapantla() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-
       <main className="container mx-auto px-4 py-6 pb-20">
-        {/* HERO */}
-        <section className="relative h-72 rounded-xl overflow-hidden mb-8">
-          <Image
-            src="/pictures/visitame-hero.jpeg" // TODO: imagen hero real
-            alt="Visítame Papantla"
-            fill
-            className="object-cover w-full h-full"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-          <div className="absolute inset-0 flex items-end md:items-center justify-start md:justify-center p-6 md:p-0">
-            <div className="text-left md:text-center text-white max-w-3xl">
-              <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
-                Visítame Papantla
-              </h1>
-              <p className="mt-2 text-lg md:text-xl opacity-95">
-                Recorre los tesoros culturales y naturales del Totonacapan
-              </p>
-            </div>
-          </div>
-        </section>
-
+        <SectionHero
+          imageSrc="/pictures/visitame-hero.jpeg"
+          titleKey="hero.visitame.title"
+          subtitleKey="hero.visitame.subtitle"
+        />
         {/* LISTADO */}
         <h2 className="text-3xl font-bold text-[#2c363b] mb-6">Lugares destacados</h2>
-
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {attractions.map((place) => (
             <article
@@ -213,7 +189,6 @@ export default function VisitamePapantla() {
                   <span className="truncate">{place.location}</span>
                 </div>
 
-                {/* chips de destacados */}
                 {place.highlights.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mb-3">
                     {place.highlights.map((h, i) => (
@@ -227,7 +202,6 @@ export default function VisitamePapantla() {
                   </div>
                 )}
 
-                {/* info rápida */}
                 <div className="grid grid-cols-2 gap-2 text-sm text-gray-700 mb-3">
                   <div className="flex items-center">
                     <Clock size={16} className="mr-2 shrink-0" />
@@ -239,16 +213,14 @@ export default function VisitamePapantla() {
                   </div>
                 </div>
 
-                {/* dificultad + duración */}
                 <div className="flex items-center justify-between mb-3">
                   <span
-                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
-                      place.difficulty === 'Fácil'
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${place.difficulty === 'Fácil'
                         ? 'bg-green-100 text-green-700'
                         : place.difficulty === 'Moderada'
-                        ? 'bg-yellow-100 text-yellow-700'
-                        : 'bg-red-100 text-red-700'
-                    }`}
+                          ? 'bg-yellow-100 text-yellow-700'
+                          : 'bg-red-100 text-red-700'
+                      }`}
                     title="Nivel de exigencia"
                   >
                     <Footprints size={14} />
@@ -257,7 +229,6 @@ export default function VisitamePapantla() {
                   <span className="text-[#814739] text-sm font-medium">{place.duration}</span>
                 </div>
 
-                {/* descripción + más info (nativo, sin JS) */}
                 <details className="group mb-3">
                   <summary className="cursor-pointer select-none text-sm text-[#2c363b] font-medium flex items-center gap-2">
                     <BadgeInfo size={16} />
@@ -279,7 +250,6 @@ export default function VisitamePapantla() {
                   </div>
                 </details>
 
-                {/* CTA principal */}
                 <a
                   href={place.mapUrl}
                   target="_blank"
@@ -293,9 +263,8 @@ export default function VisitamePapantla() {
           ))}
         </section>
 
-        {/* Información para planear tu visita (versión UI mejorada) */}
+        {/* Información para planear tu visita */}
         <section className="space-y-10 mb-14">
-          {/* 0) Barra de atajos / highlights */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <a
               href="#rutas"
@@ -350,9 +319,7 @@ export default function VisitamePapantla() {
             </a>
           </div>
 
-          {/* 1) Planifica tu visita + Rutas + Clima */}
           <div id="clima" className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Planifica */}
             <article className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition">
               <div className="flex items-center gap-2 mb-3">
                 <Building size={18} className="text-[#bb904d]" />
@@ -383,7 +350,6 @@ export default function VisitamePapantla() {
               </div>
             </article>
 
-            {/* Rutas sugeridas */}
             <article
               id="rutas"
               className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition"
@@ -417,7 +383,6 @@ export default function VisitamePapantla() {
               </div>
             </article>
 
-            {/* Clima & tiempos */}
             <article className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition">
               <div className="flex items-center gap-2 mb-3">
                 <Clock size={18} className="text-[#bb904d]" />
@@ -452,9 +417,7 @@ export default function VisitamePapantla() {
             </article>
           </div>
 
-          {/* 2) Cómo llegar + Transporte local */}
           <div id="llegar" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Cómo llegar */}
             <article className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition">
               <div className="flex items-center gap-2 mb-3">
                 <MapPin size={18} className="text-[#bb904d]" />
@@ -488,7 +451,6 @@ export default function VisitamePapantla() {
               </details>
             </article>
 
-            {/* Transporte local */}
             <article
               id="transporte"
               className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition"
@@ -516,7 +478,6 @@ export default function VisitamePapantla() {
             </article>
           </div>
 
-          {/* 3) Eventos / Seguridad / Accesibilidad */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <article className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition">
               <div className="flex items-center gap-2 mb-3">
@@ -563,7 +524,6 @@ export default function VisitamePapantla() {
             </article>
           </div>
 
-          {/* 4) CTA a secciones del sitio */}
           <div className="rounded-2xl overflow-hidden shadow-sm border border-gray-100">
             <div className="bg-gradient-to-br from-[#1dace0] via-[#2b9ccf] to-[#bb904d] p-6">
               <h2 className="text-2xl font-bold text-white mb-1">Organiza tu viaje con MiPapantla</h2>
@@ -596,7 +556,6 @@ export default function VisitamePapantla() {
             </div>
           </div>
 
-          {/* 5) FAQ compacto con details */}
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
             <h2 className="text-xl font-bold text-[#2c363b] mb-3">Preguntas frecuentes</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
@@ -630,7 +589,6 @@ export default function VisitamePapantla() {
           </div>
         </section>
       </main>
-
       <BottomNavigation />
     </div>
   )

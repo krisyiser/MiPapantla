@@ -3,6 +3,7 @@ import Header from '@/components/Header'
 import BottomNavigation from '@/components/BottomNavigation'
 import { fetchBusinesses } from '@/lib/fetchBusinesses'
 import BusinessCard from '@/components/BusinessCard'
+import SectionHero from '@/components/SectionHero'
 import { businessInSection } from '@/lib/giros'
 import { Leaf, Sprout, Flower2, ShoppingBasket } from 'lucide-react'
 
@@ -19,10 +20,10 @@ export default async function Vainilla() {
     .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }))
 
   const highlights = [
-    { icon: Leaf,            title: 'Productores locales',   hint: 'Del campo a tu mesa' },
-    { icon: Flower2,         title: 'Vainillales',           hint: 'Cultivo y visita guiada' },
-    { icon: Sprout,          title: 'Procesos artesanales',  hint: 'Cura y secado tradicional' },
-    { icon: ShoppingBasket,  title: 'Artesanías y dulces',   hint: 'Sabor y creatividad' },
+    { icon: Leaf, title: 'Productores locales', hint: 'Del campo a tu mesa' },
+    { icon: Flower2, title: 'Vainillales', hint: 'Cultivo y visita guiada' },
+    { icon: Sprout, title: 'Procesos artesanales', hint: 'Cura y secado tradicional' },
+    { icon: ShoppingBasket, title: 'Artesanías y dulces', hint: 'Sabor y creatividad' },
   ]
 
   return (
@@ -31,15 +32,11 @@ export default async function Vainilla() {
 
       <main className="container mx-auto px-4 py-6 pb-20">
         {/* Hero */}
-        <section className="relative h-56 rounded-lg overflow-hidden mb-8">
-          <div className="absolute inset-0 bg-gradient-to-r from-amber-800 via-amber-600 to-yellow-500" />
-          <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-            <div className="text-center text-white px-4">
-              <h1 className="text-4xl font-bold mb-1">Vainilla de Papantla</h1>
-              <p className="text-lg opacity-95">Origen, tradición y sabor auténtico</p>
-            </div>
-          </div>
-        </section>
+        <SectionHero
+          imageSrc="/pictures/vainilla.jpg"
+          titleKey="hero.vainilla.title"
+          subtitleKey="hero.vainilla.subtitle"
+        />
 
         {/* Highlights */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
