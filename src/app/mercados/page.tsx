@@ -3,6 +3,7 @@ import Header from '@/components/Header'
 import BottomNavigation from '@/components/BottomNavigation'
 import { fetchBusinesses } from '@/lib/fetchBusinesses'
 import BusinessCard from '@/components/BusinessCard'
+import SectionHero from '@/components/SectionHero'
 import { businessInSection } from '@/lib/giros'
 import { Store, ShoppingBasket, BadgePercent, MapPin } from 'lucide-react'
 
@@ -10,19 +11,17 @@ import { Store, ShoppingBasket, BadgePercent, MapPin } from 'lucide-react'
 export default async function Mercados() {
   const all = await fetchBusinesses()
 
-  // Filtra por sección usando el helper (soporta celdas con múltiples giros)
-  // Si en tu mapeo usaste "locales" para mercados, esto lo cubre.
-  // (De todas formas, añadimos un fallback por substring “mercado”.)
+  // Filtra por sección
   const mercados = all
     .filter(b => businessInSection(b, 'mercados') || b.giros.some(g => g.includes('mercado')))
     .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }))
 
-  // Tarjetitas informativas (solo UI, no filtran)
+  // Highlights
   const highlights = [
-    { icon: Store,          title: 'Locales del mercado',      hint: 'Productos frescos y artesanías' },
-    { icon: ShoppingBasket, title: 'Compras locales',          hint: 'Apoya a productores y familias' },
-    { icon: BadgePercent,   title: 'Precios accesibles',       hint: 'Variedad para todos los gustos' },
-    { icon: MapPin,         title: 'Ubicaciones céntricas',    hint: 'Llega fácil y rápido' },
+    { icon: Store, title: 'Locales del mercado', hint: 'Productos frescos y artesanías' },
+    { icon: ShoppingBasket, title: 'Compras locales', hint: 'Apoya a productores y familias' },
+    { icon: BadgePercent, title: 'Precios accesibles', hint: 'Variedad para todos los gustos' },
+    { icon: MapPin, title: 'Ubicaciones céntricas', hint: 'Llega fácil y rápido' },
   ]
 
   return (
@@ -30,18 +29,14 @@ export default async function Mercados() {
       <Header />
 
       <main className="container mx-auto px-4 py-6 pb-20">
-        {/* Hero sin depender de imagen local (gradiente para evitar assets faltantes) */}
-        <section className="relative h-56 rounded-lg overflow-hidden mb-8">
-          <div className="absolute inset-0 bg-gradient-to-r from-amber-700 via-amber-600 to-amber-500" />
-          <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-            <div className="text-center text-white px-4">
-              <h1 className="text-4xl font-bold mb-1">Mercados de Papantla</h1>
-              <p className="text-lg opacity-95">Tradición, sabor y productos locales</p>
-            </div>
-          </div>
-        </section>
+        {/* Hero Reutilizable */}
+        <SectionHero
+          imageSrc="/pictures/mercado.jpg"
+          titleKey="hero.mercados.title"
+          subtitleKey="hero.mercados.subtitle"
+        />
 
-        {/* Highlights (estéticos, consistentes con el resto del sitio) */}
+        {/* Highlights */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {highlights.map((h, i) => {
             const Icon = h.icon
@@ -60,7 +55,7 @@ export default async function Mercados() {
           })}
         </section>
 
-        {/* Listado de locales/mercados */}
+        {/* Listado de locales */}
         <section className="mb-8">
           <div className="flex items-baseline justify-between mb-6">
             <h2 className="text-3xl font-bold text-[#2c363b]">

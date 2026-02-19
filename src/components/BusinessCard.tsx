@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import { useOutsideClick } from '@/hooks/use-outside-click'
 import GalleryGrid from '@/components/GalleryGrid'
+import { useLanguage } from '@/context/LanguageContext'
 
 /* =========================
    Tipos esperados del fetch
@@ -86,6 +87,7 @@ export default function BusinessCard({
   negocio
 }: Props) {
   const uid = useId()
+  const { t } = useLanguage() // Hook de i18n
 
   // --------- FOTOS DEL NEGOCIO ----------
   const photos = useMemo<string[]>(
@@ -170,7 +172,7 @@ export default function BusinessCard({
               const next = coverIdx + 1
               if (next < coverCandidates.length) {
                 setCoverIdx(next)
-                ;(e.currentTarget as HTMLImageElement).src = coverCandidates[next]
+                  ; (e.currentTarget as HTMLImageElement).src = coverCandidates[next]
               } else {
                 setShowCover(false)
               }
@@ -178,7 +180,7 @@ export default function BusinessCard({
           />
         ) : (
           <div className="w-full h-full bg-gray-100 grid place-items-center">
-            <span className="text-xs text-gray-500">Sin foto</span>
+            <span className="text-xs text-gray-500">{t('msg.noPhoto')}</span>
           </div>
         )}
 
@@ -212,7 +214,7 @@ export default function BusinessCard({
           {negocio.horario && (
             <div className="flex items-start gap-2">
               <Clock size={16} className="shrink-0 mt-0.5" />
-              <span><strong>Horario:</strong> {negocio.horario}</span>
+              <span><strong>{t('label.schedule')}:</strong> {negocio.horario}</span>
             </div>
           )}
         </div>
@@ -222,9 +224,9 @@ export default function BusinessCard({
           <button
             onClick={(e) => { e.stopPropagation(); setExpanded(true) }}
             className="col-span-2 border border-gray-200 hover:border-[#bb904d] hover:bg-[#bb904d]/5 text-[#2c363b] py-2 rounded-md transition-colors"
-            aria-label="Ver detalles"
+            aria-label={t('btn.details')}
           >
-            Ver detalles
+            {t('btn.details')}
           </button>
         </div>
       </div>
@@ -269,7 +271,7 @@ export default function BusinessCard({
                 const next = coverIdx + 1
                 if (next < coverCandidates.length) {
                   setCoverIdx(next)
-                  ;(e.currentTarget as HTMLImageElement).src = coverCandidates[next]
+                    ; (e.currentTarget as HTMLImageElement).src = coverCandidates[next]
                 } else {
                   setShowCover(false)
                 }
@@ -278,7 +280,7 @@ export default function BusinessCard({
           </div>
         ) : (
           <div className="w-full h-80 bg-gray-100 grid place-items-center">
-            <span className="text-xs text-gray-500">Sin foto</span>
+            <span className="text-xs text-gray-500">{t('msg.noPhoto')}</span>
           </div>
         )}
 
@@ -308,9 +310,9 @@ export default function BusinessCard({
               <div className="flex items-start gap-2">
                 <Clock size={16} className="shrink-0 mt-0.5" />
                 <span>
-                  {negocio.horario && <span><strong>Horario:</strong> {negocio.horario}</span>}
+                  {negocio.horario && <span><strong>{t('label.schedule')}:</strong> {negocio.horario}</span>}
                   {negocio.horario && negocio.precios ? ' · ' : ''}
-                  {negocio.precios && <span><strong>Precios:</strong> {negocio.precios}</span>}
+                  {negocio.precios && <span><strong>{t('label.prices')}:</strong> {negocio.precios}</span>}
                 </span>
               </div>
             )}
@@ -319,7 +321,7 @@ export default function BusinessCard({
           {/* Servicios / Productos */}
           {negocio.servicios && (
             <div className="mt-4">
-              <h4 className="font-semibold text-[#2c363b] mb-1">Servicios / Productos</h4>
+              <h4 className="font-semibold text-[#2c363b] mb-1">{t('label.services')}</h4>
               <p className="text-sm text-gray-700 whitespace-pre-line">{negocio.servicios}</p>
             </div>
           )}
@@ -331,7 +333,7 @@ export default function BusinessCard({
                 <span className="bg-[#f6f7f5] text-[#814739] px-2 py-0.5 rounded text-xs">Accesible</span>
               )}
               {negocio.idiomas && (
-                <span className="bg-[#f6f7f5] text-[#814739] px-2 py-0.5 rounded text-xs">Idiomas: {negocio.idiomas}</span>
+                <span className="bg-[#f6f7f5] text-[#814739] px-2 py-0.5 rounded text-xs">{t('label.languages')}: {negocio.idiomas}</span>
               )}
               {(negocio.pagos || []).map((p, i) => (
                 <span key={`pg-${i}`} className="bg-[#f6f7f5] text-[#814739] px-2 py-0.5 rounded text-xs">{p}</span>
@@ -344,7 +346,7 @@ export default function BusinessCard({
 
           {negocio.especial && (
             <div className="mt-4 text-sm">
-              <strong className="text-[#814739]">Especial:</strong> {negocio.especial}
+              <strong className="text-[#814739]">{t('label.special')}:</strong> {negocio.especial}
             </div>
           )}
 
@@ -356,7 +358,7 @@ export default function BusinessCard({
                 href={`tel:${negocio.phoneDigits}`}
                 className="flex items-center justify-center gap-2 bg-[#bb904d] hover:bg-[#814739] text-white py-2 rounded-md transition-colors"
               >
-                <Phone size={16} /> Llamar
+                <Phone size={16} /> {t('btn.call')}
               </a>
             )}
 
@@ -368,7 +370,7 @@ export default function BusinessCard({
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 bg-[#f6f7f5] hover:bg-[#e7e7e7] text-[#2c363b] py-2 rounded-md transition-colors"
               >
-                <Navigation size={16} /> Cómo llegar
+                <Navigation size={16} /> {t('btn.howToGet')}
               </a>
             )}
 
@@ -380,7 +382,7 @@ export default function BusinessCard({
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 bg-[#f6f7f5] hover:bg-[#e7e7e7] text-[#2c363b] py-2 rounded-md transition-colors"
               >
-                <ExternalLink size={16} /> WhatsApp
+                <ExternalLink size={16} /> {t('btn.whatsapp')}
               </a>
             )}
 
@@ -392,7 +394,7 @@ export default function BusinessCard({
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 bg-[#f6f7f5] hover:bg-[#e7e7e7] text-[#2c363b] py-2 rounded-md transition-colors"
               >
-                <ExternalLink size={16} /> Redes / Sitio
+                <ExternalLink size={16} /> {t('btn.web')}
               </a>
             )}
 
@@ -404,7 +406,7 @@ export default function BusinessCard({
                 rel="noopener noreferrer"
                 className="col-span-2 flex items-center justify-center gap-2 bg-[#f6f7f5] hover:bg-[#e7e7e7] text-[#2c363b] py-2 rounded-md transition-colors"
               >
-                <FileText size={16} /> Menú (PDF)
+                <FileText size={16} /> {t('btn.menuPdf')}
               </a>
             )}
             {!hasMenuPdf && hasMenuPhotos && (
@@ -412,7 +414,7 @@ export default function BusinessCard({
                 onClick={openMenuGrid}
                 className="col-span-2 flex items-center justify-center gap-2 bg-[#f6f7f5] hover:bg-[#e7e7e7] text-[#2c363b] py-2 rounded-md transition-colors"
               >
-                <UtensilsCrossed size={16} /> Ver Menú
+                <UtensilsCrossed size={16} /> {t('btn.menu')}
               </button>
             )}
           </div>

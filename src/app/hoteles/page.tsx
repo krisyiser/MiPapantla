@@ -3,20 +3,20 @@ import Header from '@/components/Header'
 import BottomNavigation from '@/components/BottomNavigation'
 import { fetchBusinesses } from '@/lib/fetchBusinesses'
 import BusinessCard from '@/components/BusinessCard'
+import SectionHero from '@/components/SectionHero'
 import { businessInSection } from '@/lib/giros'
 import { BedDouble, Wifi, Car, Coffee } from 'lucide-react'
-import Image from 'next/image'
 
 // Server Component
 export default async function Hoteles() {
   const all = await fetchBusinesses()
 
-  // Filtra por sección usando el helper (soporta celdas con múltiples giros)
+  // Filtra por sección usando el helper
   const hoteles = all
     .filter(b => businessInSection(b, 'hospedaje'))
     .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }))
 
-  // “Amenidades” solo son informativas/estéticas (no filtran nada)
+  // Amenidades (informativas)
   const amenidades = [
     { icon: BedDouble, label: 'Camas cómodas', hint: 'Descanso garantizado' },
     { icon: Wifi, label: 'Wi-Fi', hint: 'Conéctate sin complicaciones' },
@@ -29,24 +29,14 @@ export default async function Hoteles() {
       <Header />
 
       <main className="container mx-auto px-4 py-6 pb-20">
-        {/* Hero */}
-        <section className="relative h-64 rounded-lg overflow-hidden mb-8">
-          <Image
-            src="/pictures/hospedaje.jpeg"
-            alt="Hoteles en Papantla"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-            <div className="text-center text-white">
-              <h1 className="text-4xl font-bold mb-2">Hospedaje en Papantla</h1>
-              <p className="text-xl">Encuentra el lugar perfecto para descansar</p>
-            </div>
-          </div>
-        </section>
+        {/* Hero Reutilizable */}
+        <SectionHero
+          imageSrc="/pictures/hospedaje.jpeg"
+          titleKey="hero.hoteles.title"
+          subtitleKey="hero.hoteles.subtitle"
+        />
 
-        {/* Amenidades destacadas (UI informativa, sin filtros) */}
+        {/* Amenidades destacadas */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {amenidades.map((a, i) => {
             const Icon = a.icon

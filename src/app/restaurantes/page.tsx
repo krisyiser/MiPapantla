@@ -4,19 +4,20 @@ import BottomNavigation from '@/components/BottomNavigation'
 import { ChefHat, Coffee, Pizza } from 'lucide-react'
 import { fetchBusinesses } from '@/lib/fetchBusinesses'
 import BusinessCard from '@/components/BusinessCard'
+import SectionHero from '@/components/SectionHero'
 import { businessInSection } from '@/lib/giros'
 
 const cuisineTypes = [
   { name: 'Cocina Totonaca', icon: ChefHat, description: 'Tradición ancestral' },
-  { name: 'Pizzerías',       icon: Pizza,   description: 'Favoritas locales' },
-  { name: 'Cafeterías',      icon: Coffee,  description: 'Café y descanso' }
+  { name: 'Pizzerías', icon: Pizza, description: 'Favoritas locales' },
+  { name: 'Cafeterías', icon: Coffee, description: 'Café y descanso' }
 ]
 
 // Server Component
 export default async function Restaurantes() {
   const all = await fetchBusinesses()
 
-  // Filtra por sección usando el helper (soporta múltiples giros por negocio)
+  // Filtra por sección
   const restaurantes = all
     .filter(b => businessInSection(b, 'restaurantes'))
     .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }))
@@ -25,22 +26,14 @@ export default async function Restaurantes() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <main className="container mx-auto px-4 py-6 pb-20">
-        {/* Hero */}
-        <div className="relative h-64 rounded-lg overflow-hidden mb-8">
-          <img
-            src="/pictures/restaurantes.jpeg"
-            alt="Restaurantes en Papantla"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-            <div className="text-center text-white">
-              <h1 className="text-4xl font-bold mb-2">Gastronomía de Papantla</h1>
-              <p className="text-xl">Sabores tradicionales, café aromático y sazón local</p>
-            </div>
-          </div>
-        </div>
+        {/* Hero Reutilizable */}
+        <SectionHero
+          imageSrc="/pictures/restaurantes.jpeg"
+          titleKey="hero.restaurantes.title"
+          subtitleKey="hero.restaurantes.subtitle"
+        />
 
-        {/* Tipos (estáticos por ahora) */}
+        {/* Tipos */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
           {cuisineTypes.map((c, i) => {
             const Icon = c.icon

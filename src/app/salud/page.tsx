@@ -3,9 +3,9 @@ import Header from '@/components/Header'
 import BottomNavigation from '@/components/BottomNavigation'
 import { fetchBusinesses } from '@/lib/fetchBusinesses'
 import BusinessCard from '@/components/BusinessCard'
+import SectionHero from '@/components/SectionHero'
 import { businessInSection } from '@/lib/giros'
 import { Stethoscope, Activity, Heart, UserPlus } from 'lucide-react'
-import Image from 'next/image'
 
 // Server Component
 export default async function Salud() {
@@ -29,22 +29,12 @@ export default async function Salud() {
             <Header />
 
             <main className="container mx-auto px-4 py-6 pb-20">
-                {/* Hero */}
-                <section className="relative h-64 rounded-lg overflow-hidden mb-8">
-                    <Image
-                        src="/pictures/salud.png"
-                        alt="Salud y Bienestar en Papantla"
-                        fill
-                        className="object-cover"
-                        priority
-                    />
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                        <div className="text-center text-white px-4">
-                            <h1 className="text-4xl font-bold mb-2">Salud y Bienestar</h1>
-                            <p className="text-xl">Directorio médico y servicios de salud en Papantla</p>
-                        </div>
-                    </div>
-                </section>
+                {/* Hero Reutilizable con i18n */}
+                <SectionHero
+                    imageSrc="/pictures/salud.png"
+                    titleKey="hero.salud.title"
+                    subtitleKey="hero.salud.subtitle"
+                />
 
                 {/* Categorías (UI informativa) */}
                 <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

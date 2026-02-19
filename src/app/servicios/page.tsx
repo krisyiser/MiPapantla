@@ -3,9 +3,9 @@ import Header from '@/components/Header'
 import BottomNavigation from '@/components/BottomNavigation'
 import { fetchBusinesses } from '@/lib/fetchBusinesses'
 import BusinessCard from '@/components/BusinessCard'
+import SectionHero from '@/components/SectionHero'
 import { businessInSection } from '@/lib/giros'
 import { Briefcase, Gavel, Calculator, Wrench } from 'lucide-react'
-import Image from 'next/image'
 
 // Server Component
 export default async function ServiciosProfesionales() {
@@ -16,7 +16,7 @@ export default async function ServiciosProfesionales() {
         .filter(b => businessInSection(b, 'servicios'))
         .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }))
 
-    // Categorías visuales (informativas)
+    // Categorías visuales
     const categorias = [
         { icon: Gavel, label: 'Legal', hint: 'Abogados y Notarías' },
         { icon: Calculator, label: 'Contabilidad', hint: 'Asesoría fiscal' },
@@ -29,22 +29,12 @@ export default async function ServiciosProfesionales() {
             <Header />
 
             <main className="container mx-auto px-4 py-6 pb-20">
-                {/* Hero */}
-                <section className="relative h-64 rounded-lg overflow-hidden mb-8">
-                    <Image
-                        src="/pictures/profesionales.avif"
-                        alt="Servicios Profesionales en Papantla"
-                        fill
-                        className="object-cover"
-                        priority
-                    />
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                        <div className="text-center text-white px-4">
-                            <h1 className="text-4xl font-bold mb-2">Servicios Profesionales</h1>
-                            <p className="text-xl">Expertos locales a tu disposición</p>
-                        </div>
-                    </div>
-                </section>
+                {/* Hero Reutilizable */}
+                <SectionHero
+                    imageSrc="/pictures/profesionales.avif"
+                    titleKey="hero.servicios.title"
+                    subtitleKey="hero.servicios.subtitle"
+                />
 
                 {/* Categorías (UI informativa) */}
                 <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

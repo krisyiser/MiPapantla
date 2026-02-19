@@ -3,6 +3,7 @@ import Header from '@/components/Header'
 import BottomNavigation from '@/components/BottomNavigation'
 import { fetchBusinesses } from '@/lib/fetchBusinesses'
 import BusinessCard from '@/components/BusinessCard'
+import SectionHero from '@/components/SectionHero'
 import { businessInSection } from '@/lib/giros'
 import { Sparkles, Camera, Leaf, Footprints } from 'lucide-react'
 
@@ -10,7 +11,7 @@ import { Sparkles, Camera, Leaf, Footprints } from 'lucide-react'
 export default async function Experiencias() {
   const all = await fetchBusinesses()
 
-  // Soporta celdas con múltiples giros (helper + fallback por substring)
+  // Soporta celdas con múltiples giros
   const experiencias = all
     .filter(
       (b) => businessInSection(b, 'experiencias') || b.giros.some((g) => g.includes('experien'))
@@ -18,10 +19,10 @@ export default async function Experiencias() {
     .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }))
 
   const highlights = [
-    { icon: Sparkles,   title: 'Cultura viva',         hint: 'Tradiciones y saberes' },
-    { icon: Camera,     title: 'Momentos únicos',      hint: 'Tours fotográficos' },
-    { icon: Leaf,       title: 'Naturaleza',           hint: 'Rutas ecoturísticas' },
-    { icon: Footprints, title: 'Caminatas guiadas',    hint: 'Senderos y relatos' },
+    { icon: Sparkles, title: 'Cultura viva', hint: 'Tradiciones y saberes' },
+    { icon: Camera, title: 'Momentos únicos', hint: 'Tours fotográficos' },
+    { icon: Leaf, title: 'Naturaleza', hint: 'Rutas ecoturísticas' },
+    { icon: Footprints, title: 'Caminatas guiadas', hint: 'Senderos y relatos' },
   ]
 
   return (
@@ -29,16 +30,12 @@ export default async function Experiencias() {
       <Header />
 
       <main className="container mx-auto px-4 py-6 pb-20">
-        {/* Hero (gradiente, sin depender de assets locales) */}
-        <section className="relative h-56 rounded-lg overflow-hidden mb-8">
-          <div className="absolute inset-0 bg-gradient-to-r from-violet-700 via-fuchsia-600 to-pink-500" />
-          <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-            <div className="text-center text-white px-4">
-              <h1 className="text-4xl font-bold mb-1">Experiencias</h1>
-              <p className="text-lg opacity-95">Vive Papantla con todos los sentidos</p>
-            </div>
-          </div>
-        </section>
+        {/* Hero Reutilizable */}
+        <SectionHero
+          imageSrc="/pictures/experiencias.jpg"
+          titleKey="hero.experiencias.title"
+          subtitleKey="hero.experiencias.subtitle"
+        />
 
         {/* Highlights */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
