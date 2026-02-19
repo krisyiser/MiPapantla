@@ -2,19 +2,19 @@
 
 import Image from 'next/image'
 import { Globe } from 'lucide-react'
-import { useState } from 'react'
+import { useLanguage } from '@/context/LanguageContext'
 
 export default function Header() {
-  const [language, setLanguage] = useState<'es' | 'en'>('es')
+  const { language, setLanguage, t } = useLanguage()
 
   const toggleLanguage = () => {
-    setLanguage(prev => (prev === 'es' ? 'en' : 'es'))
+    setLanguage(language === 'es' ? 'en' : 'es')
   }
 
   return (
     <header className="bg-gradient-to-b from-black to-[#00008b] text-white shadow-md w-full">
       <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
-        
+
         {/* Contenedor central: logos + título */}
         <div className="flex items-center justify-center flex-grow gap-2 md:gap-4 min-w-0">
           <Image
@@ -29,10 +29,10 @@ export default function Header() {
               className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#d4af37] uppercase tracking-wide drop-shadow-sm whitespace-nowrap"
               style={{ fontFamily: `'Georgia', serif` }}
             >
-              MiPapantla
+              {t('app.title')}
             </h1>
             <p className="text-xs sm:text-sm mt-1 opacity-80 italic whitespace-nowrap">
-              {language === 'es' ? 'Donde la tradición cobra vida' : 'Where tradition comes to life'}
+              {t('app.subtitle')}
             </p>
           </div>
           <Image
@@ -51,7 +51,7 @@ export default function Header() {
             onClick={toggleLanguage}
           >
             <Globe size={16} />
-            {language === 'es' ? 'ENG' : 'ESP'}
+            {t('btn.language')}
           </button>
         </div>
       </div>
