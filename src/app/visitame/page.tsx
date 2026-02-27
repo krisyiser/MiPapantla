@@ -3,6 +3,7 @@ import Header from '@/components/Header'
 import BottomNavigation from '@/components/BottomNavigation'
 import Image from 'next/image'
 import SectionHero from '@/components/SectionHero'
+import MapButton from '@/components/MapButton'
 import {
   MapPin,
   Clock,
@@ -216,10 +217,10 @@ export default function VisitamePapantla() {
                 <div className="flex items-center justify-between mb-3">
                   <span
                     className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${place.difficulty === 'Fácil'
-                        ? 'bg-green-100 text-green-700'
-                        : place.difficulty === 'Moderada'
-                          ? 'bg-yellow-100 text-yellow-700'
-                          : 'bg-red-100 text-red-700'
+                      ? 'bg-green-100 text-green-700'
+                      : place.difficulty === 'Moderada'
+                        ? 'bg-yellow-100 text-yellow-700'
+                        : 'bg-red-100 text-red-700'
                       }`}
                     title="Nivel de exigencia"
                   >
@@ -250,18 +251,7 @@ export default function VisitamePapantla() {
                   </div>
                 </details>
 
-                <a
-                  href={place.mapUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    window.open(place.mapUrl, '_blank', 'noopener,noreferrer');
-                  }}
-                  className="relative z-10 mt-2 block w-full text-center bg-[#bb904d] hover:bg-[#814739] text-white py-2 px-4 rounded-md transition-colors"
-                >
-                  Ver en mapa
-                </a>
+                <MapButton url={place.mapUrl} />
               </div>
             </article>
           ))}
