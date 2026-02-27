@@ -254,7 +254,11 @@ export default function VisitamePapantla() {
                   href={place.mapUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block w-full text-center bg-[#bb904d] hover:bg-[#814739] text-white py-2 px-4 rounded-md transition-colors"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.open(place.mapUrl, '_blank', 'noopener,noreferrer');
+                  }}
+                  className="relative z-10 mt-2 block w-full text-center bg-[#bb904d] hover:bg-[#814739] text-white py-2 px-4 rounded-md transition-colors"
                 >
                   Ver en mapa
                 </a>

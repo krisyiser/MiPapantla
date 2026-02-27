@@ -77,7 +77,7 @@ export default function BottomNavigation() {
                 key={item.id}
                 href={item.href}
                 ref={(el) => void (itemRefs.current[index] = el)}
-                className={`z-10 flex flex-col items-center py-2 px-3 rounded-lg transition-all flex-1 min-w-0 ${isActive
+                className={`z-10 flex flex-col items-center py-2 px-1 sm:px-2 rounded-lg transition-all flex-1 min-w-0 ${isActive
                   ? 'text-[#2c363b]'
                   : 'text-white hover:text-[#d4af37]'
                   }`}
@@ -87,9 +87,9 @@ export default function BottomNavigation() {
                   alt={t(item.translationKey)}
                   width={24}
                   height={24}
-                  className="mb-1"
+                  className="mb-1 sm:w-[24px] sm:h-[24px] w-[20px] h-[20px]"
                 />
-                <span className="text-xs font-semibold tracking-wide text-center leading-tight">
+                <span className="text-[9px] sm:text-xs font-semibold tracking-tight sm:tracking-wide text-center leading-tight break-words w-full">
                   {t(item.translationKey)}
                 </span>
               </Link>
