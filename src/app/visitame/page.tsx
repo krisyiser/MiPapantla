@@ -3,7 +3,6 @@ import Header from '@/components/Header'
 import BottomNavigation from '@/components/BottomNavigation'
 import Image from 'next/image'
 import SectionHero from '@/components/SectionHero'
-import MapButton from '@/components/MapButton'
 import {
   MapPin,
   Clock,
@@ -52,7 +51,7 @@ const attractions: Attraction[] = [
       'Centro ceremonial totonaca que floreció entre 600–1200 d.C., famoso por su arquitectura singular y valor histórico.',
     activities: ['Visita guiada', 'Explorar estructuras', 'Museo'],
     tips: 'Lleva agua, sombrero y calzado cómodo. Evita las horas de sol intenso.',
-    mapUrl: 'https://maps.app.goo.gl/nMZ9uNcVDWSTVJbX9',
+    mapUrl: 'https://www.google.com/maps/search/?api=1&query=Zona+Arqueol%C3%B3gica+de+El+Taj%C3%ADn%2C+Papantla',
   },
   {
     id: 2,
@@ -70,7 +69,7 @@ const attractions: Attraction[] = [
       'Monumento de 18 m de altura dedicado al ritual de los Voladores de Papantla, ubicado en lo alto del cerro.',
     activities: ['Fotografía', 'Observación cultural'],
     tips: 'Sube temprano para evitar el calor y disfrutar la vista despejada.',
-    mapUrl: 'https://maps.app.goo.gl/zZ9PMtBNFgEps9vZ9',
+    mapUrl: 'https://www.google.com/maps/search/?api=1&query=Monumento+al+Volador%2C+Papantla',
   },
   {
     id: 3,
@@ -88,7 +87,7 @@ const attractions: Attraction[] = [
       'Exhibe la obra del pintor y muralista Teodoro Cano: óleo, barro, escultura y tradiciones.',
     activities: ['Talleres', 'Exposiciones', 'Visitas guiadas'],
     tips: 'Ideal para conocer la identidad visual de Papantla.',
-    mapUrl: 'https://maps.app.goo.gl/9KD7LihCEaZ9kVvk8',
+    mapUrl: 'https://www.google.com/maps/search/?api=1&query=Museo+Teodoro+Cano%2C+Papantla',
   },
   {
     id: 4,
@@ -106,7 +105,7 @@ const attractions: Attraction[] = [
       'Complejo de formación artística totonaca con 16 casas dedicadas a danza, música, cocina, medicina y más.',
     activities: ['Talleres', 'Demostraciones', 'Festivales'],
     tips: 'Ideal para visitar durante Cumbre Tajín.',
-    mapUrl: 'https://maps.app.goo.gl/fPSji9AgNmQEvGeZA',
+    mapUrl: 'https://www.google.com/maps/search/?api=1&query=Centro+de+las+Artes+Ind%C3%ADgenas+Takilhsukut%2C+Papantla',
   },
   {
     id: 5,
@@ -124,7 +123,7 @@ const attractions: Attraction[] = [
       'Ruinas fortificadas del siglo XIII con edificios ceremoniales y militares.',
     activities: ['Senderismo', 'Exploración', 'Fotografía'],
     tips: 'Requiere transporte. Lleva calzado de campo.',
-    mapUrl: 'https://maps.app.goo.gl/GKWrTivDCcGTrvMj6',
+    mapUrl: 'https://www.google.com/maps/search/?api=1&query=Zona+Arqueol%C3%B3gica+Cuyuxquihui%2C+Papantla',
   },
   {
     id: 6,
@@ -142,7 +141,7 @@ const attractions: Attraction[] = [
       'Mural de 84 m que narra el origen, historia y cosmovisión totonaca, realizado por Teodoro Cano y colaboradores.',
     activities: ['Observación', 'Arte público'],
     tips: 'Perfecto para comenzar el recorrido por el centro.',
-    mapUrl: 'https://maps.app.goo.gl/UmVXm8Jkk9dhs38M6',
+    mapUrl: 'https://www.google.com/maps/search/?api=1&query=Mural+Escult%C3%B3rico+a+la+Cultura+Totonaca%2C+Papantla',
   },
 ]
 
@@ -251,7 +250,14 @@ export default function VisitamePapantla() {
                   </div>
                 </details>
 
-                <MapButton url={place.mapUrl} />
+                <a
+                  href={place.mapUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative z-10 mt-2 block w-full text-center bg-[#bb904d] hover:bg-[#814739] text-white py-2 px-4 rounded-md transition-colors"
+                >
+                  Ver en mapa
+                </a>
               </div>
             </article>
           ))}
