@@ -26,7 +26,7 @@ export async function GET() {
     const data = await res.json()
     const files = data.files || []
 
-    const images = files.map((file: any) => {
+    const images = files.map((file: { id: string; name: string }) => {
       // Remover extensión y guiones para crear un texto alt amigable
       const altText = file.name
         ? file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ')
