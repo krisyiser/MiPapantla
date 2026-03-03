@@ -77,16 +77,6 @@ function getMonthFromEvent(ev: EventItem): number | 'all-year' | 'tbc' {
   return 'tbc'
 }
 
-function isUpcoming(ev: EventItem, from = new Date(), horizonDays = 90) {
-  const start = ev.dateStart ? toDateISO(ev.dateStart)! : undefined
-  const end = ev.dateEnd ? toDateISO(ev.dateEnd)! : start
-  if (!start && !end) return false
-  const horizon = new Date(from.getTime() + horizonDays * 24 * 60 * 60 * 1000)
-  if (end && end < from) return false
-  if (start && start <= horizon) return true
-  return false
-}
-
 // -------------------- DATOS --------------------
 const EVENTS: EventItem[] = [
   {
@@ -99,8 +89,8 @@ const EVENTS: EventItem[] = [
     description:
       'Festival cultural que preserva y difunde la riqueza cultural y arqueológica de la Ciudad Sagrada de El Tajín. Ceremonias, talleres, rituales, terapias, juegos autóctonos, conciertos, danzas, circo, conferencias, exposiciones y más.',
     highlights: ['Equinoccio de primavera', 'Talleres y rituales', 'Conciertos y danzas'],
-    dateStart: '2026-03-19',
-    dateEnd: '2026-03-24',
+    dateStart: '2026-03-20',
+    dateEnd: '2026-03-22',
   },
   {
     slug: 'rancho-fest',
@@ -219,26 +209,11 @@ const EVENTS: EventItem[] = [
 
 // -------------------- VISTAS --------------------
 export default function Eventos() {
-  // próximos (calculado primero para evitar redundancias)
-  const now = new Date()
-  const upcoming = EVENTS
-    .filter((ev) => isUpcoming(ev, now, 120))
-    .sort((a, b) => {
-      const ad = toDateISO(a.dateStart || a.dateEnd || '')?.getTime() ?? Number.POSITIVE_INFINITY
-      const bd = toDateISO(b.dateStart || b.dateEnd || '')?.getTime() ?? Number.POSITIVE_INFINITY
-      return ad - bd
-    })
-
-  const upcomingIds = new Set(upcoming.map(u => u.slug))
-
   const byMonth = new Map<number, EventItem[]>()
   const tbcList: EventItem[] = []
   const allYearList: EventItem[] = []
 
   EVENTS.forEach((ev) => {
-    // Si ya está en próximos, no lo repetimos abajo para no tener redundancias
-    if (upcomingIds.has(ev.slug)) return
-
     const bucket = getMonthFromEvent(ev)
     if (bucket === 'all-year') {
       allYearList.push(ev)
@@ -261,31 +236,10 @@ export default function Eventos() {
           subtitleKey="hero.eventos.subtitle"
         />
 
-        {/* PRÓXIMOS */}
-        <section id="proximos" className="mb-10">
-          <div className="flex items-center gap-2 mb-3">
-            <PartyPopper className="text-emerald-600" size={18} />
-            <h2 className="text-2xl font-bold text-[#2c363b]">Próximos</h2>
-          </div>
-
-          {upcoming.length === 0 ? (
-            <div className="text-sm text-gray-700 bg-white border border-gray-100 rounded-lg p-4">
-              No hay eventos próximos en el periodo inmediato. Revisa el calendario anual más abajo.
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {upcoming.map((ev) => (
-                <EventCard key={ev.slug} ev={ev} />
-              ))}
-            </div>
-          )}
-        </section>
-
         {/* CALENDARIO ANUAL */}
         <section className="space-y-10 mb-12">
           {MONTHS_ES.map((m, idx) => {
             const list = byMonth.get(idx + 1) || []
-            const monthHasUpcoming = upcoming.some(u => getMonthFromEvent(u) === idx + 1)
 
             return (
               <div key={m} id={`mes-${idx + 1}`}>
@@ -293,14 +247,12 @@ export default function Eventos() {
                   <CalendarDays className="text-[#bb904d]" size={18} />
                   <h3 className="text-xl font-bold text-[#2c363b] capitalize">{m}</h3>
                   <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 border border-gray-200">
-                    {list.length + (monthHasUpcoming ? upcoming.filter(u => getMonthFromEvent(u) === idx + 1).length : 0)} evento(s) en total
+                    {list.length} evento{list.length === 1 ? '' : 's'}
                   </span>
                 </div>
                 {list.length === 0 ? (
                   <div className="text-sm text-gray-600 bg-white border border-gray-100 rounded-lg p-4">
-                    {monthHasUpcoming
-                      ? "Los eventos de este mes están destacados en la sección de 'Próximos' arriba."
-                      : "Sin eventos registrados este mes (por ahora)."}
+                    Sin eventos registrados este mes (por ahora).
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
