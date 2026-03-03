@@ -219,11 +219,26 @@ const EVENTS: EventItem[] = [
 
 // -------------------- VISTAS --------------------
 export default function Eventos() {
+  // próximos (calculado primero para evitar redundancias)
+  const now = new Date()
+  const upcoming = EVENTS
+    .filter((ev) => isUpcoming(ev, now, 120))
+    .sort((a, b) => {
+      const ad = toDateISO(a.dateStart || a.dateEnd || '')?.getTime() ?? Number.POSITIVE_INFINITY
+      const bd = toDateISO(b.dateStart || b.dateEnd || '')?.getTime() ?? Number.POSITIVE_INFINITY
+      return ad - bd
+    })
+
+  const upcomingIds = new Set(upcoming.map(u => u.slug))
+
   const byMonth = new Map<number, EventItem[]>()
   const tbcList: EventItem[] = []
   const allYearList: EventItem[] = []
 
   EVENTS.forEach((ev) => {
+    // Si ya está en próximos, no lo repetimos abajo para no tener redundancias
+    if (upcomingIds.has(ev.slug)) return
+
     const bucket = getMonthFromEvent(ev)
     if (bucket === 'all-year') {
       allYearList.push(ev)
@@ -234,16 +249,6 @@ export default function Eventos() {
       byMonth.get(bucket)!.push(ev)
     }
   })
-
-  // próximos
-  const now = new Date()
-  const upcoming = EVENTS
-    .filter((ev) => isUpcoming(ev, now, 120))
-    .sort((a, b) => {
-      const ad = toDateISO(a.dateStart || a.dateEnd || '')?.getTime() ?? Number.POSITIVE_INFINITY
-      const bd = toDateISO(b.dateStart || b.dateEnd || '')?.getTime() ?? Number.POSITIVE_INFINITY
-      return ad - bd
-    })
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -280,18 +285,22 @@ export default function Eventos() {
         <section className="space-y-10 mb-12">
           {MONTHS_ES.map((m, idx) => {
             const list = byMonth.get(idx + 1) || []
+            const monthHasUpcoming = upcoming.some(u => getMonthFromEvent(u) === idx + 1)
+
             return (
               <div key={m} id={`mes-${idx + 1}`}>
                 <div className="flex items-center gap-2 mb-4">
                   <CalendarDays className="text-[#bb904d]" size={18} />
                   <h3 className="text-xl font-bold text-[#2c363b] capitalize">{m}</h3>
                   <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 border border-gray-200">
-                    {list.length} evento{list.length === 1 ? '' : 's'}
+                    {list.length + (monthHasUpcoming ? upcoming.filter(u => getMonthFromEvent(u) === idx + 1).length : 0)} evento(s) en total
                   </span>
                 </div>
                 {list.length === 0 ? (
                   <div className="text-sm text-gray-600 bg-white border border-gray-100 rounded-lg p-4">
-                    Sin eventos registrados este mes (por ahora).
+                    {monthHasUpcoming
+                      ? "Los eventos de este mes están destacados en la sección de 'Próximos' arriba."
+                      : "Sin eventos registrados este mes (por ahora)."}
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
