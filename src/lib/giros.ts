@@ -10,6 +10,7 @@ export type SectionSlug =
   | 'servicios'           // Servicios profesionales
   | 'salud'               // Salud
   | 'abarrotes'           // Abarrotes
+  | 'transporte'          // Transporte y estacionamiento
 
 // Mapeo “texto del formulario (normalizado)” -> slug de sección
 const GIRO_TO_SECTION: Record<string, SectionSlug> = {
@@ -23,6 +24,7 @@ const GIRO_TO_SECTION: Record<string, SectionSlug> = {
   'servicios profesionales': 'servicios',
   'salud': 'salud',
   'abarrotes': 'abarrotes',
+  'estacionamiento': 'transporte',
 };
 
 // Normaliza a minúsculas y quita espacios dobles
@@ -55,6 +57,7 @@ export function groupBySection(businesses: Business[]) {
     'servicios': [],
     'salud': [],
     'abarrotes': [],
+    'transporte': [],
   }
   for (const b of businesses) {
     for (const g of b.giros) {

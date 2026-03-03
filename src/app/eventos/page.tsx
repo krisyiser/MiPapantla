@@ -99,8 +99,8 @@ const EVENTS: EventItem[] = [
     description:
       'Festival cultural que preserva y difunde la riqueza cultural y arqueológica de la Ciudad Sagrada de El Tajín. Ceremonias, talleres, rituales, terapias, juegos autóctonos, conciertos, danzas, circo, conferencias, exposiciones y más.',
     highlights: ['Equinoccio de primavera', 'Talleres y rituales', 'Conciertos y danzas'],
-    dateStart: '2025-03-19',
-    dateEnd: '2025-03-24',
+    dateStart: '2026-03-19',
+    dateEnd: '2026-03-24',
   },
   {
     slug: 'rancho-fest',
@@ -112,8 +112,8 @@ const EVENTS: EventItem[] = [
     description:
       'Festival playero con música en vivo, torneos deportivos, talleres para niños y gastronomía local. Enfocado en fortalecer el turismo y la convivencia familiar.',
     highlights: ['Música en vivo', 'Fútbol y voleibol', 'Talleres y gastronomía'],
-    dateStart: '2025-04-18',
-    dateEnd: '2025-04-19',
+    dateStart: '2026-04-18',
+    dateEnd: '2026-04-19',
   },
   {
     slug: 'carnaval-papantla',
@@ -125,7 +125,7 @@ const EVENTS: EventItem[] = [
     description:
       'Desfile de comparsas y carros alegóricos; gran concierto con artistas invitados. Colores, ritmo y alegría en las calles de Papantla.',
     highlights: ['Desfile', 'Concierto', 'Ambiente familiar'],
-    dateStart: '2025-05-24',
+    dateStart: '2026-05-24',
   },
   {
     slug: 'feria-corpus-christi',
@@ -137,8 +137,8 @@ const EVENTS: EventItem[] = [
     description:
       'Celebración anual que combina elementos religiosos y culturales: conciertos, Festival Xanath, danzas y rituales, cabalgata, muestra gastronómica y más.',
     highlights: ['Conciertos', 'Festival Xanath', 'Cabalgata', 'Gastronomía'],
-    dateStart: '2025-06-14',
-    dateEnd: '2025-06-22',
+    dateStart: '2026-06-14',
+    dateEnd: '2026-06-22',
   },
   {
     slug: 'festival-xanath',
@@ -150,8 +150,8 @@ const EVENTS: EventItem[] = [
     description:
       'Monumental obra de teatro al aire libre que celebra la cosmovisión totonaca, con más de 300 participantes. Parte de la Feria de Corpus Christi.',
     highlights: ['Ofrenda Cósmica', 'Danzas autóctonas', 'Cosmovisión totonaca'],
-    dateStart: '2025-06-19',
-    dateEnd: '2025-06-22',
+    dateStart: '2026-06-19',
+    dateEnd: '2026-06-22',
   },
   {
     slug: 'feria-del-tumin',
@@ -163,8 +163,8 @@ const EVENTS: EventItem[] = [
     description:
       'Celebración de economía solidaria y cultura local: talleres, exposiciones, trueque, diálogos sobre sustentabilidad, música, danza y gastronomía.',
     highlights: ['Trueque', 'Economía solidaria', 'Artesanías y orgánicos'],
-    dateStart: '2025-07-18',
-    dateEnd: '2025-07-20',
+    dateStart: '2026-07-18',
+    dateEnd: '2026-07-20',
   },
   {
     slug: 'ninin-dia-de-muertos',
@@ -176,8 +176,8 @@ const EVENTS: EventItem[] = [
     description:
       'Procesión simbólica donde las “calaveras” descienden del cementerio al centro, con danzas totonacas y tradiciones que reflejan el sincretismo cultural.',
     highlights: ['Procesión', 'Danzas totonacas', 'Altares y tradición'],
-    dateStart: '2025-10-31',
-    dateEnd: '2025-11-02',
+    dateStart: '2026-10-31',
+    dateEnd: '2026-11-02',
   },
   {
     slug: 'feria-de-la-vainilla',
@@ -202,8 +202,8 @@ const EVENTS: EventItem[] = [
     description:
       'Programa navideño: Villa, desfiles de carritos y faroles, foro artístico y cultural, desfile navideño y árbol monumental.',
     highlights: ['Villa navideña', 'Desfiles', 'Foro artístico y cultural'],
-    dateStart: '2025-12-01',
-    dateEnd: '2026-01-06',
+    dateStart: '2026-12-01',
+    dateEnd: '2027-01-06',
   },
   {
     slug: 'ruta-chichinit',
@@ -240,8 +240,8 @@ export default function Eventos() {
   const upcoming = EVENTS
     .filter((ev) => isUpcoming(ev, now, 120))
     .sort((a, b) => {
-      const ad = toDateISO(a.dateStart || a.dateEnd || '')?.getTime() ?? Infinity
-      const bd = toDateISO(b.dateStart || b.dateEnd || '')?.getTime() ?? Infinity
+      const ad = toDateISO(a.dateStart || a.dateEnd || '')?.getTime() ?? Number.POSITIVE_INFINITY
+      const bd = toDateISO(b.dateStart || b.dateEnd || '')?.getTime() ?? Number.POSITIVE_INFINITY
       return ad - bd
     })
 
