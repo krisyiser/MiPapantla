@@ -11,8 +11,8 @@ const contactCards = [
     name: 'Jóvenes Creadores MX',
     description: 'Innovación y diseño tecnológico al servicio de la cultura y el turismo.',
     logo: '/icons/jovenes_icon.png',
-    bgLogoClass: 'bg-gray-900', // Un fondo oscuro hace resaltar su logo
-    gradient: 'from-[#1dace0] via-[#2b9ccf] to-[#2284b3]',
+    bgLogoClass: 'bg-white', // Un fondo blanco lucirá bien
+    gradient: 'from-[#ffffff] to-[#f3f6f8]', // Crema/azulado muy sutil
     mainUrl: 'https://www.facebook.com/JovenesCreadoresMX',
     socialLinks: [
       {
@@ -36,9 +36,9 @@ const contactCards = [
     id: 'canaco',
     name: 'CANACO SERVYTUR',
     description: 'Cámara Nacional de Comercio, Servicios y Turismo de Papantla.',
-    logo: '/canaco.png',
+    logo: '/icons/canaco.png',
     bgLogoClass: 'bg-white',
-    gradient: 'from-[#c32026] via-[#a31a1e] to-[#7f1316]', // Tonos rojos elegantes
+    gradient: 'from-[#ffffff] to-[#fcf4f2]', // Crema/rojizo muy sutil
     mainUrl: 'https://www.facebook.com/canacoservyturpapantla',
     socialLinks: [
       {
@@ -69,14 +69,14 @@ export default function Contacto() {
           {contactCards.map((card) => (
             <div
               key={card.id}
-              className={`relative bg-gradient-to-br ${card.gradient} rounded-2xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-2 transform transition-all duration-300 flex flex-col items-center text-center group`}
+              className={`relative bg-gradient-to-br ${card.gradient} rounded-2xl p-8 shadow-md border border-gray-100 hover:shadow-xl hover:-translate-y-2 transform transition-all duration-300 flex flex-col items-center text-center group`}
             >
               {/* Logo Flotante */}
               <a
                 href={card.mainUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`relative w-28 h-28 ${card.bgLogoClass} rounded-full flex items-center justify-center mb-6 shadow-inner overflow-hidden border-4 border-white/20 group-hover:border-white/50 transition-colors`}
+                className={`relative w-28 h-28 ${card.bgLogoClass} rounded-full flex items-center justify-center mb-6 shadow-sm overflow-hidden border-4 border-white group-hover:border-gray-100 transition-colors`}
               >
                 <Image
                   src={card.logo}
@@ -88,10 +88,10 @@ export default function Contacto() {
               </a>
 
               {/* Título y Descripción */}
-              <h2 className="text-2xl font-bold text-white mb-3">
+              <h2 className="text-2xl font-bold text-[#2c363b] mb-3">
                 {card.name}
               </h2>
-              <p className="text-white/90 text-sm md:text-base leading-relaxed mb-8 flex-grow">
+              <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-8 flex-grow">
                 {card.description}
               </p>
 
@@ -104,14 +104,14 @@ export default function Contacto() {
                     target="_blank"
                     rel="noopener noreferrer"
                     title={social.name}
-                    className="bg-white/10 p-3 rounded-full hover:bg-white/20 hover:scale-110 transition-all backdrop-blur-sm"
+                    className="bg-white shadow-sm border border-gray-100 p-3 rounded-full hover:bg-gray-50 hover:scale-110 transition-all"
                   >
                     <Image
                       src={social.icon}
                       alt={social.name}
                       width={28}
                       height={28}
-                      className="hover:opacity-90"
+                      className="hover:opacity-90 grayscale group-hover:grayscale-0 transition-all duration-300"
                     />
                   </a>
                 ))}
@@ -122,7 +122,7 @@ export default function Contacto() {
                 href={card.mainUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="absolute top-4 right-4 text-white/50 group-hover:text-white transition-colors"
+                className="absolute top-4 right-4 text-gray-300 group-hover:text-gray-500 transition-colors"
                 title="Visitar página principal"
               >
                 <ExternalLink size={20} />
