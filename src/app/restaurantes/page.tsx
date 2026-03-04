@@ -1,18 +1,7 @@
 // src/app/restaurantes/page.tsx
 import Header from '@/components/Header'
 import BottomNavigation from '@/components/BottomNavigation'
-import { ChefHat, Coffee, Pizza } from 'lucide-react'
-import { fetchBusinesses } from '@/lib/fetchBusinesses'
-import BusinessCard from '@/components/BusinessCard'
-import SectionHero from '@/components/SectionHero'
 import { businessInSection } from '@/lib/giros'
-
-const cuisineTypes = [
-  { name: 'Cocina Totonaca', icon: ChefHat, description: 'Tradición ancestral' },
-  { name: 'Pizzerías', icon: Pizza, description: 'Favoritas locales' },
-  { name: 'Cafeterías', icon: Coffee, description: 'Café y descanso' }
-]
-
 // Server Component
 export default async function Restaurantes() {
   const all = await fetchBusinesses()
@@ -32,25 +21,6 @@ export default async function Restaurantes() {
           titleKey="hero.restaurantes.title"
           subtitleKey="hero.restaurantes.subtitle"
         />
-
-        {/* Tipos */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-          {cuisineTypes.map((c, i) => {
-            const Icon = c.icon
-            return (
-              <div
-                key={i}
-                className="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow cursor-pointer"
-              >
-                <div className="w-12 h-12 bg-[#bb904d] rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Icon size={24} className="text-white" />
-                </div>
-                <h3 className="font-bold text-[#2c363b] mb-1">{c.name}</h3>
-                <p className="text-sm text-gray-600">{c.description}</p>
-              </div>
-            )
-          })}
-        </div>
 
         {/* Cards dinámicas */}
         <div className="mb-8">

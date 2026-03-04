@@ -5,8 +5,6 @@ import { fetchBusinesses } from '@/lib/fetchBusinesses'
 import BusinessCard from '@/components/BusinessCard'
 import SectionHero from '@/components/SectionHero'
 import { businessInSection } from '@/lib/giros'
-import { Store, ShoppingBasket, BadgePercent, MapPin } from 'lucide-react'
-
 // Server Component
 export default async function Mercados() {
   const all = await fetchBusinesses()
@@ -15,15 +13,6 @@ export default async function Mercados() {
   const mercados = all
     .filter(b => businessInSection(b, 'mercados') || b.giros.some(g => g.includes('mercado')))
     .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }))
-
-  // Highlights
-  const highlights = [
-    { icon: Store, title: 'Locales del mercado', hint: 'Productos frescos y artesanías' },
-    { icon: ShoppingBasket, title: 'Compras locales', hint: 'Apoya a productores y familias' },
-    { icon: BadgePercent, title: 'Precios accesibles', hint: 'Variedad para todos los gustos' },
-    { icon: MapPin, title: 'Ubicaciones céntricas', hint: 'Llega fácil y rápido' },
-  ]
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -35,25 +24,6 @@ export default async function Mercados() {
           titleKey="hero.mercados.title"
           subtitleKey="hero.mercados.subtitle"
         />
-
-        {/* Highlights */}
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          {highlights.map((h, i) => {
-            const Icon = h.icon
-            return (
-              <div
-                key={i}
-                className="bg-white rounded-lg shadow-sm border border-gray-100 p-5 text-center hover:shadow-md transition-shadow"
-              >
-                <div className="w-12 h-12 bg-[#bb904d] rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Icon size={24} className="text-white" />
-                </div>
-                <h3 className="font-semibold text-[#2c363b]">{h.title}</h3>
-                <p className="text-xs text-gray-600 mt-1">{h.hint}</p>
-              </div>
-            )
-          })}
-        </section>
 
         {/* Listado de locales */}
         <section className="mb-8">

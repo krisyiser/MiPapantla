@@ -5,8 +5,6 @@ import { fetchBusinesses } from '@/lib/fetchBusinesses'
 import BusinessCard from '@/components/BusinessCard'
 import SectionHero from '@/components/SectionHero'
 import { businessInSection } from '@/lib/giros'
-import { Stethoscope, Activity, Heart, UserPlus } from 'lucide-react'
-
 // Server Component
 export default async function Salud() {
     const all = await fetchBusinesses()
@@ -15,15 +13,6 @@ export default async function Salud() {
     const salud = all
         .filter(b => businessInSection(b, 'salud'))
         .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }))
-
-    // Categorías visuales (informativas)
-    const categorias = [
-        { icon: Stethoscope, label: 'Medicina General', hint: 'Atención primaria' },
-        { icon: Heart, label: 'Especialidades', hint: 'Cardiología, Pediatría...' },
-        { icon: Activity, label: 'Laboratorios', hint: 'Análisis clínicos' },
-        { icon: UserPlus, label: 'Terapias', hint: 'Fisioterapia y más' },
-    ]
-
     return (
         <div className="min-h-screen bg-gray-50">
             <Header />
@@ -35,25 +24,6 @@ export default async function Salud() {
                     titleKey="hero.salud.title"
                     subtitleKey="hero.salud.subtitle"
                 />
-
-                {/* Categorías (UI informativa) */}
-                <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                    {categorias.map((c, i) => {
-                        const Icon = c.icon
-                        return (
-                            <div
-                                key={i}
-                                className="bg-white rounded-lg shadow-sm border border-gray-100 p-5 text-center hover:shadow-md transition-shadow"
-                            >
-                                <div className="w-12 h-12 bg-[#bb904d] rounded-full flex items-center justify-center mx-auto mb-3">
-                                    <Icon size={24} className="text-white" />
-                                </div>
-                                <h3 className="font-semibold text-[#2c363b]">{c.label}</h3>
-                                <p className="text-xs text-gray-600 mt-1">{c.hint}</p>
-                            </div>
-                        )
-                    })}
-                </section>
 
                 {/* Listado de Negocios de Salud */}
                 <section className="mb-8">

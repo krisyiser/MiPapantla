@@ -5,8 +5,6 @@ import { fetchBusinesses } from '@/lib/fetchBusinesses'
 import BusinessCard from '@/components/BusinessCard'
 import SectionHero from '@/components/SectionHero'
 import { businessInSection } from '@/lib/giros'
-import { Map, Compass, CalendarRange, Users } from 'lucide-react'
-
 // Server Component
 export default async function Agencias() {
   const all = await fetchBusinesses()
@@ -14,14 +12,6 @@ export default async function Agencias() {
   const agencias = all
     .filter(b => businessInSection(b, 'turismo') || b.giros.some(g => g.includes('agencia')))
     .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }))
-
-  const highlights = [
-    { icon: Map, title: 'Rutas y recorridos', hint: 'Explora Papantla y alrededores' },
-    { icon: Compass, title: 'Guías certificados', hint: 'Acompañamiento profesional' },
-    { icon: CalendarRange, title: 'Experiencias programadas', hint: 'Agenda flexible' },
-    { icon: Users, title: 'Grupos y privados', hint: 'Hecho a tu medida' },
-  ]
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -33,25 +23,6 @@ export default async function Agencias() {
           titleKey="hero.agencias.title"
           subtitleKey="hero.agencias.subtitle"
         />
-
-        {/* Highlights informativos */}
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          {highlights.map((h, i) => {
-            const Icon = h.icon
-            return (
-              <div
-                key={i}
-                className="bg-white rounded-lg shadow-sm border border-gray-100 p-5 text-center hover:shadow-md transition-shadow"
-              >
-                <div className="w-12 h-12 bg-[#bb904d] rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Icon size={24} className="text-white" />
-                </div>
-                <h3 className="font-semibold text-[#2c363b]">{h.title}</h3>
-                <p className="text-xs text-gray-600 mt-1">{h.hint}</p>
-              </div>
-            )
-          })}
-        </section>
 
         {/* Listado dinámico */}
         <section className="mb-8">

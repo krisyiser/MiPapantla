@@ -85,14 +85,6 @@ const venues = [
     description: "Bar con identidad cultural donde se fusionan tradición y modernidad."
   }
 ]
-
-const nightActivities = [
-  { name: "Música en Vivo", icon: Music, venues: 8, description: "Jazz, rock, mariachi" },
-  { name: "Discotecas", icon: PartyPopper, venues: 3, description: "Electrónica, reggaetón" },
-  { name: "Bares de Cocteles", icon: Martini, venues: 5, description: "Mixología con frutas locales" },
-  { name: "Cultura y Show", icon: Volume2, venues: 4, description: "Poesía, narración, trova" }
-]
-
 const events = [
   { day: "Viernes", event: "Ronda Jarocha", description: "Música tradicional en bares del centro histórico" },
   { day: "Sábado", event: "Noche Bohemia", description: "Cantos, poesía y trova en La Cueva" },
@@ -131,25 +123,6 @@ export default function VidaNocturna() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Actividades */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          {nightActivities.map((activity, index) => {
-            const Icon = activity.icon
-            return (
-              <div key={index} className="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow">
-                <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Icon size={24} className="text-white" />
-                </div>
-                <h3 className="font-bold text-[#2c363b] mb-1">{activity.name}</h3>
-                <p className="text-sm text-gray-600 mb-2">{activity.description}</p>
-                <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs">
-                  {activity.venues} lugares
-                </span>
-              </div>
-            )
-          })}
         </div>
 
         {/* Lugares */}
