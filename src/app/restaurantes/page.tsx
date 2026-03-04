@@ -1,6 +1,9 @@
 // src/app/restaurantes/page.tsx
 import Header from '@/components/Header'
 import BottomNavigation from '@/components/BottomNavigation'
+import { fetchBusinesses } from '@/lib/fetchBusinesses'
+import BusinessCard from '@/components/BusinessCard'
+import SectionHero from '@/components/SectionHero'
 import { businessInSection } from '@/lib/giros'
 // Server Component
 export default async function Restaurantes() {
