@@ -8,6 +8,7 @@ import {
 import { useOutsideClick } from '@/hooks/use-outside-click'
 import GalleryGrid from '@/components/GalleryGrid'
 import { useLanguage } from '@/context/LanguageContext'
+import { sendGAEvent } from '@next/third-parties/google'
 
 /* =========================
    Tipos esperados del fetch
@@ -131,6 +132,10 @@ export default function BusinessCard({
     const tag = (e.target as HTMLElement).closest('a,button')
     if (tag) return
     setExpanded(true)
+    sendGAEvent('event', 'ver_negocio', {
+      negocio_nombre: negocio.nombre,
+      categoria: tituloTag
+    })
   }
 
   // --------- GALERÍAS ----------
@@ -222,7 +227,14 @@ export default function BusinessCard({
         {/* CTA principal */}
         <div className="mt-4 grid grid-cols-2 gap-2">
           <button
-            onClick={(e) => { e.stopPropagation(); setExpanded(true) }}
+            onClick={(e) => {
+              e.stopPropagation();
+              setExpanded(true);
+              sendGAEvent('event', 'ver_negocio', {
+                negocio_nombre: negocio.nombre,
+                categoria: tituloTag
+              });
+            }}
             className="col-span-2 border border-gray-200 hover:border-[#bb904d] hover:bg-[#bb904d]/5 text-[#2c363b] py-2 rounded-md transition-colors"
             aria-label={t('btn.details')}
           >
@@ -356,6 +368,7 @@ export default function BusinessCard({
             {negocio.phoneDigits && (
               <a
                 href={`tel:${negocio.phoneDigits}`}
+                onClick={() => sendGAEvent('event', 'click_llamar', { negocio_nombre: negocio.nombre, categoria: tituloTag })}
                 className="flex items-center justify-center gap-2 bg-[#bb904d] hover:bg-[#814739] text-white py-2 rounded-md transition-colors"
               >
                 <Phone size={16} /> {t('btn.call')}
@@ -368,6 +381,7 @@ export default function BusinessCard({
                 href={negocio.googleMaps}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => sendGAEvent('event', 'click_mapa', { negocio_nombre: negocio.nombre, categoria: tituloTag })}
                 className="flex items-center justify-center gap-2 bg-[#f6f7f5] hover:bg-[#e7e7e7] text-[#2c363b] py-2 rounded-md transition-colors"
               >
                 <Navigation size={16} /> {t('btn.howToGet')}
@@ -380,6 +394,7 @@ export default function BusinessCard({
                 href={`https://wa.me/${negocio.phoneDigits}`}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => sendGAEvent('event', 'click_whatsapp', { negocio_nombre: negocio.nombre, categoria: tituloTag })}
                 className="flex items-center justify-center gap-2 bg-[#f6f7f5] hover:bg-[#e7e7e7] text-[#2c363b] py-2 rounded-md transition-colors"
               >
                 <ExternalLink size={16} /> {t('btn.whatsapp')}
@@ -392,6 +407,7 @@ export default function BusinessCard({
                 href={negocio.redes}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => sendGAEvent('event', 'click_redes', { negocio_nombre: negocio.nombre, categoria: tituloTag })}
                 className="flex items-center justify-center gap-2 bg-[#f6f7f5] hover:bg-[#e7e7e7] text-[#2c363b] py-2 rounded-md transition-colors"
               >
                 <ExternalLink size={16} /> {t('btn.web')}
