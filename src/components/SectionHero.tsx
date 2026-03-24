@@ -22,6 +22,9 @@ export default function SectionHero({ imageSrc, titleKey, subtitleKey, children 
                 fill
                 className="object-cover"
                 priority
+                onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = '/placeholder.png'
+                }}
             />
             <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center">
                 <div className="text-center text-white px-4">

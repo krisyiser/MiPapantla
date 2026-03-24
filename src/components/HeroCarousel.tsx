@@ -69,8 +69,11 @@ export default function HeroCarousel() {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 100vw"
             className="object-cover"
             priority={index === 0}
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).src = '/placeholder.png'
+            }}
           />
-          <div className="absolute inset-0 bg-black/20" />
+          <div className="absolute inset-0 bg-black/10" />
         </div>
       ))}
 
