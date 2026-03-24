@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import AppLoader from "./components/AppLoader";
+import KioskOverlay from "@/components/KioskOverlay";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -21,13 +22,45 @@ export default function ClientBody({
   const [isIOS, setIsIOS] = useState(false);
   const [showPrompt, setShowPrompt] = useState(true);
 
+  // KIOSK MODE STATE
+  const [isKiosk, setIsKiosk] = useState(false);
+  const [showKioskOverlay, setShowKioskOverlay] = useState(false);
+
   useEffect(() => {
     document.body.className = "antialiased";
+
+    // Detect Kiosk Mode
+    const urlParams = new URLSearchParams(window.location.search);
+    const kioskMode = urlParams.get("kiosk") === "true";
+    setIsKiosk(kioskMode);
 
     // Detect iOS
     const ua = window.navigator.userAgent.toLowerCase();
     const ios = /iphone|ipad|ipod/.test(ua);
     setIsIOS(ios);
+
+    // Global Link Interception for Kiosk Mode
+    const handleNavigationIntercept = (e: MouseEvent) => {
+      if (!kioskMode) return;
+
+      const target = (e.target as HTMLElement).closest("a");
+      if (target) {
+        // Permitir links externos explicitamente marcados o que tengan #
+        const href = target.getAttribute("href") || "";
+        if (
+          href.startsWith("#") ||
+          target.getAttribute("data-kiosk-allow") === "true"
+        ) {
+          return;
+        }
+
+        // Bloquear navegación y mostrar overlay
+        e.preventDefault();
+        setShowKioskOverlay(true);
+      }
+    };
+
+    window.addEventListener("click", handleNavigationIntercept, true);
 
     // Detect if already installed
     const checkInstalled = () => {
@@ -58,6 +91,7 @@ export default function ClientBody({
 
     return () => {
       window.removeEventListener("beforeinstallprompt", handler);
+      window.removeEventListener("click", handleNavigationIntercept, true);
     };
   }, []);
 
@@ -80,8 +114,14 @@ export default function ClientBody({
       {/* LOADER */}
       <AppLoader />
 
+      {/* KIOSK OVERLAY */}
+      <KioskOverlay
+        isVisible={showKioskOverlay}
+        onClose={() => setShowKioskOverlay(false)}
+      />
+
       {/* INSTALL MODAL */}
-      {!isInstalled && showPrompt && (isInstallable || isIOS) && (
+      {!isKiosk && !isInstalled && showPrompt && (isInstallable || isIOS) && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 backdrop-blur-md px-6">
           <div className="bg-[#0f172a] text-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center space-y-4 animate-fade-in">
             <h3 className="text-lg font-bold tracking-wide">

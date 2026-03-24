@@ -67,11 +67,9 @@ const withPWA = require("next-pwa")({
 });
 
 const nextConfig = {
-  reactStrictMode: true,
-  poweredByHeader: false, // Oculta que usamos Next.js para mayor seguridad
-  productionBrowserSourceMaps: false, // Asegura que el código no sea visible en producción
-
+  output: "export", // Habilita la exportación estática para Kioskos/USB
   images: {
+    unoptimized: true, // Requerido para output: 'export'
     remotePatterns: [
       {
         protocol: "https",
@@ -109,6 +107,9 @@ const nextConfig = {
       },
     ],
   },
+  reactStrictMode: true,
+  poweredByHeader: false, // Oculta que usamos Next.js para mayor seguridad
+  productionBrowserSourceMaps: false, // Asegura que el código no sea visible en producción
 };
 
 module.exports = withPWA(nextConfig);

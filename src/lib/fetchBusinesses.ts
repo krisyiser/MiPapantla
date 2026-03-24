@@ -147,10 +147,27 @@ function pickPdf(files: DriveFile[]): string | null {
 
 // ------------------------- Fetch principal -------------------------
 export async function fetchBusinesses(): Promise<Business[]> {
-  const res = await fetch(url, { next: { revalidate: 600 } })
-  if (!res.ok) throw new Error('No se pudieron obtener los datos de la hoja')
+  let rows: SheetRow[] = [];
+  try {
+     const res = await fetch(url, { next: { revalidate: 600 } })
+     if (!res.ok) throw new Error('No connection');
+     rows = (await res.json()) as SheetRow[]
+  } catch (error) {
+     console.warn('Usando respaldo offline de negocios para el build.');
+     // Solo disponible en build/export
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const fs = require('fs');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const path = require('path');
+        const offlineData = fs.readFileSync(path.join(process.cwd(), 'public/businesses-offline.json'), 'utf-8');
+        rows = JSON.parse(offlineData);
+      } catch (e) {
+       console.error('No se pudo leer businesses-offline.json. Corre el script de preparación.');
+       return [];
+     }
+  }
 
-  const rows = (await res.json()) as SheetRow[]
   if (!Array.isArray(rows) || rows.length === 0) return []
 
   // Mapeo asíncrono por las llamadas a Drive
@@ -188,13 +205,14 @@ export async function fetchBusinesses(): Promise<Business[]> {
     const extras = splitCsv(nrow['servicios adicionales disponibles'] || '')
     const certific = nrow['cuenta con algun tipo de certificacion turistica sanitaria o ambiental'] || ''
 
-    // ===== FOTOS (columna "Fotos" -> carpeta) =====
+    // ===== FOTOS (Priorizar offline si existe) =====
+    const fotoOffline = nrow['foto offline'] || '';
     const fotosCellRaw = nrow['fotos'] || ''
     const fotosFolderUrl = ensureHttp(extractHyperlinkFromFormula(fotosCellRaw))
-    let photo = ''
+    let photo = fotoOffline;
     let photos: string[] | undefined
 
-    if (fotosFolderUrl) {
+    if (!photo && fotosFolderUrl) {
       try {
         const files = await listDriveFolderFiles(fotosFolderUrl)
         const imgs = pickImages(files)

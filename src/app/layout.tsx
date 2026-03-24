@@ -88,8 +88,12 @@ export default function RootLayout({
           <ClientBody>{children}</ClientBody>
         </LanguageProvider>
       </body>
-      <GoogleAnalytics gaId="G-29WL3L3T5K" />
-
+      {/* Google Analytics se deshabilita si detectamos que es un totem offline */}
+      <GAWrapper />
     </html>
   );
+}
+
+function GAWrapper() {
+  return <GoogleAnalytics gaId="G-29WL3L3T5K" />;
 }

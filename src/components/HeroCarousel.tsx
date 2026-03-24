@@ -4,24 +4,44 @@ import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
-type Image = {
+type CarouselImage = {
   id: string
   url: string
   alt: string
 }
 
 export default function HeroCarousel() {
-  const [images, setImages] = useState<Image[]>([])
+  const [images, setImages] = useState<CarouselImage[]>([])
   const [currentSlide, setCurrentSlide] = useState(0)
   const slideCountRef = useRef(0)
 
   useEffect(() => {
+    // Intentar obtener de la API, pero manejar el caso de error (ej. exportación estática)
     fetch('/api/carrusel')
-      .then((res) => res.json())
-      .then((data: Image[]) => {
-        slideCountRef.current = data.length
-        setImages(data)
+      .then((res) => {
+        if (!res.ok) throw new Error('API not available');
+        return res.json();
       })
+      .then((data: CarouselImage[]) => {
+        if (data && data.length > 0) {
+          slideCountRef.current = data.length
+          setImages(data)
+        }
+      })
+      .catch((error) => {
+        console.warn('API de carrusel no disponible (Normal en modo estático/USB). Intentando cargar local...', error);
+        
+        // Carga el fallback local generado por el script de preparación
+        fetch('/carousel-offline.json')
+          .then(res => res.json())
+          .then((localData: CarouselImage[]) => {
+            if (localData && localData.length > 0) {
+              slideCountRef.current = localData.length;
+              setImages(localData);
+            }
+          })
+          .catch(() => console.error('No se encontró carrusel-offline.json. Por favor corre el script de preparación.'));
+      });
   }, [])
 
   useEffect(() => {
