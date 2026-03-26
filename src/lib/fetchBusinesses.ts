@@ -25,7 +25,7 @@ export interface Business {
   photo: string                // principal si hay
   photos?: string[]            // galería si hay
 
-  // ===== NUEVO: Menú =====
+  // ===== Menú =====
   menuPhotos?: string[]        // si la carpeta tiene imágenes
   menuPdfUrl?: string | null   // si encontramos un PDF
   menuFolderUrl?: string | null// siempre: url cruda de la carpeta (fallback)
@@ -63,7 +63,7 @@ function ensureHttp(u: string) {
   return `https://${u}`
 }
 
-// =HYPERLINK("url","texto") -> url (acepta coma o punto y coma)
+// =HYPERLINK("url","texto") -> url
 function extractHyperlinkFromFormula(v: string) {
   if (!v) return ''
   const m = v.match(/^\s*=?\s*hyperlink\s*\(\s*"(.*?)"/i)
@@ -82,18 +82,14 @@ function summarize(s: string, max = 180) {
 const DRIVE_API = 'https://www.googleapis.com/drive/v3/files'
 const DRIVE_KEY = process.env.GOOGLE_DRIVE_API_KEY || ''
 
-/** Extrae el ID de carpeta de un URL de Drive (formatos comunes) */
 function getDriveFolderId(u?: string): string | null {
   if (!u) return null
-  // .../folders/<ID>
   const a = u.match(/\/folders\/([a-zA-Z0-9_-]+)/)?.[1]
   if (a) return a
-  // ...?id=<ID>
   const b = u.match(/[?&]id=([a-zA-Z0-9_-]+)/)?.[1]
   return b || null
 }
 
-/** URL de imagen pública servida por lh3 (rápida y estable para img tags) */
 function driveImageUrl(id: string) {
   return `https://lh3.googleusercontent.com/d/${id}=s1600`
 }
@@ -107,15 +103,12 @@ type DriveFile = {
   exportLinks?: Record<string, string>
 }
 
-/** Lista archivos (imágenes y PDFs) de una carpeta pública. */
 async function listDriveFolderFiles(folderUrl: string): Promise<DriveFile[]> {
   const folderId = getDriveFolderId(folderUrl)
   if (!folderId || !DRIVE_KEY) return []
 
   const q = encodeURIComponent(`'${folderId}' in parents and trashed=false`)
-  const fields = encodeURIComponent(
-    'files(id,name,mimeType,modifiedTime,webViewLink,exportLinks)'
-  )
+  const fields = encodeURIComponent('files(id,name,mimeType,modifiedTime,webViewLink,exportLinks)')
   const apiUrl = `${DRIVE_API}?q=${q}&fields=${fields}&pageSize=200&key=${DRIVE_KEY}`
 
   const res = await fetch(apiUrl, { next: { revalidate: 300 } })
@@ -125,7 +118,6 @@ async function listDriveFolderFiles(folderUrl: string): Promise<DriveFile[]> {
   return json.files || []
 }
 
-/** Devuelve imágenes priorizando nombre que contenga “portada”, luego recientes. */
 function pickImages(files: DriveFile[]): string[] {
   const imgs = files.filter(f => f.mimeType.startsWith('image/'))
   imgs.sort((a, b) => {
@@ -137,40 +129,27 @@ function pickImages(files: DriveFile[]): string[] {
   return imgs.map(f => driveImageUrl(f.id))
 }
 
-/** Intenta encontrar un PDF. Devuelve su webViewLink si está. */
 function pickPdf(files: DriveFile[]): string | null {
   const pdf = files.find(f => f.mimeType === 'application/pdf')
   if (!pdf) return null
-  // Preferimos webViewLink; si existiera exportLinks['application/pdf'] también sirve
   return pdf.webViewLink || pdf.exportLinks?.['application/pdf'] || null
 }
 
-// ------------------------- Fetch principal -------------------------
+// ------------------------- Fetch principal (Dynamic Sheets) -------------------------
 export async function fetchBusinesses(): Promise<Business[]> {
   let rows: SheetRow[] = [];
   try {
+     // Fetch from OpenSheet con 10 mins de cache ISR
      const res = await fetch(url, { next: { revalidate: 600 } })
-     if (!res.ok) throw new Error('No connection');
+     if (!res.ok) throw new Error('Failed to fetch from sheet');
      rows = (await res.json()) as SheetRow[]
   } catch (error) {
-     console.warn('Usando respaldo offline de negocios para el build.');
-     // Solo disponible en build/export
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const fs = require('fs');
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const path = require('path');
-        const offlineData = fs.readFileSync(path.join(process.cwd(), 'public/businesses-offline.json'), 'utf-8');
-        rows = JSON.parse(offlineData);
-      } catch (e) {
-       console.error('No se pudo leer businesses-offline.json. Corre el script de preparación.');
-       return [];
-     }
+     console.error('Error fetching businesses:', error);
+     return [];
   }
 
   if (!Array.isArray(rows) || rows.length === 0) return []
 
-  // Mapeo asíncrono por las llamadas a Drive
   const items = await Promise.all(rows.map(async (row, idx) => {
     const nrow: Record<string, string> = {}
     Object.entries(row).forEach(([k, v]) => {
@@ -180,7 +159,6 @@ export async function fetchBusinesses(): Promise<Business[]> {
     const nombre = nrow['nombre comercial del negocio'] || ''
     const giroRaw = nrow['giro del negocio'] || ''
 
-    // Descripciones
     const descripcionCorta = nrow['breve descripcion del negocio'] || ''
     const descripcionLarga =
       nrow['descripcion larga'] ||
@@ -205,14 +183,13 @@ export async function fetchBusinesses(): Promise<Business[]> {
     const extras = splitCsv(nrow['servicios adicionales disponibles'] || '')
     const certific = nrow['cuenta con algun tipo de certificacion turistica sanitaria o ambiental'] || ''
 
-    // ===== FOTOS (Priorizar offline si existe) =====
-    const fotoOffline = nrow['foto offline'] || '';
+    // FOTOS (Siempre desde Drive)
     const fotosCellRaw = nrow['fotos'] || ''
     const fotosFolderUrl = ensureHttp(extractHyperlinkFromFormula(fotosCellRaw))
-    let photo = fotoOffline;
+    let photo = '';
     let photos: string[] | undefined
 
-    if (!photo && fotosFolderUrl) {
+    if (fotosFolderUrl) {
       try {
         const files = await listDriveFolderFiles(fotosFolderUrl)
         const imgs = pickImages(files)
@@ -220,12 +197,10 @@ export async function fetchBusinesses(): Promise<Business[]> {
           photo = imgs[0]
           photos = imgs
         }
-      } catch {
-        // silencioso: mantenemos sin fotos
-      }
+      } catch { /* skip */ }
     }
 
-    // ===== MENÚ (columna "menu" -> carpeta) =====
+    // MENÚ
     const menuCellRaw = nrow['menu'] || ''
     const menuFolderUrl = ensureHttp(extractHyperlinkFromFormula(menuCellRaw)) || ''
     let menuPhotos: string[] | undefined
@@ -235,16 +210,12 @@ export async function fetchBusinesses(): Promise<Business[]> {
     if (menuFolderUrl) {
       try {
         const files = await listDriveFolderFiles(menuFolderUrl)
-        // ¿hay PDF?
         menuPdfUrl = pickPdf(files)
-        // Si NO hay PDF, probamos imágenes
         if (!menuPdfUrl) {
           const mImgs = pickImages(files)
           if (mImgs.length) menuPhotos = mImgs
         }
-      } catch {
-        // si falla, solo dejamos el folder como fallback
-      }
+      } catch { /* skip */ }
     }
 
     const giros = splitCsv(giroRaw).map(g => g.toLowerCase())
@@ -274,7 +245,6 @@ export async function fetchBusinesses(): Promise<Business[]> {
       certificaciones: certific,
       photo,
       photos,
-      // menú
       menuPhotos,
       menuPdfUrl,
       menuFolderUrl: menuFolderOut,

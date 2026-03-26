@@ -16,10 +16,10 @@ export default function HeroCarousel() {
   const slideCountRef = useRef(0)
 
   useEffect(() => {
-    // Intentar obtener de la API, pero manejar el caso de error (ej. exportación estática)
+    // Fetch directly from API
     fetch('/api/carrusel')
       .then((res) => {
-        if (!res.ok) throw new Error('API not available');
+        if (!res.ok) throw new Error('API error');
         return res.json();
       })
       .then((data: CarouselImage[]) => {
@@ -29,18 +29,7 @@ export default function HeroCarousel() {
         }
       })
       .catch((error) => {
-        console.warn('API de carrusel no disponible (Normal en modo estático/USB). Intentando cargar local...', error);
-        
-        // Carga el fallback local generado por el script de preparación
-        fetch('/carousel-offline.json')
-          .then(res => res.json())
-          .then((localData: CarouselImage[]) => {
-            if (localData && localData.length > 0) {
-              slideCountRef.current = localData.length;
-              setImages(localData);
-            }
-          })
-          .catch(() => console.error('No se encontró carrusel-offline.json. Por favor corre el script de preparación.'));
+        console.error('Error loading carousel:', error);
       });
   }, [])
 

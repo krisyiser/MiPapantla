@@ -15,16 +15,27 @@ export type SectionSlug =
 // Mapeo “texto del formulario (normalizado)” -> slug de sección
 const GIRO_TO_SECTION: Record<string, SectionSlug> = {
   'hotel': 'hospedaje',
+  'hoteles': 'hospedaje',
+  'hospedaje': 'hospedaje',
   'restaurante': 'restaurantes',
+  'restaurantes': 'restaurantes',
   'agencia de turismo': 'turismo',
+  'turismo': 'turismo',
   'experiencias': 'experiencias',
   'vida nocturna (bar, terraza, etc)': 'vida-nocturna',
+  'vida nocturna': 'vida-nocturna',
+  'bar': 'vida-nocturna',
   'vainilla': 'vainilla',
   'locales (mercados)': 'mercados',
+  'mercado': 'mercados',
+  'mercados': 'mercados',
   'servicios profesionales': 'servicios',
+  'servicios': 'servicios',
+  'profesionales': 'servicios',
   'salud': 'salud',
   'abarrotes': 'abarrotes',
   'estacionamiento': 'transporte',
+  'transporte': 'transporte',
 };
 
 // Normaliza a minúsculas y quita espacios dobles

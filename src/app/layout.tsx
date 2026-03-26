@@ -17,31 +17,13 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "MiPapantla | Donde la tradición cobra vida",
-  description:
-    "Explora las maravillas culturales, naturales y turísticas de Papantla desde una sola aplicación.",
-
-  manifest: "/manifest.json",
-
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "black-translucent",
-    title: "MiPapantla",
-  },
-
+  description: "Explora las maravillas culturales, naturales y turísticas de Papantla.",
   icons: {
-    icon: [
-      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
-    ],
-    apple: [
-      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
-    ],
+    icon: "/icons/icon-192.png",
   },
-
   openGraph: {
     title: "MiPapantla",
-    description:
-      "Directorio digital de negocios, cultura y servicios de Papantla",
+    description: "Directorio digital de negocios, cultura y servicios de Papantla",
     url: "https://mipapantla.com",
     siteName: "MiPapantla",
     images: [
@@ -68,32 +50,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <head>
-        {/* Splash iOS */}
-        <link
-          rel="apple-touch-startup-image"
-          href="/splash/splash.png"
-        />
-
-        {/* Safari PWA theme */}
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-      </head>
-
       <body suppressHydrationWarning className="antialiased bg-[#0f172a] text-white">
         <LanguageProvider>
           <ClientBody>{children}</ClientBody>
         </LanguageProvider>
+        <GoogleAnalytics gaId="G-29WL3L3T5K" />
       </body>
-      {/* Google Analytics se deshabilita si detectamos que es un totem offline */}
-      <GAWrapper />
     </html>
   );
-}
-
-function GAWrapper() {
-  return <GoogleAnalytics gaId="G-29WL3L3T5K" />;
 }
