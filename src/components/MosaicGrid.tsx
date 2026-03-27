@@ -107,7 +107,7 @@ const blocks: MosaicBlock[] = [
     id: "turismo-aventura",
     translationKey: "grid.agencias",
     href: "/turismo-aventura",
-    image: "/pictures/turismo rural.jpg",
+    image: "/pictures/turismo.jpeg",
     shape: "wide",
     labelPosition: "tl",
     group: "explore",

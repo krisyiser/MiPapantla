@@ -57,7 +57,7 @@ const attractions: Attraction[] = [
     id: 2,
     name: 'Monumento al Volador',
     type: 'Monumento Cultural',
-    image: '/pictures/monumento al volador.jpg',
+    image: '/pictures/volador.jpeg',
     location: 'Cerro del Campanario, Papantla',
     hours: '24 horas',
     price: 'Gratis',
