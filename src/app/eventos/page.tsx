@@ -82,7 +82,7 @@ const EVENTS: EventItem[] = [
   {
     slug: 'cumbre-tajin',
     title: 'Cumbre Tajín',
-    image: '/pictures/cumbre-tajin.jpeg',
+    image: '/pictures/cumbre.jpeg',
     location: 'Papantla, Veracruz',
     venue: 'Parque Takilhsukut · Zona Arqueológica El Tajín · Zócalo',
     price: 'Variado según actividades',
